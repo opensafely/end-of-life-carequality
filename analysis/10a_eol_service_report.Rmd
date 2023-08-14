@@ -34,6 +34,7 @@ This report extends on the analysis published [here](https://www.nuffieldtrust.o
     + Place of death
     + Cause of death
 4. Medications for symptom management
+5. A&E visits
 
 <br/><br/>
 
