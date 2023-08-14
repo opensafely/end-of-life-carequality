@@ -110,6 +110,17 @@ study = StudyDefinition(
             "int": {"distribution": "normal", "mean": 5, "stddev": 1}, 
             "incidence": 0.8
             }
-    )
+    ),
 
+    ## OP Attendances
+    # Excludes most mental health care and community services
+    op_att = patients.outpatient_appointment_date(
+        returning = "number_of_matches_in_period",
+        attended = True,
+        between = ["dod_ons - 30 days", "dod_ons"],
+        return_expectations = {
+            "int": {"distribution": "normal", "mean": 5, "stddev": 1}, 
+            "incidence": 0.8
+            }
+    )
 )
