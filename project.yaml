@@ -161,6 +161,8 @@ actions:
         monthly_deaths_place_plot: output/os_reports/eol_service/deaths_month_plot.png
         monthly_gp_place: output/os_reports/eol_service/gp_month.csv
         monthly_gp_place_plot: output/os_reports/eol_service/gp_month_plot.png
+        monthly_aevis_place: output/os_reports/eol_service/aevis_month.csv
+        monthly_aevis_place_plot: output/or_reports/eol_service/aevis_month_plot.png
 
   os_report:
     run: r:latest analysis/10b_eol_service_report_html.R
