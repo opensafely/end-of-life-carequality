@@ -88,3 +88,13 @@ knitr::include_graphics(here::here("output", "os_reports", "eol_service", "gp_mo
 ## 4. Medications for symptom management
 
 <br/><br/>
+
+## 5. Service use
+
+Draft text...
+
+### Outpatient visits in the last month of life
+
+_Figure 3: Average number of OP attendances per person by month and place of death_
+```{r fig2, fig.height=1, fig.width=2, fig.cap=""}
+knitr::include_graphics(here::here("output", "os_reports", "eol_service", "op_month_plot.png"))
