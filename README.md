@@ -1,8 +1,8 @@
-# deaths-at-home-covid19
+# end-of-life-carequality
 
 [View on OpenSAFELY](https://jobs.opensafely.org/repo/https%253A%252F%252Fgithub.com%252Fopensafely%252Fdeaths-at-home-covid19)
 
-Details of the purpose and any published outputs from this project can be found at the link above.
+The purpose and published outputs from the first phase of the project project can be found at the link above.
 
 The contents of this repository MUST NOT be considered an accurate or valid representation of the study or its purpose. 
 This repository may reflect an incomplete or incorrect analysis with no further ongoing work.
