@@ -34,6 +34,7 @@ This report extends on the analysis published [here](https://www.nuffieldtrust.o
     + Place of death
     + Cause of death
 4. Medications for symptom management
+5. A&E visits
 
 <br/><br/>
 
@@ -88,3 +89,19 @@ knitr::include_graphics(here::here("output", "os_reports", "eol_service", "gp_mo
 ## 4. Medications for symptom management
 
 <br/><br/>
+
+## 5. A&E Visits
+
+Draft text...
+
+### Place of death
+
+_Figure 3: Average number of A&E visits per person by month and place of death_
+```{r fig3, fig.height=1, fig.width=2, fig.cap=""}
+knitr::include_graphics(here::here("output", "os_reports", "eol_service", "aevis_month_plot.png"))
+```
+
+### Cause of death
+
+<br/><br/>
+

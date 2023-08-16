@@ -3,7 +3,7 @@ version: '3.0'
 expectations:
   population_size: 10000
 
-actions:  
+actions:   
 
   generate_study_population_os_reports:
     run: cohortextractor:latest generate_cohort --study-definition study_definition_os_reports --output-format feather
@@ -20,6 +20,8 @@ actions:
         monthly_deaths_place_plot: output/os_reports/eol_service/deaths_month_plot.png
         monthly_gp_place: output/os_reports/eol_service/gp_month.csv
         monthly_gp_place_plot: output/os_reports/eol_service/gp_month_plot.png
+        monthly_aevis_place: output/os_reports/eol_service/aevis_month.csv
+        monthly_aevis_place_plot: output/os_reports/eol_service/aevis_month_plot.png
 
   os_report:
     run: r:latest analysis/10b_eol_service_report_html.R
@@ -33,4 +35,3 @@ actions:
     outputs:
       highly_sensitive:
         cohort: output/input_ehrql.csv.gz
-    
