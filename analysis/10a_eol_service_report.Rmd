@@ -106,11 +106,9 @@ knitr::include_graphics(here::here("output", "os_reports", "eol_service", "aevis
 
 <br/><br/>
 
-## 5. Service use
+## 6. Attended outpatient appoitnments
 
 Draft text...
-
-## 6. Attended outpatient appoitnments
 
 ### Place of death 
 
