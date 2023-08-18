@@ -35,7 +35,7 @@ This report extends on the analysis published [here](https://www.nuffieldtrust.o
     + Cause of death
 4. Medications for symptom management
 5. A&E visits
-6. Attended outpatient appointments
+6. Outpatient appointments
 
 <br/><br/>
 
@@ -106,15 +106,15 @@ knitr::include_graphics(here::here("output", "os_reports", "eol_service", "aevis
 
 <br/><br/>
 
-## 6. Attended outpatient appoitnments
+## 6. Outpatient appoitnments
 
 Draft text...
 
 ### Place of death 
 
-_Figure 4: Average number of OP attendances per person by month and place of death_
+_Figure 4: Average number of outpatient appointments per person by month and place of death_
 ```{r fig4, fig.height=1, fig.width=2, fig.cap=""}
-knitr::include_graphics(here::here("output", "os_reports", "eol_service", "op_month_plot.png"))
+knitr::include_graphics(here::here("output", "os_reports", "eol_service", "opapp_month_plot.png"))
 ```
 
 ### Cause of death
