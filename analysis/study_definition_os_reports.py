@@ -111,6 +111,17 @@ study = StudyDefinition(
             "incidence": 0.8
             }
     ),
+  
+    ##A&E Visits
+    # time period: 1 month prior to death
+    aevis_1m = patients.attended_emergency_care(
+        returning = "number_of_matches_in_period",
+        between = ["dod_ons - 30 days", "dod_ons"],
+        return_expectations = {
+            "int" : {"distribution" : "normal", "mean" : 5, "stddev" : 1},
+            "incidence" : 0.8
+        }
+    ),
 
     ## OP Attendances
     # Excludes most mental health care and community services
@@ -123,4 +134,5 @@ study = StudyDefinition(
             "incidence": 0.8
             }
     )
+
 )
