@@ -6,13 +6,13 @@ expectations:
 actions:   
 
   generate_study_population_os_reports:
-    run: cohortextractor:latest generate_cohort --study-definition study_definition_os_reports --output-format feather
+    run: ehrql:v0 generate-dataset analysis/os_reports/dataset_definition_os_reports.py --output output/os_reports/input_os_reports.csv.gz
     outputs:
       highly_sensitive:
-        cohort: output/os_reports/input_os_reports.feather
+        cohort: output/os_reports/input_os_reports.csv.gz
            
   os_report_charts:
-    run: r:latest analysis/10_eol_service_report_charts.R
+    run: r:latest analysis/os_reports/01_eol_service_report_charts.R
     needs: [generate_study_population_os_reports]
     outputs:
       moderately_sensitive:
@@ -22,18 +22,12 @@ actions:
         monthly_gp_place_plot: output/os_reports/eol_service/gp_month_plot.png
         monthly_aevis_place: output/os_reports/eol_service/aevis_month.csv
         monthly_aevis_place_plot: output/os_reports/eol_service/aevis_month_plot.png
-        monthly_op_place: output/os_reports/eol_service/op_month.csv
-        monthly_op_place_plot: output/os_reports/eol_service/op_month_plot.png
+        monthly_op_place: output/os_reports/eol_service/opapp_month.csv
+        monthly_op_place_plot: output/os_reports/eol_service/opapp_month_plot.png
 
   os_report:
-    run: r:latest analysis/10b_eol_service_report_html.R
+    run: r:latest analysis/os_reports/03_eol_service_report_html.R
     needs: [os_report_charts]
     outputs:
       moderately_sensitive:
         os_report: output/os_reports/eol_service/eol_service_report.html
-
-  generate_study_population_ehrql:
-    run: ehrql:v0 generate-dataset analysis/ehrql/dataset_definition_ehrql_example.py --output output/input_ehrql.csv.gz
-    outputs:
-      highly_sensitive:
-        cohort: output/input_ehrql.csv.gz
