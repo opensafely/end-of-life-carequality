@@ -241,7 +241,7 @@ enddate <- dmy("30-06-2023")
 
 # Prepare data-------------------------------------------------------------
 
-df <- arrow::read_feather(file = here::here("output", "os_reports", "input_os_reports.feather")) %>%
+df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.gz")) %>%
   mutate(dod_ons = as_date(dod_ons)
          , study_month = floor_date(dod_ons, unit = "month")
          , pod_ons_new = case_when(pod_ons == "Elsewhere" 
@@ -279,7 +279,7 @@ deaths_month_plot <- ggplot(deaths_month, aes(x = study_month, y = count
                                                      , 20000, f = ceiling))
                      , breaks = seq(0
                                     , plyr::round_any(max(deaths_month$count)
-                                                       , 20000, f = ceiling)
+                                                      , 20000, f = ceiling)
                                     , 20000)
                      , labels = scales::comma) +
   NT_style() +
@@ -303,16 +303,16 @@ gp_month <- df %>%
 write_csv(gp_month, here::here("output", "os_reports", "eol_service", "gp_month.csv"))
 
 gp_month_plot <- ggplot(gp_month, aes(x = study_month, y = mean
-                                              , group = pod_ons_new
-                                              , colour = pod_ons_new
-                                              , fill = pod_ons_new)) +
+                                      , group = pod_ons_new
+                                      , colour = pod_ons_new
+                                      , fill = pod_ons_new)) +
   geom_line(size = 1) +
   geom_point(fill = "#F4F4F4", shape = 21, size = 1.5, stroke = 1.3) +
   guides(colour = guide_legend(nrow = 1)) +
   labs(x = "Month", y = "Average events per person") +
   scale_colour_NT() +
   scale_fill_NT() +
-  scale_x_date(expan = c(0,0), date_breaks = "3 months", date_labels = "%b-%y") +
+  scale_x_date(expand = c(0,0), date_breaks = "3 months", date_labels = "%b-%y") +
   scale_y_continuous(expand = c(0,0)
                      , limits = c(0, plyr::round_any(max(gp_month$mean)
                                                      , 1, f = ceiling))
@@ -327,31 +327,34 @@ gp_month_plot <- ggplot(gp_month, aes(x = study_month, y = mean
 ggsave(gp_month_plot, dpi = 600, width = 20, height = 10, unit = "cm"
        , filename = "gp_month_plot.png"
        , path = here::here("output", "os_reports", "eol_service"))
- 
-#mean A&E visits in month leading up to death, by month, by place of death.
+
+
+# A&E visits --------------------------------------------------------------
+
+# mean A&E visits in month leading up to death, by month, by place of death.
 aevis_month <- df %>% 
   group_by(study_month, pod_ons_new) %>%
   summarise(mean = mean(aevis_1m, na.rm = TRUE)) %>%
   bind_rows(df %>%
               group_by(study_month) %>%
               summarise(mean = mean(aevis_1m, na.rm = TRUE)) %>%
-              mutate(pod_ons_new = "ALL"))
+              mutate(pod_ons_new = "All"))
 
-#save data file
+# save data file
 write_csv(aevis_month, here::here("output", "os_reports", "eol_service", "aevis_month.csv"))
 
-#graph output
+# graph output
 aevis_month_plot <- ggplot(aevis_month, aes(x = study_month, y = mean
-                                      , group = pod_ons_new
-                                      , colour = pod_ons_new
-                                      , fill = pod_ons_new)) +
+                                            , group = pod_ons_new
+                                            , colour = pod_ons_new
+                                            , fill = pod_ons_new)) +
   geom_line(size = 1) +
   geom_point(fill = "#F4F4F4", shape = 21, size = 1.5, stroke = 1.3) +
   guides(colour = guide_legend(nrow = 1)) +
   labs(x = "Month", y = "Average events per person") +
   scale_colour_NT() +
   scale_fill_NT() +
-  scale_x_date(expan = c(0,0), date_breaks = "3 months", date_labels = "%b-%y") +
+  scale_x_date(expand = c(0,0), date_breaks = "3 months", date_labels = "%b-%y") +
   scale_y_continuous(expand = c(0,0)
                      , limits = c(0, plyr::round_any(max(aevis_month$mean)
                                                      , 1, f = ceiling))
@@ -368,35 +371,35 @@ ggsave(aevis_month_plot, dpi = 600, width = 20, height = 10, unit = "cm"
        , path = here::here("output", "os_reports", "eol_service"))
 
 
-# Outpatient attendances -------------------------------------------
+# Outpatient appointments -------------------------------------------
 
-# Mean outpatient attendances by month and place of death - including all deaths
-op_month <- df %>%
+# Mean outpatient appointments by month and place of death - including all deaths
+opapp_month <- df %>%
   group_by(study_month, pod_ons_new) %>%
-  summarise(mean = mean(op_att, na.rm = TRUE)) %>%
+  summarise(mean = mean(opapp_1m, na.rm = TRUE)) %>%
   bind_rows(df %>%
               group_by(study_month) %>%
-              summarise(mean = mean(op_att, na.rm = TRUE)) %>%
+              summarise(mean = mean(opapp_1m, na.rm = TRUE)) %>%
               mutate(pod_ons_new = "All"))
 
-write_csv(gp_month, here::here("output", "os_reports", "eol_service", "op_month.csv"))
+write_csv(gp_month, here::here("output", "os_reports", "eol_service", "opapp_month.csv"))
 
-op_month_plot <- ggplot(op_month, aes(x = study_month, y = mean
-                                      , group = pod_ons_new
-                                      , colour = pod_ons_new
-                                      , fill = pod_ons_new)) +
+op_month_plot <- ggplot(opapp_month, aes(x = study_month, y = mean
+                                         , group = pod_ons_new
+                                         , colour = pod_ons_new
+                                         , fill = pod_ons_new)) +
   geom_line(size = 1) +
   geom_point(fill = "#F4F4F4", shape = 21, size = 1.5, stroke = 1.3) +
   guides(colour = guide_legend(nrow = 1)) +
-  labs(x = "Month", y = "Average attendances per person") +
+  labs(x = "Month", y = "Average events per person") +
   scale_colour_NT() +
   scale_fill_NT() +
-  scale_x_date(expan = c(0,0), date_breaks = "3 months", date_labels = "%b-%y") +
+  scale_x_date(expand = c(0,0), date_breaks = "3 months", date_labels = "%b-%y") +
   scale_y_continuous(expand = c(0,0)
-                     , limits = c(0, plyr::round_any(max(op_month$mean)
+                     , limits = c(0, plyr::round_any(max(opapp_month$mean)
                                                      , 1, f = ceiling))
                      , breaks = seq(0
-                                    , plyr::round_any(max(op_month$mean)
+                                    , plyr::round_any(max(opapp_month$mean)
                                                       , 1, f = ceiling)
                                     , 1)
                      , labels = scales::comma) +
@@ -404,5 +407,5 @@ op_month_plot <- ggplot(op_month, aes(x = study_month, y = mean
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
 
 ggsave(op_month_plot, dpi = 600, width = 20, height = 10, unit = "cm"
-       , filename = "op_month_plot.png"
+       , filename = "opapp_month_plot.png"
        , path = here::here("output", "os_reports", "eol_service"))

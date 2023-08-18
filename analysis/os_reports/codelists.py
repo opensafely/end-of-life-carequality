@@ -129,58 +129,6 @@ ndh_codes = codelist_from_csv(
     column = "code"
 ) 
 
-physical_ltc_codes = (
-    # Atrial fibrillation
-    afib_codes +
-    # Coronary heart disease
-    chd_codes +
-    # Heart failure 
-    hf_codes +
-    # Hypertension
-    hyp_codes +
-    # Peripheral arterial disease
-    pad_codes +
-    # Stroke and transient ischaemic attack
-    strk_codes +
-    # Asthma
-    ast_codes +
-    # COPD
-    copd_codes +
-    # Cancer
-    haemcan_codes +
-    can_codes +
-    # Chronic kidney disease
-    ckd_codes1 +
-    ckd_codes2 +
-    # Diabetes mellitus
-    dm_codes +
-    # Palliative care
-    palcare_codes1 +
-    # Epilepsy
-    epil_codes +
-    # Osteoporosis
-    osteo_codes +
-    # Rheumatoid arthiritis
-    rarth_codes +
-    # Non-diabetic hyperglycaemia? 
-    ndh_codes
-)
-
-mental_ltc_codes = (
-    # Dementia
-    dem_codes +
-    # Depression
-    depr_codes +
-    # Schizophrenia, Bipolar effective disorder, Psychoses
-    mh_codes
-)
-
-ltc_codes = (
-    physical_ltc_codes +
-    mental_ltc_codes +
-    ld_codes
-)
-
 ## MEDICATIONS ##
 
 midazolam_codes = codelist_from_csv(
@@ -269,15 +217,4 @@ mdt_codes = codelist_from_csv(
 cancer_mdt_codes = codelist_from_csv(
     "codelists/user-eiliskeeble-cancer-multidisciplinary-team.csv",
     column = "code"
-)
-
-community_codes = (
-    community_nursing_codes +
-    mdt_codes +
-    cancer_mdt_codes
-)
-
-all_mdt_codes = (
-    mdt_codes +
-    cancer_mdt_codes
 )

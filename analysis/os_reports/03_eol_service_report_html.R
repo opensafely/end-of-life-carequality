@@ -8,6 +8,6 @@
 
 # Render Rmd file ---------------------------------------------------------
 
-rmarkdown::render(here::here("analysis", "10a_eol_service_report.Rmd")
+rmarkdown::render(here::here("analysis", "os_reports", "02_eol_service_report.Rmd")
                   , output_file = "eol_service_report.html"
                   , output_dir = "output/os_reports/eol_service")
