@@ -22,6 +22,8 @@ actions:
         monthly_gp_place_plot: output/os_reports/eol_service/gp_month_plot.png
         monthly_aevis_place: output/os_reports/eol_service/aevis_month.csv
         monthly_aevis_place_plot: output/os_reports/eol_service/aevis_month_plot.png
+        monthly_op_place: output/os_reports/eol_service/op_month.csv
+        monthly_op_place_plot: output/os_reports/eol_service/op_month_plot.png
 
   os_report:
     run: r:latest analysis/10b_eol_service_report_html.R
