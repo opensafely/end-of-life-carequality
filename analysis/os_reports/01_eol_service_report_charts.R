@@ -246,8 +246,17 @@ df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.g
          , study_month = floor_date(dod_ons, unit = "month")
          , pod_ons_new = case_when(pod_ons == "Elsewhere" 
                                    | pod_ons == "Other communal establishment" ~ "Elsewhere/other"
-                                   , TRUE ~ as.character(pod_ons))) %>%
-  filter(study_month >= startdate & study_month <= enddate)
+                                   , TRUE ~ as.character(pod_ons))
+         , cod_ons_3 = str_sub(cod_ons, 1, 3)
+         , cod_ons_4 = str_sub(cod_ons, 1, 5)
+         , codgrp = case_when(cod_ons_4 %in% c("U071", "U072") ~ "Covid-19"
+                             , cod_ons_3 >= "J09" & cod_ons_3 <= "J18" ~ "Flu and pneumonia"
+                             , (cod_ons_3 >= "J00" & cod_ons_3 <= "J08") | (cod_ons_3 >= "J19" & cod_ons_3 <= "J99")  ~ "Other respiratory diseases"
+                             , cod_ons_3 %in% c("F01", "F03", "G30") ~ "Dementia and Alzheimer's disease"
+                             , cod_ons_3 >= "I00" & cod_ons_3 <= "I99" ~ "Circulatory diseases"
+                             , cod_ons_3 >= "C00" & cod_ons_3 <= "C99" ~ "Cancer"
+                             , TRUE ~ "All other causes")) %>%
+  filter(study_month >= startdate & study_month <= enddate) 
 
 
 # Deaths in period --------------------------------------------------------
@@ -289,6 +298,7 @@ ggsave(deaths_month_plot, dpi = 600, width = 20, height = 10, unit = "cm"
        , filename = "deaths_month_plot.png"
        , path = here::here("output", "os_reports", "eol_service"))
 
+
 # General practice interactions -------------------------------------------
 
 # Mean GP interactions by month and place of death - including all deaths
@@ -326,6 +336,44 @@ gp_month_plot <- ggplot(gp_month, aes(x = study_month, y = mean
 
 ggsave(gp_month_plot, dpi = 600, width = 20, height = 10, unit = "cm"
        , filename = "gp_month_plot.png"
+       , path = here::here("output", "os_reports", "eol_service"))
+
+
+# Mean GP interactions by month and cause of death
+gp_month_cod <- df %>%
+  group_by(study_month, codgrp) %>%
+  summarise(mean = mean(gp_1m, na.rm = TRUE)) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(mean = mean(gp_1m, na.rm = TRUE)) %>%
+              mutate(codgrp = "All"))
+
+write_csv(gp_month_cod, here::here("output", "os_reports", "eol_service", "gp_month_cod.csv"))
+
+gp_month_cod_plot <- ggplot(gp_month_cod, aes(x = study_month, y = mean
+                                      , group = codgrp
+                                      , colour = codgrp
+                                      , fill = codgrp)) +
+  geom_line(size = 1) +
+  geom_point(fill = "#F4F4F4", shape = 21, size = 1.5, stroke = 1.3) +
+  guides(colour = guide_legend(nrow = 1)) +
+  labs(x = "Month", y = "Average events per person") +
+  scale_colour_NT() +
+  scale_fill_NT() +
+  scale_x_date(expand = c(0,0), date_breaks = "3 months", date_labels = "%b-%y") +
+  scale_y_continuous(expand = c(0,0)
+                     , limits = c(0, plyr::round_any(max(gp_month_cod$mean)
+                                                     , 1, f = ceiling))
+                     , breaks = seq(0
+                                    , plyr::round_any(max(gp_month_cod$mean)
+                                                      , 1, f = ceiling)
+                                    , 1)
+                     , labels = scales::comma) +
+  NT_style() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+
+ggsave(gp_month_cod_plot, dpi = 600, width = 20, height = 10, unit = "cm"
+       , filename = "gp_month_cod_plot.png"
        , path = here::here("output", "os_reports", "eol_service"))
 
 
@@ -371,6 +419,44 @@ ggsave(aevis_month_plot, dpi = 600, width = 20, height = 10, unit = "cm"
        , path = here::here("output", "os_reports", "eol_service"))
 
 
+# Mean A&E visits in month leading up to death, by month, by cause of death
+aevis_month_cod <- df %>% 
+  group_by(study_month, codgrp) %>%
+  summarise(mean = mean(aevis_1m, na.rm = TRUE)) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(mean = mean(aevis_1m, na.rm = TRUE)) %>%
+              mutate(codgrp = "All"))
+
+write_csv(aevis_month_cod, here::here("output", "os_reports", "eol_service", "aevis_month_cod.csv"))
+
+aevis_month_cod_plot <- ggplot(aevis_month_cod, aes(x = study_month, y = mean
+                                            , group = codgrp
+                                            , colour = codgrp
+                                            , fill = codgrp)) +
+  geom_line(size = 1) +
+  geom_point(fill = "#F4F4F4", shape = 21, size = 1.5, stroke = 1.3) +
+  guides(colour = guide_legend(nrow = 1)) +
+  labs(x = "Month", y = "Average events per person") +
+  scale_colour_NT() +
+  scale_fill_NT() +
+  scale_x_date(expand = c(0,0), date_breaks = "3 months", date_labels = "%b-%y") +
+  scale_y_continuous(expand = c(0,0)
+                     , limits = c(0, plyr::round_any(max(aevis_month_cod$mean)
+                                                     , 1, f = ceiling))
+                     , breaks = seq(0
+                                    , plyr::round_any(max(aevis_month_cod$mean)
+                                                      , 1, f = ceiling)
+                                    , 1)
+                     , labels = scales::comma) +
+  NT_style() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+
+ggsave(aevis_month_cod_plot, dpi = 600, width = 20, height = 10, unit = "cm"
+       , filename = "aevis_month_cod_plot.png"
+       , path = here::here("output", "os_reports", "eol_service"))
+
+
 # Outpatient appointments -------------------------------------------
 
 # Mean outpatient appointments by month and place of death - including all deaths
@@ -409,3 +495,42 @@ op_month_plot <- ggplot(opapp_month, aes(x = study_month, y = mean
 ggsave(op_month_plot, dpi = 600, width = 20, height = 10, unit = "cm"
        , filename = "opapp_month_plot.png"
        , path = here::here("output", "os_reports", "eol_service"))
+
+
+# Mean outpatient appointments by month and cause of death - including all deaths
+opapp_month_cod <- df %>%
+  group_by(study_month, codgrp) %>%
+  summarise(mean = mean(opapp_1m, na.rm = TRUE)) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(mean = mean(opapp_1m, na.rm = TRUE)) %>%
+              mutate(codgrp = "All"))
+
+write_csv(opapp_month_cod, here::here("output", "os_reports", "eol_service", "opapp_month_cod.csv"))
+
+op_month_cod_plot <- ggplot(opapp_month_cod, aes(x = study_month, y = mean
+                                         , group = codgrp
+                                         , colour = codgrp
+                                         , fill = codgrp)) +
+  geom_line(size = 1) +
+  geom_point(fill = "#F4F4F4", shape = 21, size = 1.5, stroke = 1.3) +
+  guides(colour = guide_legend(nrow = 1)) +
+  labs(x = "Month", y = "Average events per person") +
+  scale_colour_NT() +
+  scale_fill_NT() +
+  scale_x_date(expand = c(0,0), date_breaks = "3 months", date_labels = "%b-%y") +
+  scale_y_continuous(expand = c(0,0)
+                     , limits = c(0, plyr::round_any(max(opapp_month_cod$mean)
+                                                     , 1, f = ceiling))
+                     , breaks = seq(0
+                                    , plyr::round_any(max(opapp_month_cod$mean)
+                                                      , 1, f = ceiling)
+                                    , 1)
+                     , labels = scales::comma) +
+  NT_style() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+
+ggsave(op_month_cod_plot, dpi = 600, width = 20, height = 10, unit = "cm"
+       , filename = "opapp_month_cod_plot.png"
+       , path = here::here("output", "os_reports", "eol_service"))
+
