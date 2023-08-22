@@ -11,6 +11,7 @@ from ehrql.tables.beta.tpp import (
     opa_diag,
     patients,
     practice_registrations,
+    medications,
 )
 
 ## CODELISTS ##
@@ -91,4 +92,11 @@ dataset.aevis_1m = emergency_care_attendances.where(
 # Need to check this is correct/how to do attended appointments?
 dataset.opapp_1m = opa_diag.where(
     opa_diag.appointment_date.is_on_or_between(dod_ons - days(30), dod_ons)
+).count_for_patient()
+
+## Medications for symptom management at end of life
+dataset.eol_med_1m = medications.where(
+    medications.dmd_code.is_in(codelists.eol_med_codes)
+).where(
+    medications.date.is_on_or_between(dod_ons - days(30), dod_ons)
 ).count_for_patient()
