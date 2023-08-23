@@ -76,7 +76,7 @@ dataset.age = patients.age_on(dod_ons)
 ## Ethnicity
 dataset.ethnicity = (
     clinical_events.where(
-        clinical_events.ctv3_code.is_in(codelists_ehrql.ethnicity_codes_6)
+        clinical_events.ctv3_code.is_in(codelists.ethnicity_codes_6)
     ).where(
         clinical_events.date.is_on_or_before(dod_ons)
     ).sort_by(
@@ -109,7 +109,7 @@ dataset.carehome_tpp = addresses.for_patient_on(dod_ons).care_home_is_potential_
 # Check over the five years prior to death
 
 dataset.ltc = clinical_events.where(
-    clinical_events.snomedct_code.is_in(codelists_ehrql.ltc_codes)
+    clinical_events.snomedct_code.is_in(codelists.ltc_codes)
 ).where(
     clinical_events.date.is_on_or_between(dod_ons - days(1825), dod_ons)
 ).exists_for_patient()
@@ -151,7 +151,7 @@ dataset.opapp_1m = opa_diag.where(
 
 ## Medications for symptom management at end of life
 dataset.eol_med_1m = medications.where(
-    medications.dmd_code.is_in(codelists_ehrql.eol_med_codes)
+    medications.dmd_code.is_in(codelists.eol_med_codes)
 ).where(
     medications.date.is_on_or_between(dod_ons - days(30), dod_ons)
 ).count_for_patient()
