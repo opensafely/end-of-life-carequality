@@ -289,6 +289,41 @@ ggsave(deaths_month_plot, dpi = 600, width = 20, height = 10, unit = "cm"
        , filename = "deaths_month_plot.png"
        , path = here::here("output", "os_reports", "eol_service"))
 
+# Use of medications for symptom management  -------------------------------------------
+
+# Medication use by place of death - including all deaths
+eol_med_pod <- df %>%
+  group_by(pod_ons_new) %>%
+  summarise(mean = mean(eol_med_1m, na.rm = TRUE)) %>%
+  bind_rows(df %>%
+              summarise(mean = mean(eol_med_1m, na.rm = TRUE)) %>%
+              mutate(pod_ons_new = "All"))
+
+write_csv(med_month_pod, here::here("output", "os_reports", "eol_service", "eol_med_pod.csv"))
+
+eol_med_plot <- ggplot(eol_med_pod, aes(x = pod_ons_new, y = mean
+                                      , colour = pod_ons_new
+                                      , fill = pod_ons_new)) +
+  geom_line(size = 1) +
+  geom_point(fill = "#F4F4F4", shape = 21, size = 1.5, stroke = 1.3) +
+  guides(colour = guide_legend(nrow = 1)) +
+  labs(x = "Place of Death", y = "Average number of medications taken per person") +
+  scale_colour_NT() +
+  scale_fill_NT() +
+  scale_y_continuous(expand = c(0,0)
+                     , limits = c(0,
+                                  plyr::round_any(max(eol_med_pod$mean)
+                                                  , 1, f = ceiling))
+                     , breaks = scales::breaks_width(0.1)
+                     , labels = scales::comma) +
+  NT_style() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+
+ggsave(eol_med_plot, dpi = 600, width = 20, height = 10, unit = "cm"
+       , filename = "eol_med_plot.png"
+       , path = here::here("output", "os_reports", "eol_service"))
+
+
 # General practice interactions -------------------------------------------
 
 # Mean GP interactions by month and place of death - including all deaths
@@ -382,7 +417,7 @@ opapp_month <- df %>%
               summarise(mean = mean(opapp_1m, na.rm = TRUE)) %>%
               mutate(pod_ons_new = "All"))
 
-write_csv(gp_month, here::here("output", "os_reports", "eol_service", "opapp_month.csv"))
+write_csv(opapp_month, here::here("output", "os_reports", "eol_service", "opapp_month.csv"))
 
 op_month_plot <- ggplot(opapp_month, aes(x = study_month, y = mean
                                          , group = pod_ons_new
