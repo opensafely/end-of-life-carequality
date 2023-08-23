@@ -36,6 +36,7 @@ This report extends on the analysis published [here](https://www.nuffieldtrust.o
 4. Medications for symptom management
 5. A&E visits
 6. Outpatient appointments
+7. Elective admissions
 
 <br/><br/>
 
@@ -120,3 +121,20 @@ knitr::include_graphics(here::here("output", "os_reports", "eol_service", "opapp
 ### Cause of death
 
 <br/><br/>
+
+## 7. Elective admissions
+
+Draft text
+
+### Place of death
+
+_Figure 5: Average number of elective admissions per person by month and place of death_
+```{r fig5, fig.height=1, fig.width=2, fig.cap=""}
+knitr::include_graphics(here::here("output", "os_reports", "eol_service", "eladm_month_plot.png"))
+```
+
+### Cause of death
+
+<br/><br/>
+  
+
