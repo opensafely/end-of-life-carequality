@@ -563,6 +563,11 @@ eladm_month_plot <- ggplot(eladm_month, aes(x = study_month, y = mean
                                                      , 1, f = ceiling))
                      , breaks = seq(0
                                     , plyr::round_any(max(eladm_month$mean)
+                                                      , 1, f = ceiling)
+                                    , 1)
+                     , labels = scales::comma) +
+  NT_style() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
 
 ggsave(eladm_month_plot, dpi = 600, width = 20, height = 10, unit = "cm"
        , filename = "eladm_month_plot.png"
