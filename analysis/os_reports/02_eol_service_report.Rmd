@@ -35,7 +35,11 @@ This report extends on the analysis published [here](https://www.nuffieldtrust.o
     + Cause of death
 4. Medications for symptom management
 5. A&E visits
+    + Place of death
+    + Cause of death
 6. Outpatient appointments
+    + Place of death
+    + Cause of death
 7. Elective admissions
 
 <br/><br/>
@@ -86,7 +90,10 @@ knitr::include_graphics(here::here("output", "os_reports", "eol_service", "gp_mo
 
 ### Cause of death
 
-<br/><br/>
+_Figure 3: Average number of GP interactions per person by month and cause of death_
+```{r fig3, fig.height=1, fig.width=2, fig.cap=""}
+knitr::include_graphics(here::here("output", "os_reports", "eol_service", "gp_month_cod_plot.png"))
+```
 
 ## 4. Medications for symptom management
 
@@ -98,14 +105,17 @@ Draft text...
 
 ### Place of death
 
-_Figure 3: Average number of A&E visits per person by month and place of death_
-```{r fig3, fig.height=1, fig.width=2, fig.cap=""}
+_Figure 4: Average number of A&E visits per person by month and place of death_
+```{r fig4, fig.height=1, fig.width=2, fig.cap=""}
 knitr::include_graphics(here::here("output", "os_reports", "eol_service", "aevis_month_plot.png"))
 ```
 
 ### Cause of death
 
-<br/><br/>
+_Figure 5: Average number of A&E visits per person by month and cause of death_
+```{r fig5, fig.height=1, fig.width=2, fig.cap=""}
+knitr::include_graphics(here::here("output", "os_reports", "eol_service", "aevis_month_cod_plot.png"))
+```
 
 ## 6. Outpatient appoitnments
 
@@ -113,12 +123,17 @@ Draft text...
 
 ### Place of death 
 
-_Figure 4: Average number of outpatient appointments per person by month and place of death_
-```{r fig4, fig.height=1, fig.width=2, fig.cap=""}
+_Figure 6: Average number of outpatient appointments per person by month and place of death_
+```{r fig6, fig.height=1, fig.width=2, fig.cap=""}
 knitr::include_graphics(here::here("output", "os_reports", "eol_service", "opapp_month_plot.png"))
 ```
 
 ### Cause of death
+
+_Figure 7: Average number of outpatient appointments per person by month and cause of death_
+```{r fig7, fig.height=1, fig.width=2, fig.cap=""}
+knitr::include_graphics(here::here("output", "os_reports", "eol_service", "opapp_month_cod_plot.png"))
+```
 
 <br/><br/>
 
@@ -128,13 +143,11 @@ Draft text
 
 ### Place of death
 
-_Figure 5: Average number of elective admissions per person by month and place of death_
-```{r fig5, fig.height=1, fig.width=2, fig.cap=""}
+_Figure 8: Average number of elective admissions per person by month and place of death_
+```{r fig8, fig.height=1, fig.width=2, fig.cap=""}
 knitr::include_graphics(here::here("output", "os_reports", "eol_service", "eladm_month_plot.png"))
 ```
 
 ### Cause of death
 
 <br/><br/>
-  
-
