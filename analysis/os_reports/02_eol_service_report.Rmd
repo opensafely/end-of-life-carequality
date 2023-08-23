@@ -128,8 +128,13 @@ Draft text
 
 ### Place of death
 
-### Place of death
-
 _Figure 5: Average number of elective admissions per person by month and place of death_
 ```{r fig5, fig.height=1, fig.width=2, fig.cap=""}
 knitr::include_graphics(here::here("output", "os_reports", "eol_service", "eladm_month_plot.png"))
+```
+
+### Cause of death
+
+<br/><br/>
+  
+
