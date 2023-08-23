@@ -468,7 +468,7 @@ opapp_month <- df %>%
               summarise(mean = mean(opapp_1m, na.rm = TRUE)) %>%
               mutate(pod_ons_new = "All"))
 
-write_csv(gp_month, here::here("output", "os_reports", "eol_service", "opapp_month.csv"))
+write_csv(opapp_month, here::here("output", "os_reports", "eol_service", "opapp_month.csv"))
 
 op_month_plot <- ggplot(opapp_month, aes(x = study_month, y = mean
                                          , group = pod_ons_new
