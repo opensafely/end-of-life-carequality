@@ -299,7 +299,7 @@ eol_med_pod <- df %>%
               summarise(mean = mean(eol_med_1m, na.rm = TRUE)) %>%
               mutate(pod_ons_new = "All"))
 
-write_csv(med_month_pod, here::here("output", "os_reports", "eol_service", "eol_med_pod.csv"))
+write_csv(eol_med_pod, here::here("output", "os_reports", "eol_service", "eol_med_pod.csv"))
 
 eol_med_plot <- ggplot(eol_med_pod, aes(x = pod_ons_new, y = mean
                                       , colour = pod_ons_new
