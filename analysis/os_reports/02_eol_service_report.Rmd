@@ -40,6 +40,7 @@ This report extends on the analysis published [here](https://www.nuffieldtrust.o
 6. Outpatient appointments
     + Place of death
     + Cause of death
+7. Elective admissions
 
 <br/><br/>
 
@@ -133,3 +134,20 @@ _Figure 7: Average number of outpatient appointments per person by month and cau
 ```{r fig7, fig.height=1, fig.width=2, fig.cap=""}
 knitr::include_graphics(here::here("output", "os_reports", "eol_service", "opapp_month_cod_plot.png"))
 ```
+
+<br/><br/>
+
+## 7. Elective admissions
+
+Draft text
+
+### Place of death
+
+_Figure 8: Average number of elective admissions per person by month and place of death_
+```{r fig8, fig.height=1, fig.width=2, fig.cap=""}
+knitr::include_graphics(here::here("output", "os_reports", "eol_service", "eladm_month_plot.png"))
+```
+
+### Cause of death
+
+<br/><br/>

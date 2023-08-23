@@ -7,6 +7,7 @@ from ehrql import (Dataset, days)
 from ehrql.tables.beta.tpp import (
     appointments, 
     emergency_care_attendances, 
+    hospital_admissions,
     ons_deaths,
     opa_diag,
     patients,
@@ -91,4 +92,11 @@ dataset.aevis_1m = emergency_care_attendances.where(
 # Need to check this is correct/how to do attended appointments?
 dataset.opapp_1m = opa_diag.where(
     opa_diag.appointment_date.is_on_or_between(dod_ons - days(30), dod_ons)
+).count_for_patient()
+
+## Elective admissions
+dataset.eladm_1m = hospital_admissions.where(
+    hospital_admissions.admission_method.is_in(["11", "12", "13"])
+).where(
+    hospital_admissions.admission_date.is_on_or_between(dod_ons - days(30), dod_ons)
 ).count_for_patient()

@@ -30,6 +30,8 @@ actions:
         monthly_aevis_cause_plot: output/os_reports/eol_service/aevis_month_cod_plot.png
         monthly_op_cause: output/os_reports/eol_service/opapp_month_cod.csv
         monthly_op_cause_plot: output/os_reports/eol_service/opapp_month_cod_plot.png
+        monthly_eladm_place: output/os_reports/eol_service/eladm_month.csv
+        monthly_eladm_place_plot: output/os_reports/eol_service/eladm_month_plot.png
 
   os_report:
     run: r:latest analysis/os_reports/03_eol_service_report_html.R
