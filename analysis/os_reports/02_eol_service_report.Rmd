@@ -89,6 +89,17 @@ knitr::include_graphics(here::here("output", "os_reports", "eol_service", "gp_mo
 
 ## 4. Medications for symptom management
 
+Draft text...
+
+### Place of death
+
+_Figure 3: Average number of medications prescribed per person by place of death_
+```{r fig3, fig.height=1, fig.width=2, fig.cap=""}
+knitr::include_graphics(here::here("output", "os_reports", "eol_service", "eol_med_plot.png"))
+```
+
+### Cause of death
+
 <br/><br/>
 
 ## 5. A&E Visits
@@ -97,8 +108,8 @@ Draft text...
 
 ### Place of death
 
-_Figure 3: Average number of A&E visits per person by month and place of death_
-```{r fig3, fig.height=1, fig.width=2, fig.cap=""}
+_Figure 4: Average number of A&E visits per person by month and place of death_
+```{r fig4, fig.height=1, fig.width=2, fig.cap=""}
 knitr::include_graphics(here::here("output", "os_reports", "eol_service", "aevis_month_plot.png"))
 ```
 
@@ -112,8 +123,8 @@ Draft text...
 
 ### Place of death 
 
-_Figure 4: Average number of outpatient appointments per person by month and place of death_
-```{r fig4, fig.height=1, fig.width=2, fig.cap=""}
+_Figure 5: Average number of outpatient appointments per person by month and place of death_
+```{r fig5, fig.height=1, fig.width=2, fig.cap=""}
 knitr::include_graphics(here::here("output", "os_reports", "eol_service", "opapp_month_plot.png"))
 ```
 
