@@ -18,6 +18,8 @@ actions:
       moderately_sensitive:
         monthly_deaths_place: output/os_reports/eol_service/deaths_month.csv
         monthly_deaths_place_plot: output/os_reports/eol_service/deaths_month_plot.png
+        eol_med_place: output/os_reports/eol_service/eol_med_pod.csv
+        eol_med_place_plot: output/os_reports/eol_service/eol_med_plot.png
         monthly_gp_place: output/os_reports/eol_service/gp_month.csv
         monthly_gp_place_plot: output/os_reports/eol_service/gp_month_plot.png
         monthly_aevis_place: output/os_reports/eol_service/aevis_month.csv
