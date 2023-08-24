@@ -268,7 +268,8 @@ deaths_month <- df %>%
   bind_rows(df %>%
               group_by(study_month) %>%
               summarise(count = n()) %>%
-              mutate(pod_ons_new = "All"))
+              mutate(pod_ons_new = "All")) %>%
+  mutate(count = plyr::round_any(count, 10))
 
 write_csv(deaths_month, here::here("output", "os_reports", "eol_service", "deaths_month.csv"))
 
@@ -308,7 +309,8 @@ gp_month <- df %>%
   bind_rows(df %>%
               group_by(study_month) %>%
               summarise(mean = mean(gp_1m, na.rm = TRUE)) %>%
-              mutate(pod_ons_new = "All"))
+              mutate(pod_ons_new = "All")) %>%
+  mutate(mean = round(mean, 3))
 
 write_csv(gp_month, here::here("output", "os_reports", "eol_service", "gp_month.csv"))
 
@@ -346,7 +348,8 @@ gp_month_cod <- df %>%
   bind_rows(df %>%
               group_by(study_month) %>%
               summarise(mean = mean(gp_1m, na.rm = TRUE)) %>%
-              mutate(codgrp = "All"))
+              mutate(codgrp = "All")) %>%
+  mutate(mean = round(mean, 3))
 
 write_csv(gp_month_cod, here::here("output", "os_reports", "eol_service", "gp_month_cod.csv"))
 
@@ -386,7 +389,8 @@ aevis_month <- df %>%
   bind_rows(df %>%
               group_by(study_month) %>%
               summarise(mean = mean(aevis_1m, na.rm = TRUE)) %>%
-              mutate(pod_ons_new = "All"))
+              mutate(pod_ons_new = "All")) %>%
+  mutate(mean = round(mean, 3))
 
 # save data file
 write_csv(aevis_month, here::here("output", "os_reports", "eol_service", "aevis_month.csv"))
@@ -426,7 +430,8 @@ aevis_month_cod <- df %>%
   bind_rows(df %>%
               group_by(study_month) %>%
               summarise(mean = mean(aevis_1m, na.rm = TRUE)) %>%
-              mutate(codgrp = "All"))
+              mutate(codgrp = "All")) %>%
+  mutate(mean = round(mean, 3))
 
 write_csv(aevis_month_cod, here::here("output", "os_reports", "eol_service", "aevis_month_cod.csv"))
 
@@ -466,7 +471,8 @@ opapp_month <- df %>%
   bind_rows(df %>%
               group_by(study_month) %>%
               summarise(mean = mean(opapp_1m, na.rm = TRUE)) %>%
-              mutate(pod_ons_new = "All"))
+              mutate(pod_ons_new = "All")) %>%
+  mutate(mean = round(mean, 3))
 
 write_csv(opapp_month, here::here("output", "os_reports", "eol_service", "opapp_month.csv"))
 
@@ -503,7 +509,8 @@ opapp_month_cod <- df %>%
   bind_rows(df %>%
               group_by(study_month) %>%
               summarise(mean = mean(opapp_1m, na.rm = TRUE)) %>%
-              mutate(codgrp = "All"))
+              mutate(codgrp = "All")) %>%
+  mutate(mean = round(mean, 3))
 
 write_csv(opapp_month_cod, here::here("output", "os_reports", "eol_service", "opapp_month_cod.csv"))
 
@@ -543,7 +550,8 @@ eladm_month <- df %>%
   bind_rows(df %>%
               group_by(study_month) %>%
               summarise(mean = mean(eladm_1m, na.rm = TRUE)) %>%
-              mutate(pod_ons_new = "All"))
+              mutate(pod_ons_new = "All")) %>%
+  mutate(mean = round(mean, 3))
 
 write_csv(eladm_month, here::here("output", "os_reports", "eol_service", "eladm_month.csv"))
 
