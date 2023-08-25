@@ -1,7 +1,6 @@
 ---
 title: "End-of-life care: Services used"
-author: "eilis.keeble@nuffieldtrust.org.uk"
-date: "Created July 2023"
+date: "Created August 2023"
 output:
   html_document:
     theme: null
@@ -20,7 +19,7 @@ knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE)
 
 **Produced using OpenSAFELY-TPP**
 
-Last updated July 2023.
+Last updated August 2023.
 
 Updated 3-monthly, next update due XX.
 
@@ -34,21 +33,42 @@ This report extends on the analysis published [here](https://www.nuffieldtrust.o
     + Place of death
     + Cause of death
 4. Medications for symptom management
+    + Place of death
+    + Cause of death
 5. A&E visits
-6. Outpatient appointments
-7. Elective admissions
-
+    + Place of death
+    + Cause of death
+6. Elective admissions
+    + Place of death
+    + Cause of death
+7. Outpatient appointments
+    + Place of death
+    + Cause of death
+    
 <br/><br/>
 
 ## 1. Background
 
-During the Covid-19 pandemic there was a large increase in both the number and proportion of people dying at home. People were less likely than previously to die in other settings as people or their loved ones chose to stay at home. This trend of increased deaths has continued to the present day but the reasons for people staying at home have changed. The access they have to services and the factors that influence this has also changed. During the pandemic the majority of elective hospital services were shut down. Now these services are available again but they are under strain due to the volumes of people requiring access. We wanted to see whether the changes in service use we saw for the pandemic have continued to the present day. We have therefore extended the time series of many of the measures we developed in our original report to explore this.
+A high proportion of health and care services are consumed by people approaching the end of life, but many people do not receive high quality care. With an ageing population, the number of people requiring end of life care will increase further in the next 20 years, but there is little focus on this group in national or local planning. 
+
+Care for people dying at home has been further stretched by the increase in people dying at home at the start of the Covid-19 pandemic. People were less likely than previously to die in other settings as people or their loved ones chose to stay at home. This trend of increased deaths has continued to the present day but the reasons for people staying at home have changed. 
+
+The access people approaching the end of life have to services and the factors that influence this has also changed. For example, during the early months of the pandemic the majority of elective hospital services were shut down. Now these services are running again but they are under strain due to the volumes of people requiring access. 
+
+This report explores how trends in the services used by people approaching the end of life have changed over time.
 
 <br/><br/>
 
 ## 2. Deaths recorded in OpenSAFELY-TPP
 
-The number of deaths varies by setting and also over time, see _Table 1_ and _Figure 1_. In our report we found that deaths recorded for people registered with TPP practices represented around 40% of all deaths registered in England.
+```{r deaths, include=FALSE}
+deaths_month <- read_csv(here::here("output", "os_reports", "eol_service", "deaths_month.csv")) %>%
+  filter(study_month == max(read_csv(here::here("output", "os_reports", "eol_service", "deaths_month.csv"))$study_month)) %>%
+  group_by(study_month) %>%
+  summarise(total = sum(count))
+```
+
+In our [original report](https://www.nuffieldtrust.org.uk/research/deaths-at-home-during-the-covid-19-pandemic-and-implications-for-patients-and-services) we found that deaths recorded for people registered with TPP practices during the pandemic represented around 40% of all deaths registered in England. _Table 1_ and _Figure 1_ show that the number of deaths recorded for TPP registered patients varies by place and also over time. In the most recent month (`r deaths_month %>% select(study_month) %>% slice(1) %>% pull`) there were `r deaths_month %>% select(total) %>% slice(1) %>% pull` deaths recorded in OpenSAFELY-TPP.
 
 _Table 1: Number of deaths by 3 month interval and place of death_
 ```{r table1}
@@ -75,66 +95,89 @@ knitr::include_graphics(here::here("output", "os_reports", "eol_service", "death
 
 ## 3. General practice interactions
 
-Draft text...
+General practice interactions covers information drawn from the appointments table. It represents GP appointments but also other other healthcare professionals. There is no differentiation between face to face or other types of consultation.
+
+We found previously that use of general practice increased during the first year of the pandemic among people who died at home. _Figure 2_ shows this trend, variation by place of death and how things have changed since February 2021.
+
+General practice interactions increased overall but the change varied by cause of death and people who died from cancer had a lot more interactions with general practice than people who died from other causes. _Figure 3_ shows the changes in these trends over time.
+
 
 ### Place of death
 
-_Figure 2: Average number of GP interactions per person by month and place of death_
+_Figure 2: Average number of GP interactions in the last month of life by month and place of death_
 ```{r fig2, fig.height=1, fig.width=2, fig.cap=""}
 knitr::include_graphics(here::here("output", "os_reports", "eol_service", "gp_month_plot.png"))
 ```
 
 ### Cause of death
 
-<br/><br/>
+_Figure 3: Average number of GP interactions in the last month of life by month and cause of death_
+```{r fig3, fig.height=1, fig.width=2, fig.cap=""}
+knitr::include_graphics(here::here("output", "os_reports", "eol_service", "gp_month_cod_plot.png"))
+```
 
 ## 4. Medications for symptom management
+
+People who died at home during the pandemic were more likely to be prescribed at least on medication for symptom management than people who died at home before the pandemic. 
+
+### Place of death
+
+
+### Cause of death
+
 
 <br/><br/>
 
 ## 5. A&E Visits
 
-Draft text...
+There was an increase in the use of Accident and Emergency (A&E) during the pandmeic for people who died at home, particularly for people who died from dementia and Alzheimer's disease. _Figure 4_ and _Figure 5_ shows this trend, variation by place of death, cause of death and how things have changed since February 2021.
 
 ### Place of death
 
-_Figure 3: Average number of A&E visits per person by month and place of death_
-```{r fig3, fig.height=1, fig.width=2, fig.cap=""}
+_Figure 4: Average number of A&E visits in the last month of life by month and place of death_
+```{r fig4, fig.height=1, fig.width=2, fig.cap=""}
 knitr::include_graphics(here::here("output", "os_reports", "eol_service", "aevis_month_plot.png"))
 ```
 
 ### Cause of death
 
-<br/><br/>
-
-## 6. Outpatient appoitnments
-
-Draft text...
-
-### Place of death 
-
-_Figure 4: Average number of outpatient appointments per person by month and place of death_
-```{r fig4, fig.height=1, fig.width=2, fig.cap=""}
-knitr::include_graphics(here::here("output", "os_reports", "eol_service", "opapp_month_plot.png"))
+_Figure 5: Average number of A&E visits in the last month of life by month and cause of death_
+```{r fig5, fig.height=1, fig.width=2, fig.cap=""}
+knitr::include_graphics(here::here("output", "os_reports", "eol_service", "aevis_month_cod_plot.png"))
 ```
 
-### Cause of death
+## 6. Elective admissions
 
-<br/><br/>
-
-## 7. Elective admissions
-
-Draft text
+People who died at home were less likely to have planned hospital admissions during the pandemic. This reflected reductions in planned care across the board, as the NHS focused on responding to Covid-19. _Figure 6_ shows this trend and how things have changed since February 2021.
 
 ### Place of death
 
-_Figure 5: Average number of elective admissions per person by month and place of death_
-```{r fig5, fig.height=1, fig.width=2, fig.cap=""}
+_Figure 6: Average number of elective admissions in the last month of life by month and place of death_
+```{r fig6, fig.height=1, fig.width=2, fig.cap=""}
 knitr::include_graphics(here::here("output", "os_reports", "eol_service", "eladm_month_plot.png"))
 ```
 
 ### Cause of death
 
+<br/><br/>
+
+## 7. Outpatient appoitnments
+
+People who died at home during the pandemic had more outpatient appointments overall, however, this will reflect changes in who was dying at home with more deaths from Cancer. For some cause of death like circulatory diseases the number of outpatient appointments decreased. _Figure 7_ and _Figure 8_ highlight these trends.
+
+### Place of death 
+
+_Figure 7: Average number of outpatient appointments in the last month of life by month and place of death_
+```{r fig7, fig.height=1, fig.width=2, fig.cap=""}
+knitr::include_graphics(here::here("output", "os_reports", "eol_service", "opapp_month_plot.png"))
+```
+
+### Cause of death
+
+_Figure 8: Average number of outpatient appointments in the last month of life by month and cause of death_
+```{r fig8, fig.height=1, fig.width=2, fig.cap=""}
+knitr::include_graphics(here::here("output", "os_reports", "eol_service", "opapp_month_cod_plot.png"))
+```
 <br/><br/>
   
 ### Emergency admissions
@@ -148,5 +191,4 @@ _Figure 6: Average number of emergency admissions per person by month and place 
 knitr::include_graphics(here::here("output", "os_reports", "eol_service", "emadm_month_plot.png"))
 ```
 
-
-
+<br/><br/>
