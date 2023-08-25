@@ -34,6 +34,8 @@ actions:
         monthly_op_cause_plot: output/os_reports/eol_service/opapp_month_cod_plot.png
         monthly_eladm_place: output/os_reports/eol_service/eladm_month.csv
         monthly_eladm_place_plot: output/os_reports/eol_service/eladm_month_plot.png
+        monthly_emadm_place: output/os_reports/eol_service/emadm_month.csv 
+        monthly_emadm_place_plot: output/os_reports/eol_service/emadm_month_plot.png
 
   os_report:
     run: r:latest analysis/os_reports/03_eol_service_report_html.R
