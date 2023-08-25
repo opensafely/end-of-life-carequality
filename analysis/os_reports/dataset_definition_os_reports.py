@@ -12,6 +12,7 @@ from ehrql.tables.beta.tpp import (
     opa_diag,
     patients,
     practice_registrations,
+    medications,
 )
 
 ## CODELISTS ##
@@ -81,6 +82,13 @@ dataset.gp_1m = appointments.where(
         appointments.start_date.is_on_or_between(dod_ons - days(30), dod_ons)
     ).count_for_patient()
 
+## Medications for symptom management at end of life
+dataset.eol_med_1m = medications.where(
+    medications.dmd_code.is_in(codelists.eol_med_codes)
+).where(
+    medications.date.is_on_or_between(dod_ons - days(30), dod_ons)
+).count_for_patient()
+
 ## Hospital activity
 
 ## A&E visits
@@ -107,12 +115,3 @@ dataset.emadm_1m = hospital_admissions.where(
 ).where(
     hospital_admissions.admission_date.is_on_or_between(dod_ons - days(30), dod_ons)
 ).count_for_patient()
-
-
-
-
-
-
-
-
-
