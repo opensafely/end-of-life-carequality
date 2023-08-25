@@ -122,8 +122,8 @@ People who died at home during the pandemic were more likely to be prescribed at
 
 ### Place of death
 
-_Figure 3: Average number of medications prescribed per person by month and place of death_
-```{r fig3, fig.height=1, fig.width=2, fig.cap=""}
+_Figure 4: Average number of medications prescribed per person by month and place of death_
+```{r fig4, fig.height=1, fig.width=2, fig.cap=""}
 knitr::include_graphics(here::here("output", "os_reports", "eol_service", "eol_med_month_plot.png"))
 ```
 ### Cause of death
@@ -132,30 +132,30 @@ knitr::include_graphics(here::here("output", "os_reports", "eol_service", "eol_m
 
 ## 5. A&E Visits
 
-There was an increase in the use of Accident and Emergency (A&E) during the pandmeic for people who died at home, particularly for people who died from dementia and Alzheimer's disease. _Figure 4_ and _Figure 5_ shows this trend, variation by place of death, cause of death and how things have changed since February 2021.
+There was an increase in the use of Accident and Emergency (A&E) during the pandmeic for people who died at home, particularly for people who died from dementia and Alzheimer's disease. _Figure 5_ and _Figure 6_ shows this trend, variation by place of death, cause of death and how things have changed since February 2021.
 
 ### Place of death
 
-_Figure 4: Average number of A&E visits in the last month of life by month and place of death_
-```{r fig4, fig.height=1, fig.width=2, fig.cap=""}
+_Figure 5: Average number of A&E visits in the last month of life by month and place of death_
+```{r fig5, fig.height=1, fig.width=2, fig.cap=""}
 knitr::include_graphics(here::here("output", "os_reports", "eol_service", "aevis_month_plot.png"))
 ```
 
 ### Cause of death
 
-_Figure 5: Average number of A&E visits in the last month of life by month and cause of death_
-```{r fig5, fig.height=1, fig.width=2, fig.cap=""}
+_Figure 6: Average number of A&E visits in the last month of life by month and cause of death_
+```{r fig6, fig.height=1, fig.width=2, fig.cap=""}
 knitr::include_graphics(here::here("output", "os_reports", "eol_service", "aevis_month_cod_plot.png"))
 ```
 
 ## 6. Elective admissions
 
-People who died at home were less likely to have planned hospital admissions during the pandemic. This reflected reductions in planned care across the board, as the NHS focused on responding to Covid-19. _Figure 6_ shows this trend and how things have changed since February 2021.
+People who died at home were less likely to have planned hospital admissions during the pandemic. This reflected reductions in planned care across the board, as the NHS focused on responding to Covid-19. _Figure 7_ shows this trend and how things have changed since February 2021.
 
 ### Place of death
 
-_Figure 6: Average number of elective admissions in the last month of life by month and place of death_
-```{r fig6, fig.height=1, fig.width=2, fig.cap=""}
+_Figure 7: Average number of elective admissions in the last month of life by month and place of death_
+```{r fig7, fig.height=1, fig.width=2, fig.cap=""}
 knitr::include_graphics(here::here("output", "os_reports", "eol_service", "eladm_month_plot.png"))
 ```
 
@@ -163,21 +163,21 @@ knitr::include_graphics(here::here("output", "os_reports", "eol_service", "eladm
 
 <br/><br/>
 
-## 7. Outpatient appoitnments
+## 8. Outpatient appoitnments
 
-People who died at home during the pandemic had more outpatient appointments overall, however, this will reflect changes in who was dying at home with more deaths from Cancer. For some cause of death like circulatory diseases the number of outpatient appointments decreased. _Figure 7_ and _Figure 8_ highlight these trends.
+People who died at home during the pandemic had more outpatient appointments overall, however, this will reflect changes in who was dying at home with more deaths from Cancer. For some cause of death like circulatory diseases the number of outpatient appointments decreased. _Figure 8_ and _Figure 9_ highlight these trends.
 
 ### Place of death 
 
-_Figure 7: Average number of outpatient appointments in the last month of life by month and place of death_
-```{r fig7, fig.height=1, fig.width=2, fig.cap=""}
+_Figure 8: Average number of outpatient appointments in the last month of life by month and place of death_
+```{r fig8, fig.height=1, fig.width=2, fig.cap=""}
 knitr::include_graphics(here::here("output", "os_reports", "eol_service", "opapp_month_plot.png"))
 ```
 
 ### Cause of death
 
-_Figure 8: Average number of outpatient appointments in the last month of life by month and cause of death_
-```{r fig8, fig.height=1, fig.width=2, fig.cap=""}
+_Figure 9: Average number of outpatient appointments in the last month of life by month and cause of death_
+```{r fig9, fig.height=1, fig.width=2, fig.cap=""}
 knitr::include_graphics(here::here("output", "os_reports", "eol_service", "opapp_month_cod_plot.png"))
 ```
 <br/><br/>
@@ -188,8 +188,8 @@ Draft text
 
 ### Place of death
 
-_Figure 9: Average number of emergency admissions per person by month and place of death_
-```{r fig9, fig.height=1, fig.width=2, fig.cap=""}
+_Figure 10: Average number of emergency admissions per person by month and place of death_
+```{r fig10, fig.height=1, fig.width=2, fig.cap=""}
 knitr::include_graphics(here::here("output", "os_reports", "eol_service", "emadm_month_plot.png"))
 ```
 
