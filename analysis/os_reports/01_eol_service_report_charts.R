@@ -292,17 +292,18 @@ ggsave(deaths_month_plot, dpi = 600, width = 20, height = 10, unit = "cm"
 # Use of medications for symptom management  -------------------------------------------
 
 # Medication use by place of death - including all deaths
-eol_med_pod <- df %>%
+eol_med_month <- df %>%
   group_by(study_month, pod_ons_new) %>%
   summarise(mean = mean(eol_med_1m, na.rm = TRUE)) %>%
   bind_rows(df %>%
               group_by(study_month) %>%
               summarise(mean = mean(eol_med_1m, na.rm = TRUE)) %>%
-              mutate(pod_ons_new = "All"))
+              mutate(pod_ons_new = "All")) %>% 
+  mutate(mean = round(mean,3))
 
-write_csv(eol_med_pod, here::here("output", "os_reports", "eol_service", "eol_med_pod.csv"))
+write_csv(eol_med_month, here::here("output", "os_reports", "eol_service", "eol_med_month.csv"))
 
-eol_med_plot <- ggplot(eol_med_pod, aes(x = study_month, y = mean
+eol_med_month_plot <- ggplot(eol_med_month, aes(x = study_month, y = mean
                                       , group = pod_ons_new
                                       , colour = pod_ons_new
                                       , fill = pod_ons_new)) +
@@ -315,18 +316,18 @@ eol_med_plot <- ggplot(eol_med_pod, aes(x = study_month, y = mean
   scale_x_date(expand = c(0,0), date_breaks = "3 months", date_labels = "%b-%y") +
   scale_y_continuous(expand = c(0,0)
                      , limits = c(0,
-                                  plyr::round_any(max(eol_med_pod$mean)
+                                  plyr::round_any(max(eol_med_month$mean)
                                                   , 1, f = ceiling))
                      , breaks = seq(0
-                                    , plyr::round_any(max(eol_med_pod$mean)
+                                    , plyr::round_any(max(eol_med_month$mean)
                                                       , 1, f = ceiling)
                                     , 1)
                      , labels = scales::comma) +
   NT_style() +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
 
-ggsave(eol_med_plot, dpi = 600, width = 20, height = 10, unit = "cm"
-       , filename = "eol_med_plot.png"
+ggsave(eol_med_month_plot, dpi = 600, width = 20, height = 10, unit = "cm"
+       , filename = "eol_med_month_plot.png"
        , path = here::here("output", "os_reports", "eol_service"))
 
 
