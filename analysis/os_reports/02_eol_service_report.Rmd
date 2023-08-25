@@ -137,4 +137,16 @@ knitr::include_graphics(here::here("output", "os_reports", "eol_service", "eladm
 
 <br/><br/>
   
+### Emergency admissions
+
+Draft text
+
+### Place of death
+
+_Figure 6: Average number of emergency admissions per person by month and place of death_
+```{r fig6, fig.height=1, fig.width=2, fig.cap=""}
+knitr::include_graphics(here::here("output", "os_reports", "eol_service", "emadm_month_plot.png"))
+```
+
+
 
