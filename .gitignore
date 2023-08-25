@@ -7,3 +7,9 @@ output/*
 metadata/*
 venv/
 .Rproj.user
+
+# History files
+.Rhistory
+
+# Session Data files
+.RData

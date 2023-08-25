@@ -7,6 +7,7 @@ from ehrql import (Dataset, days)
 from ehrql.tables.beta.tpp import (
     appointments, 
     emergency_care_attendances, 
+    hospital_admissions,
     ons_deaths,
     opa_diag,
     patients,
@@ -81,6 +82,13 @@ dataset.gp_1m = appointments.where(
         appointments.start_date.is_on_or_between(dod_ons - days(30), dod_ons)
     ).count_for_patient()
 
+## Medications for symptom management at end of life
+dataset.eol_med_1m = medications.where(
+    medications.dmd_code.is_in(codelists.eol_med_codes)
+).where(
+    medications.date.is_on_or_between(dod_ons - days(30), dod_ons)
+).count_for_patient()
+
 ## Hospital activity
 
 ## A&E visits
@@ -94,9 +102,10 @@ dataset.opapp_1m = opa_diag.where(
     opa_diag.appointment_date.is_on_or_between(dod_ons - days(30), dod_ons)
 ).count_for_patient()
 
-## Medications for symptom management at end of life
-dataset.eol_med_1m = medications.where(
-    medications.dmd_code.is_in(codelists.eol_med_codes)
+## Elective admissions
+dataset.eladm_1m = hospital_admissions.where(
+    hospital_admissions.admission_method.is_in(["11", "12", "13"])
 ).where(
-    medications.date.is_on_or_between(dod_ons - days(30), dod_ons)
+    hospital_admissions.admission_date.is_on_or_between(dod_ons - days(30), dod_ons)
 ).count_for_patient()
+
