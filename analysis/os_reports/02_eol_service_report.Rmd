@@ -95,7 +95,7 @@ Draft text...
 
 _Figure 3: Average number of medications prescribed per person by month and place of death_
 ```{r fig3, fig.height=1, fig.width=2, fig.cap=""}
-knitr::include_graphics(here::here("output", "os_reports", "eol_service", "eol_med_plot.png"))
+knitr::include_graphics(here::here("output", "os_reports", "eol_service", "eol_med_month_plot.png"))
 ```
 
 ### Cause of death
