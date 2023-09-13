@@ -55,11 +55,11 @@ This report extends on the analysis published [here](https://www.nuffieldtrust.o
 
 ## 1. Background
 
-A high proportion of health and care services are consumed by people approaching the end of life, but many people do not receive high quality care. With an ageing population, the number of people requiring end of life care will increase further in the next 20 years, but there is little focus on this group in national or local planning. 
+A high proportion of health and care services are consumed by people approaching the end of life, but people do not always receive high quality care and this is a longstanding issue. With an ageing population, the number of people requiring end of life care will increase further in the next 20 years, but there is little focus on this group in national or local planning. 
 
-Care for people dying at home has been further stretched by the increase in people dying at home at the start of the Covid-19 pandemic. People were less likely than previously to die in other settings as people or their loved ones chose to stay at home. This trend of increased deaths has continued to the present day but the reasons for people staying at home have changed. 
+The number of people dying at home was increasing before the Covid-19 pandemic, but the pandemic accelerate this trend. People were less likely than previously to die in other settings either because they or their loved ones chose to stay at home or because the availability and access to care elsewhere had been affected. This trend of increased deaths at home has continued to the present day.  
 
-The access people approaching the end of life have to services and the factors that influence this has also changed. For example, during the early months of the pandemic the majority of elective hospital services were shut down. Now these services are running again but they are under strain due to the volumes of people requiring access. 
+The access people approaching the end of life have to services and the factors that influence this has changed since the start of the pandemic. For example, during the early months of the pandemic the majority of elective hospital services were shut down. These services are running again but they are under strain due to the volumes of people requiring access. 
 
 This report explores how trends in the services used by people approaching the end of life have changed over time.
 
@@ -101,11 +101,11 @@ knitr::include_graphics(here::here("output", "os_reports", "eol_service", "death
 
 ## 3. General practice interactions
 
-General practice interactions covers information drawn from the appointments table. It represents GP appointments but also other other healthcare professionals. There is no differentiation between face to face or other types of consultation.
+General practice interactions covers information drawn from the appointments table. It represents appointments with GP's but also other other healthcare professionals from the GP practice such as nurses. There is no differentiation between face to face or other types of consultation.
 
 We found previously that use of general practice increased during the first year of the pandemic among people who died at home. _Figure 2_ shows this trend, variation by place of death and how things have changed since February 2021.
 
-General practice interactions increased overall but the change varied by cause of death and people who died from cancer had a lot more interactions with general practice than people who died from other causes. _Figure 3_ shows the changes in these trends over time.
+General practice interactions increased overall but the change varied by cause of death and people who died from cancer had many more interactions with general practice than people who died from other causes. _Figure 3_ shows the changes in these trends over time.
 
 
 ### Place of death
@@ -124,7 +124,7 @@ knitr::include_graphics(here::here("output", "os_reports", "eol_service", "gp_mo
 
 ## 4. Medications for symptom management
 
-People who died at home during the pandemic were more likely to be prescribed at least one medication for symptom management than people who died at home before the pandemic. 
+In our previous work we reported that the proportion of people who died at home with medications for symptom management that general practice prescribed in the last month of life increased in the pandemic, which may have reflected changes in anticipatory prescribing to ensure that medications were available to patients when needed. _Figure 2_ and _Figure 3_ show how things have changed subsequently.
 
 ### Place of death
 
@@ -138,7 +138,7 @@ knitr::include_graphics(here::here("output", "os_reports", "eol_service", "eol_m
 
 ## 5. A&E Visits
 
-There was an increase in the use of Accident and Emergency (A&E) during the pandmeic for people who died at home, particularly for people who died from dementia and Alzheimer's disease. _Figure 5_ and _Figure 6_ shows this trend, variation by place of death, cause of death and how things have changed since February 2021.
+There was an increase in the use of Accident and Emergency (A&E) during the pandemic for people who died at home, particularly for people who died from dementia and Alzheimer's disease. _Figure 5_ and _Figure 6_ shows this trend, variation by place of death, cause of death and how things have changed since February 2021.
 
 ### Place of death
 
@@ -175,7 +175,7 @@ knitr::include_graphics(here::here("output", "os_reports", "eol_service", "opapp
 
 ## 7. Elective admissions
 
-People who died at home were less likely to have planned hospital admissions during the pandemic. This reflected reductions in planned care across the board, as the NHS focused on responding to Covid-19. _Figure 9_ shows this trend and how things have changed since February 2021.
+People who died at home were less likely to have planned hospital admissions during the pandemic. This reflected reductions in planned care across the board, as the NHS focused on responding to Covid-19. _Figure 9_ and _Figure 10_ show this trend and how things have changed since February 2021.
 
 ### Place of death
 
@@ -194,7 +194,14 @@ knitr::include_graphics(here::here("output", "os_reports", "eol_service", "eladm
 
 ### 8. Emergency admissions
 
-Draft text
+Emergency admissions towards the end of life are often not the best outcomes for patients. We previously reported that over the last three months of life, average emergency admissions per person during the pandemic were similar to pre-pandemic levels.{ _Figure 11_ and _Figure 12_ show this trend and how things have changed in the intervening period. In the most recent month (`r emadm_month %>% select(study_month) %>% slice(1) %>% pull`) there were an average of `r emadm_month %>% select(mean) %>% slice(1) %>% pull` emergency admissions per person recorded in OpenSAFELY-TPP for people who died at home.
+
+```{r emadm, include=FALSE}
+emadm_month <- read_csv(here::here("output", "os_reports", "eol_service", "emadm_month.csv")) %>%
+  filter(study_month == max(read_csv(here::here("output", "os_reports", "eol_service", "emadm_month.csv"))$study_month)) %>%
+  group_by(study_month,pod_ons_new) %>%
+  summarise(mean = mean(emadm_month[pod_ons_new=Home]))
+```
 
 ### Place of death
 
@@ -202,6 +209,7 @@ _Figure 11: Average number of emergency admissions per person by month and place
 ```{r fig11, fig.height=1, fig.width=2, fig.cap=""}
 knitr::include_graphics(here::here("output", "os_reports", "eol_service", "emadm_month_plot.png"))
 ```
+
 ### Cause of death
 
 _Figure 12: Average number of emergency admissions in the last month of life by month and cause of death_
@@ -212,7 +220,7 @@ knitr::include_graphics(here::here("output", "os_reports", "eol_service", "emadm
 
 ### 9. Community nursing contacts
 
-Draft text
+In our previous work we reported that people who died at home during the pandemic were as likely as people who died at home pre-pandemic to have community nursing team care coded in their GP record in the last month of life. _Figure 13_ and _Figure 14_ show this trend as well as subsequent changes. 
 
 ### Place of death
 
