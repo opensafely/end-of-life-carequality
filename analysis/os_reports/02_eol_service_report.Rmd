@@ -194,7 +194,7 @@ knitr::include_graphics(here::here("output", "os_reports", "eol_service", "eladm
 
 ### 8. Emergency admissions
 
-Emergency admissions towards the end of life are often not the best outcomes for patients. We previously reported that over the last three months of life, average emergency admissions per person during the pandemic were similar to pre-pandemic levels.{ _Figure 11_ and _Figure 12_ show this trend and how things have changed in the intervening period.
+Emergency admissions towards the end of life are often not the best outcomes for patients. We previously reported that over the last three months of life, average emergency admissions per person during the pandemic were similar to pre-pandemic levels. _Figure 11_ and _Figure 12_ show this trend and how things have changed in the intervening period.
 
 ### Place of death
 
