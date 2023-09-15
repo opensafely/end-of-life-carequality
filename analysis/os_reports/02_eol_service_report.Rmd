@@ -57,9 +57,9 @@ This report extends on the analysis published [here](https://www.nuffieldtrust.o
 
 A high proportion of health and care services are consumed by people approaching the end of life, but people do not always receive high quality care and this is a longstanding issue. With an ageing population, the number of people requiring end of life care will increase further in the next 20 years, but there is little focus on this group in national or local planning. 
 
-The number of people dying at home was increasing before the Covid-19 pandemic, but the pandemic accelerate this trend. People were less likely than previously to die in other settings either because they or their loved ones chose to stay at home or because the availability and access to care elsewhere had been affected. This trend of increased deaths at home has continued to the present day.  
+The number of people dying at home was increasing before the Covid-19 pandemic, but the pandemic accelerated this trend. People were less likely than previously to die in other settings either because they or their loved ones chose to stay at home or because the availability and access to care elsewhere had been affected. This trend of increased deaths at home has continued to the present day.  
 
-The access people approaching the end of life have to services and the factors that influence this has changed since the start of the pandemic. For example, during the early months of the pandemic the majority of elective hospital services were shut down. These services are running again but they are under strain due to the volumes of people requiring access. 
+The access people approaching the end of life have to services and the factors that influence this have changed since the start of the pandemic. For example, during the early months of the pandemic the majority of elective hospital services were shut down. These services are running again but they are under strain due to the volumes of people requiring access. 
 
 This report explores how trends in the services used by people approaching the end of life have changed over time.
 
@@ -74,7 +74,7 @@ deaths_month <- read_csv(here::here("output", "os_reports", "eol_service", "deat
   summarise(total = sum(count))
 ```
 
-In our [original report](https://www.nuffieldtrust.org.uk/research/deaths-at-home-during-the-covid-19-pandemic-and-implications-for-patients-and-services) we found that deaths recorded for people registered with TPP practices during the pandemic represented around 40% of all deaths registered in England. _Table 1_ and _Figure 1_ show that the number of deaths recorded for TPP registered patients varies by place and also over time. In the most recent month (`r deaths_month %>% select(study_month) %>% slice(1) %>% pull`) there were `r deaths_month %>% select(total) %>% slice(1) %>% pull` deaths recorded in OpenSAFELY-TPP.
+In our [original report](https://www.nuffieldtrust.org.uk/research/deaths-at-home-during-the-covid-19-pandemic-and-implications-for-patients-and-services) we found that deaths recorded for people registered with TPP practices during the pandemic represented around 40% of all deaths registered in England. _Table 1_ and _Figure 1_ show the number of deaths recorded for TPP registered patients by place and also over time. In the most recent month (`r deaths_month %>% select(study_month) %>% slice(1) %>% pull`) there were `r deaths_month %>% select(total) %>% slice(1) %>% pull` deaths recorded in OpenSAFELY-TPP.
 
 _Table 1: Number of deaths by 3 month interval and place of death_
 ```{r table1}
@@ -101,11 +101,11 @@ knitr::include_graphics(here::here("output", "os_reports", "eol_service", "death
 
 ## 3. General practice interactions
 
-General practice interactions covers information drawn from the appointments table. It represents appointments with GP's but also other other healthcare professionals from the GP practice such as nurses. There is no differentiation between face to face or other types of consultation.
+General practice interactions cover information drawn from the appointments table. It represents appointments with GPs but also other other healthcare professionals from the GP practice such as nurses. There is no differentiation between face to face or other types of consultation.
 
 We found previously that use of general practice increased during the first year of the pandemic among people who died at home. _Figure 2_ shows this trend, variation by place of death and how things have changed since February 2021.
 
-General practice interactions increased overall but the change varied by cause of death and people who died from cancer had many more interactions with general practice than people who died from other causes. _Figure 3_ shows the changes in these trends over time.
+We also found in our previous work that there was variation by cause of death and people who died from cancer had many more interactions with general practice than people who died from other causes. _Figure 3_ shows variation in general practice interactions by cause of death over time.
 
 
 ### Place of death
@@ -124,7 +124,7 @@ knitr::include_graphics(here::here("output", "os_reports", "eol_service", "gp_mo
 
 ## 4. Medications for symptom management
 
-In our previous work we reported that the proportion of people who died at home with medications for symptom management that general practice prescribed in the last month of life increased in the pandemic, which may have reflected changes in anticipatory prescribing to ensure that medications were available to patients when needed. _Figure 2_ and _Figure 3_ show how things have changed subsequently.
+In our previous work we reported that the proportion of people who died at home with medications for symptom management that were prescribed by GPs in in the last month of life increased in the pandemic. This may have reflected changes in anticipatory prescribing to ensure that medications were available to patients when needed. _Figure 2_ and _Figure 3_ show how things have changed subsequently.
 
 ### Place of death
 
@@ -156,7 +156,7 @@ knitr::include_graphics(here::here("output", "os_reports", "eol_service", "aevis
 
 ## 6. Outpatient appoitnments
 
-People who died at home during the pandemic had more outpatient appointments overall, however, this will reflect changes in who was dying at home with more deaths from Cancer. For some cause of death like circulatory diseases the number of outpatient appointments decreased. _Figure 7_ and _Figure 8_ highlight these trends.
+People who died at home during the pandemic had more outpatient appointments overall, however, this will reflect changes in who was dying at home. Deaths from cancer increased at the start of the pandemic for example. For some causes of death like circulatory diseases the number of outpatient appointments decreased. _Figure 7_ and _Figure 8_ highlight these and subsequent trends.
 
 ### Place of death 
 
@@ -194,7 +194,18 @@ knitr::include_graphics(here::here("output", "os_reports", "eol_service", "eladm
 
 ### 8. Emergency admissions
 
-Emergency admissions towards the end of life are often not the best outcomes for patients. We previously reported that over the last three months of life, average emergency admissions per person during the pandemic were similar to pre-pandemic levels. _Figure 11_ and _Figure 12_ show this trend and how things have changed in the intervening period.
+```{r emadm, include=FALSE}
+emadm_month <- read_csv(here::here("output", "os_reports", "eol_service", "emadm_month.csv")) %>%
+  filter(study_month == max(read_csv(here::here("output", "os_reports", "eol_service", "emadm_month.csv"))$study_month)) %>%
+  group_by(study_month, pod_ons_new) %>%
+   summarise(mean = mean(emadm_month, na.rm = TRUE)) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(mean = mean(emadm_month, na.rm = TRUE)) %>%
+              mutate(pod_ons_new = "Home"))
+```
+
+Emergency admissions towards the end of life are often not the best care for patients. We previously reported that over the last three months of life, average emergency admissions per person during the pandemic were similar to pre-pandemic levels. _Figure 11_ and _Figure 12_ show this trend and how things have changed in the intervening period.In the most recent month (`r emadm_month %>% select(study_month) %>% slice(1) %>% pull`) there were an average of `r emadm_month %>% select(mean) %>% slice(1) %>% pull` emergency admissions for patients who died at home recorded in OpenSAFELY-TPP.
 
 ### Place of death
 
@@ -213,7 +224,7 @@ knitr::include_graphics(here::here("output", "os_reports", "eol_service", "emadm
 
 ### 9. Community nursing contacts
 
-In our previous work we reported that people who died at home during the pandemic were as likely as people who died at home pre-pandemic to have community nursing team care coded in their GP record in the last month of life. _Figure 13_ and _Figure 14_ show this trend as well as subsequent changes. 
+In our previous work we reported that people who died at home during the pandemic were as likely as people who died at home pre-pandemic to have community nursing team care coded in their GP record in the last month of life. _Figure 13_ and _Figure 14_ show this pattern as well as subsequent changes. 
 
 ### Place of death
 
