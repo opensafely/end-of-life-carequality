@@ -13,6 +13,7 @@ from ehrql.tables.beta.tpp import (
     patients,
     practice_registrations,
     medications,
+    clinical_events,
 )
 
 ## CODELISTS ##
@@ -114,4 +115,11 @@ dataset.emadm_1m = hospital_admissions.where(
     hospital_admissions.admission_method.is_in(['21', '2A', '22', '23', '24', '25', '2D', '28', '2B'])
 ).where(
     hospital_admissions.admission_date.is_on_or_between(dod_ons - days(30), dod_ons)
+).count_for_patient()
+
+## Community nursing contacts
+dataset.nursing_1m = clinical_events.where(
+    clinical_events.snomedct_code.is_in(codelists.community_nursing_codes)
+).where(
+    clinical_events.date.is_on_or_between(dod_ons - days(30), dod_ons)
 ).count_for_patient()
