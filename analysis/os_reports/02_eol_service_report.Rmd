@@ -202,6 +202,21 @@ emadm_month <- read_csv(here::here("output", "os_reports", "eol_service", "emadm
 ``` 
 Emergency admissions towards the end of life are often not the best care for patients. We previously reported that over the last three months of life, average emergency admissions per person during the pandemic were similar to pre-pandemic levels. _Figure 11_ and _Figure 12_ show this trend and how things have changed in the intervening period.In the most recent month (`r emadm_month %>% select(study_month) %>% slice(1) %>% pull`) there were an average of `r emadm_month %>% select(mean) %>% slice(1) %>% pull` emergency admissions for patients who died at home recorded in OpenSAFELY-TPP.
 
+_Table 2: Number of people with one or emergency admissions in the last three months of life by place of death_
+```{r table2}
+knitr::kable(read_csv(here::here("output", "os_reports", "eol_service", "emadm_month.csv")) %>%
+  mutate(start_date = as_date(cut(study_month, breaks = "3 months"))
+         , end_date = rollback(start_date + months(3))
+         , time_period = paste0(format(start_date, format = "%b-%y"), " to "
+                                , format(end_date, format = "%b-%y"))) %>%
+  group_by(time_period, start_date, end_date, pod_ons_new) %>%
+  summarise(n=n()) %>%
+  pivot_wider(names_from = pod_ons_new, values_from = n) %>%
+  arrange(start_date), col.names = c("Time period", "Period start date"
+                                     , "Period end date", "All", "Care home"
+                                     , "Elsewhere/other", "Home", "Hospital", "Hospice"))
+```
+
 ### Place of death
 
 _Figure 11: Average number of emergency admissions per person by month and place of death_

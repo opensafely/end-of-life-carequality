@@ -782,7 +782,7 @@ nursing_month_cod <- df %>%
   summarise(mean = mean(nursing_1m, na.rm = TRUE)) %>%
   bind_rows(df %>%
               group_by(study_month) %>%
-              summarise(mean = mean(gp_1m, na.rm = TRUE)) %>%
+              summarise(mean = mean(nursing_1m, na.rm = TRUE)) %>%
               mutate(codgrp = "All")) %>%
   mutate(mean = round(mean, 3))
 
