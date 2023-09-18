@@ -123,3 +123,12 @@ dataset.nursing_1m = clinical_events.where(
 ).where(
     clinical_events.date.is_on_or_between(dod_ons - days(30), dod_ons)
 ).count_for_patient()
+
+## Quality Indicators ## 
+
+## Palliative care
+dataset.palliative_3m = clinical_events.where(
+    clinical_events.snomedct_code.is_in(codelists.palcare_codes1)
+).where(
+    clinical_events.date.is_on_or_between(dod_ons - days(90), dod_ons)
+).count_for_patient()
