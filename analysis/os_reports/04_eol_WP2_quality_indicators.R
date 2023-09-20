@@ -255,8 +255,39 @@ df <- df <- read_csv(file = here::here("output", "os_reports", "input_os_reports
                               , cod_ons_3 %in% c("F01", "F03", "G30") ~ "Dementia and Alzheimer's disease"
                               , cod_ons_3 >= "I00" & cod_ons_3 <= "I99" ~ "Circulatory diseases"
                               , cod_ons_3 >= "C00" & cod_ons_3 <= "C99" ~ "Cancer"
-                              , TRUE ~ "All other causes")) %>%
+                              , TRUE ~ "All other causes")
+         ,palcare_code = case_when(palliative_3m =="1" | palliative_3m == "2" | palliative_3m == "2"
+                                    | palliative_3m == "3"| palliative_3m == "4"
+                                    | palliative_3m == "5" ~ "Palcare_code", palliative_3m == "0" ~ "No_palcare_code")) %>%
   filter(study_month >= startdate & study_month <= enddate) 
 
 #Palliative care recorded ----------------------------------------------------
+proportion_palcare <- df %>%
+  group_by(palcare_code) %>%
+  summarise(deaths = n()) %>%
+  mutate(deaths = plyr::round_any(deaths, 10)
+         , total = sum(deaths)
+         , proportion = deaths / total)
+
+write_csv(proportion_palcare, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare.csv"))
+
+#By place of death 
+proportion_palcare_pod <- df %>%
+  group_by(pod_ons, palcare_code) %>%
+  summarise(deaths = n()) %>%
+  mutate(deaths = plyr::round_any(deaths, 10)
+         , total = sum(deaths)
+         , proportion = deaths / total)
+
+write_csv(proportion_palcare_pod, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_pod.csv"))
+
+#By cause of death 
+proportion_palcare_cod <- df %>%
+  group_by(codgrp, palcare_code) %>%
+  summarise(deaths = n()) %>%
+  mutate(deaths = plyr::round_any(deaths, 10)
+         , total = sum(deaths)
+         , proportion = deaths / total)
+
+write_csv(proportion_palcare_cod, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_cod.csv"))
 
