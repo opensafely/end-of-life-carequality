@@ -207,38 +207,6 @@ emadm_month <- read_csv(here::here("output", "os_reports", "eol_service", "emadm
 ```
 Emergency admissions towards the end of life are often not the best care for patients. We previously reported that over the last three months of life, average emergency admissions per person during the pandemic were similar to pre-pandemic levels. _Figure 12_ and _Figure 13_ show this trend and how things have changed in the intervening period.In the most recent month (`r emadm_month %>% select(study_month) %>% slice(1) %>% pull`) there were an average of `r emadm_month %>% select(mean) %>% slice(1) %>% pull` emergency admissions for patients who died at home recorded in OpenSAFELY-TPP.
 
-_Table 2: Number of people who died at home and had at least one emergency admission in the last month_
-```{r Table2
-knitr::kable(read_csv(here::here("output", "os_reports", "eol_service", "emadm_month.csv")) %>%
- 
- 
-admission_date.is_on_or_between(dod_ons - days(30), dod_ons)
-).count_for_patient()
- 
- 
- 
- mutate(start_date = as_date(cut(study_month, breaks = "1 months"))
-         , end_date = rollback(start_date + months(3))
-         , time_period = paste0(format(start_date, format = "%b-%y"), " to "
-                                , format(end_date, format = "%b-%y"))) %>%
-  group_by(time_period, start_date, end_date, pod_ons_new) %>%
-  summarise(count = sum(count, na.rm = TRUE)) %>%
-  pivot_wider(names_from = pod_ons_new, values_from = count) %>%
-  arrange(start_date), col.names = c("Time period", "Period start date"
-                                     , "Period end date", "All", "Care home"
-                                     , "Elsewhere/other", "Home", "Hospital", "Hospice"))
-
-
-
-  filter(study_month == max(read_csv(here::here("output", "os_reports", "eol_service", "emadm_month.csv"))$study_month)) %>%
-  group_by(study_month, pod_ons_new)
-  summarise(count = sum(count)) %>%
-  mutate(count = plyr::round_any(count, -1))
-  pivot_wider(names_from = pod_ons_new, values_from = count) %>%
-  col.names = c("Time period", "All", "Care home"
-                                     , "Elsewhere/other", "Home", "Hospital", "Hospice")
-```
-
 ### Place of death
 
 _Figure 12: Average number of emergency admissions in the last month of life by month and place of death_
