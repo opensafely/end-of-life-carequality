@@ -9,6 +9,7 @@
 
 library(tidyverse)
 library(lubridate)
+library(dplyr)
 
 
 # Create folder structure -------------------------------------------------
@@ -700,6 +701,13 @@ ggsave(eladm_month_cod_plot, dpi = 600, width = 20, height = 10, unit = "cm"
 
 
 # Emergency admissions---------------------------------------------
+
+# Number of people with at least one emergency admission in the last month of life by place of death - all deaths
+emadm_count <- df %>%
+  group_by(pod_ons_new) %>%
+  summarise(sum(emadm_1m >= 1)) %>%
+
+write_csv(emadm_count, here::here("output", "os_reports", "eol_service", "emadm_count.csv"))
 
 # Mean emergency admissions by month and place of death - including all deaths
 emadm_month <- df %>%
