@@ -38,6 +38,7 @@ actions:
         monthly_eladm_place_plot: output/os_reports/eol_service/eladm_month_plot.png
         monthly_eladm_cause: output/os_reports/eol_service/eladm_month_cod.csv
         monthly_eladm_cause_plot: output/os_reports/eol_service/eladm_month_cod_plot.png
+        monthly_emadm_count_place: output/os_reports/eol_service/emadm_count_place.csv
         monthly_emadm_place: output/os_reports/eol_service/emadm_month.csv 
         monthly_emadm_place_plot: output/os_reports/eol_service/emadm_month_plot.png
         monthly_emadm_cause: output/os_reports/eol_service/emadm_month_cod.csv
