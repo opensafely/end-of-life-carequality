@@ -45,6 +45,7 @@ This report extends on the analysis published [here](https://www.nuffieldtrust.o
     + Place of death
     + Cause of death
 8. Emergency admissions
+    + Number of people by place of death
     + Place of death
     + Cause of death
 9. Community nursing contacts
@@ -205,7 +206,7 @@ emadm_month <- read_csv(here::here("output", "os_reports", "eol_service", "emadm
   group_by(study_month) %>%
   summarise(mean = mean(mean,na.rm=TRUE))
 ```
-Emergency admissions towards the end of life are often not the best care for patients. We previously reported that over the last three months of life, average emergency admissions per person during the pandemic were similar to pre-pandemic levels. _Figure 12_ and _Figure 13_ show this trend and how things have changed in the intervening period.In the most recent month (`r emadm_month %>% select(study_month) %>% slice(1) %>% pull`) there were an average of `r emadm_month %>% select(mean) %>% slice(1) %>% pull` emergency admissions for patients who died at home recorded in OpenSAFELY-TPP.
+Emergency admissions towards the end of life are often not the best care for patients. We previously reported that over the last three months of life, average emergency admissions per person during the pandemic were similar to pre-pandemic levels. _Figure 12_ and _Figure 13_ show this trend and how things have changed in the intervening period. In the most recent month (`r emadm_month %>% select(study_month) %>% slice(1) %>% pull`) there were an average of `r emadm_month %>% select(mean) %>% slice(1) %>% pull` emergency admissions for patients who died at home recorded in OpenSAFELY-TPP.
 
 _Table 2: Number of people with at least one emergency admission in the last month of life by month and place of death_
 ```{r table2}
