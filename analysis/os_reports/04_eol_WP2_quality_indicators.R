@@ -234,14 +234,14 @@ NT_style <- function(){
 
 
 # Code settings -----------------------------------------------------------
-
+# need to decide on this
 startdate <- dmy("01-06-2019")
 enddate <- dmy("30-06-2023")
 
 
 # Prepare data ------------------------------------------------------------
 
-df <- df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.gz")) %>%
+df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.gz")) %>%
   mutate(dod_ons = as_date(dod_ons)
          , study_month = floor_date(dod_ons, unit = "month")
          , pod_ons_new = case_when(pod_ons == "Elsewhere" 
@@ -251,19 +251,21 @@ df <- df <- read_csv(file = here::here("output", "os_reports", "input_os_reports
          , cod_ons_4 = str_sub(cod_ons, 1, 5)
          , codgrp = case_when(cod_ons_4 %in% c("U071", "U072") ~ "Covid-19"
                               , cod_ons_3 >= "J09" & cod_ons_3 <= "J18" ~ "Flu and pneumonia"
-                              , (cod_ons_3 >= "J00" & cod_ons_3 <= "J08") | (cod_ons_3 >= "J19" & cod_ons_3 <= "J99")  ~ "Other respiratory diseases"
+                              , (cod_ons_3 >= "J00" & cod_ons_3 <= "J08") 
+                              | (cod_ons_3 >= "J19" & cod_ons_3 <= "J99")  ~ "Other respiratory diseases"
                               , cod_ons_3 %in% c("F01", "F03", "G30") ~ "Dementia and Alzheimer's disease"
                               , cod_ons_3 >= "I00" & cod_ons_3 <= "I99" ~ "Circulatory diseases"
                               , cod_ons_3 >= "C00" & cod_ons_3 <= "C99" ~ "Cancer"
                               , TRUE ~ "All other causes")
-         ,palcare_code = case_when(palliative_3m =="1" | palliative_3m == "2" | palliative_3m == "2"
-                                    | palliative_3m == "3"| palliative_3m == "4"
-                                    | palliative_3m == "5" ~ "Palcare_code", palliative_3m == "0" ~ "No_palcare_code")) %>%
+         ,palcare_code = case_when(palliative_3m >= 1 ~ "Palcare_code" 
+                                   , palliative_3m < 1 ~ "No_palcare_code")) %>%
   filter(study_month >= startdate & study_month <= enddate) 
+
+
 
 #Palliative care recorded ----------------------------------------------------
 proportion_palcare <- df %>%
-  group_by(palcare_code) %>%
+  group_by(palcare_code, study_month) %>%
   summarise(deaths = n()) %>%
   mutate(deaths = plyr::round_any(deaths, 10)
          , total = sum(deaths)
@@ -273,7 +275,7 @@ write_csv(proportion_palcare, here::here("output", "os_reports", "WP2_quality_in
 
 #By place of death 
 proportion_palcare_pod <- df %>%
-  group_by(pod_ons, palcare_code) %>%
+  group_by(pod_ons, palcare_code, study_month) %>%
   summarise(deaths = n()) %>%
   mutate(deaths = plyr::round_any(deaths, 10)
          , total = sum(deaths)
@@ -283,7 +285,7 @@ write_csv(proportion_palcare_pod, here::here("output", "os_reports", "WP2_qualit
 
 #By cause of death 
 proportion_palcare_cod <- df %>%
-  group_by(codgrp, palcare_code) %>%
+  group_by(codgrp, palcare_code, study_month) %>%
   summarise(deaths = n()) %>%
   mutate(deaths = plyr::round_any(deaths, 10)
          , total = sum(deaths)
