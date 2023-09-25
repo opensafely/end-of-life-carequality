@@ -708,13 +708,6 @@ emadm_count_place <- df %>%
 
 write_csv(emadm_count_place, here::here("output", "os_reports", "eol_service", "emadm_count_place.csv"))
 
-# Number of people with at least one emergency admission in the last month of life by month and cause of death
-emadm_count_cause <- df %>%
-  group_by(study_month, codgrp) %>%
-  summarise(sum(emadm_1m >= 1, na.rm = TRUE))
-
-write_csv(emadm_count_cause, here::here("output", "os_reports", "eol_service", "emadm_count_cause.csv"))
-
 # Mean emergency admissions by month and place of death - including all deaths
 emadm_month <- df %>%
   group_by(study_month, pod_ons_new) %>%
