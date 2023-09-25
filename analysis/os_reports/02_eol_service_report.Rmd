@@ -215,9 +215,25 @@ knitr::kable(read_csv(here::here("output", "os_reports", "eol_service", "emadm_c
   summarise(count = n()) %>%
   pivot_wider(names_from = pod_ons_new, values_from = count) %>%
   arrange(study_month), col.names = c( "All", "Care home"
-                                     , "Elsewhere/other", "Home", "Hospital", "Hospice"))
+                                     , "Elsewhere/other", "Home", "Hospital", "Hospice")) 
 
 ```
+
+_Table 3: Number of people with at least one emergency admission in the last month of life by month and cause of death_
+```{r table3}
+knitr::kable(read_csv(here::here("output", "os_reports", "eol_service", "emadm_count_cause.csv")) %>%
+  group_by(study_month, codgrp) %>%
+  summarise(count = n()) %>%
+  pivot_wider(names_from = pod_ons_new, values_from = count) %>%
+  arrange(study_month), col.names = c( "All", "Care home"
+                                     , "Elsewhere/other", "Home", "Hospital", "Hospice")) 
+
+```
+
+
+
+
+
 
 ### Place of death
 

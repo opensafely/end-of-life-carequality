@@ -259,7 +259,6 @@ df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.g
                              , TRUE ~ "All other causes")) %>%
   filter(study_month >= startdate & study_month <= enddate) 
 
-
 # Deaths in period --------------------------------------------------------
 
 # Number of deaths by month and place of death - including all deaths
@@ -270,7 +269,7 @@ deaths_month <- df %>%
               group_by(study_month) %>%
               summarise(count = n()) %>%
               mutate(pod_ons_new = "All")) %>%
-  mutate(count = plyr::round_any(count, 10))
+              mutate(count = plyr::round_any(count, 10))
 
 write_csv(deaths_month, here::here("output", "os_reports", "eol_service", "deaths_month.csv"))
 
@@ -708,6 +707,13 @@ emadm_count_place <- df %>%
   summarise(sum(emadm_1m >= 1, na.rm = TRUE))
 
 write_csv(emadm_count_place, here::here("output", "os_reports", "eol_service", "emadm_count_place.csv"))
+
+# Number of people with at least one emergency admission in the last month of life by month and cause of death
+emadm_count_cause <- df %>%
+  group_by(study_month, codgrp) %>%
+  summarise(sum(emadm_1m >= 1, na.rm = TRUE))
+
+write_csv(emadm_count_cause, here::here("output", "os_reports", "eol_service", "emadm_count_cause.csv"))
 
 # Mean emergency admissions by month and place of death - including all deaths
 emadm_month <- df %>%
