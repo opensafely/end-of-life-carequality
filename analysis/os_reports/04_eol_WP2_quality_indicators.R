@@ -258,7 +258,7 @@ df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.g
                               , cod_ons_3 >= "C00" & cod_ons_3 <= "C99" ~ "Cancer"
                               , TRUE ~ "All other causes")
          ,palcare_code = case_when(palliative_3m >= 1 ~ "Palcare_code" 
-                                   , palliative_3m < 1 ~ "No_palcare_code")) %>%
+                                   , palliative_3m == 0 ~ "No_palcare_code")) %>%
   filter(study_month >= startdate & study_month <= enddate) 
 
 
@@ -266,33 +266,36 @@ df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.g
 #Palliative care recorded ----------------------------------------------------
 proportion_palcare <- df %>%
   group_by(palcare_code, study_month) %>%
-  summarise(deaths = n()) %>%
+  summarise(count = n()) %>%
   mutate(palcare_code = "Palcare_code") %>%
-  mutate(deaths = plyr::round_any(deaths, 10)
-         , total = sum(deaths)
-         , proportion = deaths / total)
+  mutate(count = plyr::round_any(count, 10)
+         , total = sum(count)
+         , proportion = count / total) %>%
+  select(-total)
 
 write_csv(proportion_palcare, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare.csv"))
 
 #By place of death 
 proportion_palcare_pod <- df %>%
   group_by(pod_ons, palcare_code, study_month) %>%
-  summarise(deaths = n()) %>%
+  summarise(count = n()) %>%
   mutate(palcare_code = "Palcare_code") %>%
-  mutate(deaths = plyr::round_any(deaths, 10)
-         , total = sum(deaths)
-         , proportion = deaths / total)
+  mutate(count = plyr::round_any(count, 10)
+         , total = sum(count)
+         , proportion = count / total) %>%
+  select(-total)
 
 write_csv(proportion_palcare_pod, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_pod.csv"))
 
 #By cause of death 
 proportion_palcare_cod <- df %>%
   group_by(codgrp, palcare_code, study_month) %>%
-  summarise(deaths = n()) %>%
+  summarise(count = n()) %>%
   mutate(palcare_code = "Palcare_code") %>%
-  mutate(deaths = plyr::round_any(deaths, 10)
-         , total = sum(deaths)
-         , proportion = deaths / total)
+  mutate(count = plyr::round_any(count, 10)
+         , total = sum(count)
+         , proportion = count / total) %>%
+  select(-total)
 
 write_csv(proportion_palcare_cod, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_cod.csv"))
 
