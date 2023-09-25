@@ -267,6 +267,7 @@ df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.g
 proportion_palcare <- df %>%
   group_by(palcare_code, study_month) %>%
   summarise(deaths = n()) %>%
+  mutate(palcare_code = "Palcare_code") %>%
   mutate(deaths = plyr::round_any(deaths, 10)
          , total = sum(deaths)
          , proportion = deaths / total)
@@ -277,6 +278,7 @@ write_csv(proportion_palcare, here::here("output", "os_reports", "WP2_quality_in
 proportion_palcare_pod <- df %>%
   group_by(pod_ons, palcare_code, study_month) %>%
   summarise(deaths = n()) %>%
+  mutate(palcare_code = "Palcare_code") %>%
   mutate(deaths = plyr::round_any(deaths, 10)
          , total = sum(deaths)
          , proportion = deaths / total)
@@ -287,6 +289,7 @@ write_csv(proportion_palcare_pod, here::here("output", "os_reports", "WP2_qualit
 proportion_palcare_cod <- df %>%
   group_by(codgrp, palcare_code, study_month) %>%
   summarise(deaths = n()) %>%
+  mutate(palcare_code = "Palcare_code") %>%
   mutate(deaths = plyr::round_any(deaths, 10)
          , total = sum(deaths)
          , proportion = deaths / total)

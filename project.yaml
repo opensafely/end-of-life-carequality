@@ -52,3 +52,10 @@ actions:
     outputs:
       moderately_sensitive:
         os_report: output/os_reports/eol_service/eol_service_report.html
+
+  WP2_outputs:
+    run: r:latest analysis/os_reports/04_WP2_quality_indicators.R
+    needs: [generate_study_population_os_reports]
+    outputs:
+      moderately_sensitive:
+      proportion_palcare_code: output/os_reports/WP2_quality_indicators/proportion*.csv
