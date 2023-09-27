@@ -627,7 +627,9 @@ ggsave(op_month_cod_plot, dpi = 600, width = 20, height = 10, unit = "cm"
 
 eladm_count_place <- df %>%
   group_by(study_month, pod_ons_new) %>%
-  summarise(count = sum(eladm_1m >= 1), total = n())
+  summarise(count = sum(eladm_1m >= 1), total = n()) %>%
+  mutate(count = plyr::round_any(count, 10)
+         ,  total = plyr::round_any(total, 10))
 
 write_csv(eladm_count_place, here::here("output", "os_reports", "eol_service", "eladm_count_place.csv"))
 
