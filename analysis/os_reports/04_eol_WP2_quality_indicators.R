@@ -261,7 +261,19 @@ df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.g
                                    , palliative_3m == 0 ~ "No_palcare_code")) %>%
   filter(study_month >= startdate & study_month <= enddate) 
 
+#MD code update
+proportion_palcare3 <- df %>%
+  group_by(study_month, pod_ons_new, palcare_code) %>%
+  summarise(count = n()) %>%
+  mutate(count = plyr::round_any(count, 10)
+         , total = sum(count)
+         , proportion = count / total) %>%
+  filter(palcare_code == "Palcare_code") %>%
+  select(-c(total, palcare_code))
 
+write_csv(proportion_palcare3, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare3.csv"))
+
+knitr::kable(read_csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare3.csv")))
 
 #Palliative care recorded ----------------------------------------------------
 proportion_palcare <- df %>%
