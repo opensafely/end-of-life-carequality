@@ -623,6 +623,23 @@ ggsave(op_month_cod_plot, dpi = 600, width = 20, height = 10, unit = "cm"
 
 # Elective admissions---------------------------------------------
 
+# Number of people with at least one elective admission in the last month of life by month and place of death - all deaths
+
+eladm_count_place <- df %>%
+  group_by(study_month, pod_ons_new) %>%
+  summarise(count = sum(eladm_1m >= 1), total = n())
+
+write_csv(eladm_count_place, here::here("output", "os_reports", "eol_service", "eladm_count_place.csv"))
+
+# Number of people with at least one elective admission in the last month of life by month and cause of death
+eladm_count_cause <- df %>%
+  group_by(study_month, codgrp) %>%
+  summarise(count = sum(eladm_1m >= 1), total = n()) %>%
+  mutate(count = plyr::round_any(count, 10)
+         ,  total = plyr::round_any(total, 10))
+
+write_csv(eladm_count_cause, here::here("output", "os_reports", "eol_service", "eladm_count_cause.csv"))
+
 # Mean elective admissions by month and place of death - including all deaths
 eladm_month <- df %>%
   group_by(study_month, pod_ons_new) %>%
@@ -704,13 +721,13 @@ ggsave(eladm_month_cod_plot, dpi = 600, width = 20, height = 10, unit = "cm"
 
 # Number of people with at least one emergency admission in the last month of life by month and place of death - all deaths
 
-emadm_count_place2 <- df %>%
+emadm_count_place <- df %>%
   group_by(study_month, pod_ons_new) %>%
   summarise(count = sum(emadm_1m >= 1), total = n()) %>%
   mutate(count = plyr::round_any(count, 10)
        ,  total = plyr::round_any(total, 10))
          
-write_csv(emadm_count_place2, here::here("output", "os_reports", "eol_service", "emadm_count_place2.csv"))
+write_csv(emadm_count_place, here::here("output", "os_reports", "eol_service", "emadm_count_place.csv"))
 
 # Number of people with at least one emergency admission in the last month of life by month and cause of death
 emadm_count_cause <- df %>%

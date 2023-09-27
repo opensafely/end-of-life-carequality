@@ -182,7 +182,7 @@ knitr::include_graphics(here::here("output", "os_reports", "eol_service", "opapp
 
 ## 7. Elective admissions
 
-People who died at home were less likely to have planned hospital admissions during the pandemic. This reflected reductions in planned care across the board, as the NHS focused on responding to Covid-19. _Figure 10_ and _Figure 11_ show this trend and how things have changed since February 2021.
+People who died at home were less likely to have planned hospital admissions during the pandemic. This reflected reductions in planned care across the board, as the NHS focused on responding to Covid-19. _Figure 10_ and _Figure 11_ show this trend and how things have changed since February 2021. _Table 2_ and _Table 3_ show the number of people who had at least one elective admission in the last month of life by month, by place of death and cause of death. 
 
 ### Place of death
 
@@ -199,6 +199,18 @@ knitr::include_graphics(here::here("output", "os_reports", "eol_service", "eladm
 ```
 <br/><br/>
 
+_Table 2: Number of people with at least one elective admission in the last month of life by month and place of death_
+```{r table2}
+knitr::kable(read_csv(here::here("output", "os_reports", "eol_service", "eladm_count_place.csv")))
+
+```
+
+_Table 3: Number of people with at least one elective admission in the last month of life by month and cause of death_
+```{r table3}
+knitr::kable(read_csv(here::here("output", "os_reports", "eol_service", "eladm_count_cause.csv")))
+
+```
+
 ### 8. Emergency admissions
 
 ```{r emadm, include=FALSE}
@@ -207,16 +219,16 @@ emadm_month <- read_csv(here::here("output", "os_reports", "eol_service", "emadm
   group_by(study_month) %>%
   summarise(mean = mean(mean,na.rm=TRUE))
 ```
-Emergency admissions towards the end of life are often not the best care for patients. _Table 2_ and _Table 3_ show the number of people who had at least one emergency admission in the last month of life by month by place of death and cause of death. We previously reported that over the last three months of life, average emergency admissions per person during the pandemic were similar to pre-pandemic levels. _Figure 12_ and _Figure 13_ show this trend and how things have changed in the intervening period. In the most recent month (`r emadm_month %>% select(study_month) %>% slice(1) %>% pull`) there were an average of `r emadm_month %>% select(mean) %>% slice(1) %>% pull` emergency admissions for patients who died at home recorded in OpenSAFELY-TPP.
+Emergency admissions towards the end of life are often not the best care for patients. _Table 4_ and _Table 5_ show the number of people who had at least one emergency admission in the last month of life by month by place of death and cause of death. We previously reported that over the last three months of life, average emergency admissions per person during the pandemic were similar to pre-pandemic levels. _Figure 12_ and _Figure 13_ show this trend and how things have changed in the intervening period. In the most recent month (`r emadm_month %>% select(study_month) %>% slice(1) %>% pull`) there were an average of `r emadm_month %>% select(mean) %>% slice(1) %>% pull` emergency admissions for patients who died at home recorded in OpenSAFELY-TPP.
 
-_Table 2: Number of people with at least one emergency admission in the last month of life by month and place of death_
-```{r table2}
+_Table 4: Number of people with at least one emergency admission in the last month of life by month and place of death_
+```{r table4}
 knitr::kable(read_csv(here::here("output", "os_reports", "eol_service", "emadm_count_place.csv")))
 
 ```
 
-_Table 3: Number of people with at least one emergency admission in the last month of life by month and cause of death_
-```{r table3}
+_Table 5: Number of people with at least one emergency admission in the last month of life by month and cause of death_
+```{r table5}
 knitr::kable(read_csv(here::here("output", "os_reports", "eol_service", "emadm_count_cause.csv")))
 
 ```
