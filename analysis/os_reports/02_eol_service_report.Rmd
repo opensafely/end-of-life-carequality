@@ -36,9 +36,13 @@ This report extends on the analysis published [here](https://www.nuffieldtrust.o
     + Place of death
     + Cause of death
 5. A&E visits
+    + Number of people with at least one A&E visit by place of death
+    + Number of people with at least one A&E visit by cause of death
     + Place of death
     + Cause of death
 6. Outpatient appointments
+    + Number of people with at least one outpatient admission by place of death
+    + Number of people with at least one outpatient admission by cause of death
     + Place of death
     + Cause of death   
 7. Elective admissions
@@ -150,9 +154,15 @@ knitr::include_graphics(here::here("output", "os_reports", "eol_service", "eol_m
 
 ## 5. A&E Visits
 
-There was an increase in the use of Accident and Emergency (A&E) during the pandemic for people who died at home, particularly for people who died from dementia and Alzheimer's disease. _Figure 6_ and _Figure 7_ shows this trend, variation by place of death, cause of death and how things have changed since February 2021.
+There was an increase in the use of Accident and Emergency (A&E) during the pandemic for people who died at home, particularly for people who died from dementia and Alzheimer's disease. _Figure 6_ and _Figure 7_ shows this trend, variation by place of death, cause of death and how things have changed since February 2021. _Table 6_ and _Table 7_ show the number of people who have at least one A&E visit in the last month of life by month, by place of death and cause of death. 
 
 ### Place of death
+
+_Table 6: Number of people with at least one A&E visit in the last month of life by month and place of death_
+```{r table6}
+knitr::kable(read_csv(here::here("output", "os_reports", "eol_service", "aevis_count_place.csv")))
+
+```
 
 _Figure 6: Average number of A&E visits in the last month of life by month and place of death_
 ```{r fig6, fig.height=1, fig.width=2, fig.cap=""}
@@ -160,6 +170,12 @@ knitr::include_graphics(here::here("output", "os_reports", "eol_service", "aevis
 ```
 
 ### Cause of death
+
+_Table 7: Number of people with at least one A&E visit in the last month of life by month and cause of death_
+```{r table7}
+knitr::kable(read_csv(here::here("output", "os_reports", "eol_service", "aevis_count_cause.csv")))
+
+```
 
 _Figure 7: Average number of A&E visits in the last month of life by month and cause of death_
 ```{r fig7, fig.height=1, fig.width=2, fig.cap=""}
@@ -171,12 +187,12 @@ knitr::include_graphics(here::here("output", "os_reports", "eol_service", "aevis
 
 ## 6. Outpatient appoitnments
 
-People who died at home during the pandemic had more outpatient appointments overall, however, this will reflect changes in who was dying at home. Deaths from cancer increased at the start of the pandemic for example. For some causes of death like circulatory diseases the number of outpatient appointments decreased. _Table 2_ and _Table 3_ show the number of people who had at least one outpatient appointment in the last month of life by month, by place of death and cause od death. _Figure 8_ and _Figure 9_ highlight these and subsequent trends.
+People who died at home during the pandemic had more outpatient appointments overall, however, this will reflect changes in who was dying at home. Deaths from cancer increased at the start of the pandemic for example. For some causes of death like circulatory diseases the number of outpatient appointments decreased. _Table 8_ and _Table 9_ show the number of people who had at least one outpatient appointment in the last month of life by month, by place of death and cause of death. _Figure 8_ and _Figure 9_ highlight these and subsequent trends.
 
 ### Place of death 
 
-_Table 2: Number of people with at least one outpatient appointment in the last month of life by month and place of death_
-```{r table2}
+_Table 8: Number of people with at least one outpatient appointment in the last month of life by month and place of death_
+```{r table8}
 knitr::kable(read_csv(here::here("output", "os_reports", "eol_service", "opapp_count_place.csv")))
 
 ```
@@ -188,8 +204,8 @@ knitr::include_graphics(here::here("output", "os_reports", "eol_service", "opapp
 
 ### Cause of death
 
-_Table 3: Number of people with at least one outpatient appointment in the last month of life by month and cause of death_
-```{r table3}
+_Table 9: Number of people with at least one outpatient appointment in the last month of life by month and cause of death_
+```{r table9}
 knitr::kable(read_csv(here::here("output", "os_reports", "eol_service", "opapp_count_cause.csv")))
 
 ```
@@ -204,12 +220,12 @@ knitr::include_graphics(here::here("output", "os_reports", "eol_service", "opapp
 
 ## 7. Elective admissions
 
-People who died at home were less likely to have planned hospital admissions during the pandemic. This reflected reductions in planned care across the board, as the NHS focused on responding to Covid-19. _Figure 10_ and _Figure 11_ show this trend and how things have changed since February 2021. _Table 4_ and _Table 5_ show the number of people who had at least one elective admission in the last month of life by month, by place of death and cause of death. 
+People who died at home were less likely to have planned hospital admissions during the pandemic. This reflected reductions in planned care across the board, as the NHS focused on responding to Covid-19. _Figure 10_ and _Figure 11_ show this trend and how things have changed since February 2021. _Table 10_ and _Table 11_ show the number of people who had at least one elective admission in the last month of life by month, by place of death and cause of death. 
 
 ### Place of death
 
-_Table 4: Number of people with at least one elective admission in the last month of life by month and place of death_
-```{r table4}
+_Table 10: Number of people with at least one elective admission in the last month of life by month and place of death_
+```{r table10}
 knitr::kable(read_csv(here::here("output", "os_reports", "eol_service", "eladm_count_place.csv")))
 
 ```
@@ -221,8 +237,8 @@ knitr::include_graphics(here::here("output", "os_reports", "eol_service", "eladm
 
 ### Cause of death
 
-_Table 5: Number of people with at least one elective admission in the last month of life by month and cause of death_
-```{r table5}
+_Table 11: Number of people with at least one elective admission in the last month of life by month and cause of death_
+```{r table11}
 knitr::kable(read_csv(here::here("output", "os_reports", "eol_service", "eladm_count_cause.csv")))
 
 ```
@@ -243,12 +259,12 @@ emadm_month <- read_csv(here::here("output", "os_reports", "eol_service", "emadm
   group_by(study_month) %>%
   summarise(mean = mean(mean,na.rm=TRUE))
 ```
-Emergency admissions towards the end of life are often not the best care for patients. _Table 6_ and _Table 7_ show the number of people who had at least one emergency admission in the last month of life by month by place of death and cause of death. We previously reported that over the last three months of life, average emergency admissions per person during the pandemic were similar to pre-pandemic levels. _Figure 12_ and _Figure 13_ show this trend and how things have changed in the intervening period. In the most recent month (`r emadm_month %>% select(study_month) %>% slice(1) %>% pull`) there were an average of `r emadm_month %>% select(mean) %>% slice(1) %>% pull` emergency admissions for patients who died at home recorded in OpenSAFELY-TPP.
+Emergency admissions towards the end of life are often not the best care for patients. _Table 12_ and _Table 13_ show the number of people who had at least one emergency admission in the last month of life by month by place of death and cause of death. We previously reported that over the last three months of life, average emergency admissions per person during the pandemic were similar to pre-pandemic levels. _Figure 12_ and _Figure 13_ show this trend and how things have changed in the intervening period. In the most recent month (`r emadm_month %>% select(study_month) %>% slice(1) %>% pull`) there were an average of `r emadm_month %>% select(mean) %>% slice(1) %>% pull` emergency admissions for patients who died at home recorded in OpenSAFELY-TPP.
 
 ### Place of death
 
-_Table 6: Number of people with at least one emergency admission in the last month of life by month and place of death_
-```{r table6}
+_Table 12: Number of people with at least one emergency admission in the last month of life by month and place of death_
+```{r table12}
 knitr::kable(read_csv(here::here("output", "os_reports", "eol_service", "emadm_count_place.csv")))
 
 ```
@@ -259,8 +275,8 @@ knitr::include_graphics(here::here("output", "os_reports", "eol_service", "emadm
 
 ### Cause of death
 
-_Table 7: Number of people with at least one emergency admission in the last month of life by month and cause of death_
-```{r table7}
+_Table 13: Number of people with at least one emergency admission in the last month of life by month and cause of death_
+```{r table13}
 knitr::kable(read_csv(here::here("output", "os_reports", "eol_service", "emadm_count_cause.csv")))
 
 ```

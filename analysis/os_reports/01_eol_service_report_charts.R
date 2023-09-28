@@ -462,6 +462,27 @@ ggsave(gp_month_cod_plot, dpi = 600, width = 20, height = 10, unit = "cm"
 
 # A&E visits --------------------------------------------------------------
 
+# Number of people with at least one A&E visit in the last month of life by month and place of death - all deaths
+
+aevis_count_place <- df %>%
+  group_by(study_month, pod_ons_new) %>%
+  summarise(count = sum(aevis_1m >= 1), total = n()) %>%
+  mutate(count = plyr::round_any(count, 10)
+         ,  total = plyr::round_any(total, 10))
+
+write_csv(aevis_count_place, here::here("output", "os_reports", "eol_service", "aevis_count_place.csv"))
+
+# Number of people with at least one A&E visit in the last month of life by month and cause of death
+
+aevis_count_cause <- df %>%
+  group_by(study_month, codgrp) %>%
+  summarise(count = sum(aevis_1m >= 1), total = n()) %>%
+  mutate(count = plyr::round_any(count, 10)
+         ,  total = plyr::round_any(total, 10))
+
+write_csv(aevis_count_cause, here::here("output", "os_reports", "eol_service", "aevis_count_cause.csv"))
+
+
 # mean A&E visits in month leading up to death, by month, by place of death.
 aevis_month <- df %>% 
   group_by(study_month, pod_ons_new) %>%
@@ -807,7 +828,7 @@ emadm_month_cod <- df %>%
               mutate(codgrp = "All")) %>%
   mutate(mean = round(mean, 3))
 
-write_csv(eladm_month_cod, here::here("output", "os_reports", "eol_service", "emadm_month_cod.csv"))
+write_csv(emadm_month_cod, here::here("output", "os_reports", "eol_service", "emadm_month_cod.csv"))
 
 emadm_month_cod_plot <- ggplot(emadm_month_cod, aes(x = study_month, y = mean
                                                     , group = codgrp
