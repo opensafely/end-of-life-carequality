@@ -544,6 +544,26 @@ ggsave(aevis_month_cod_plot, dpi = 600, width = 20, height = 10, unit = "cm"
 
 # Outpatient appointments -------------------------------------------
 
+# Number of people with at least one outpatient appointment in the last month of life by month and place of death - all deaths
+
+opapp_count_place <- df %>%
+  group_by(study_month, pod_ons_new) %>%
+  summarise(count = sum(opapp_1m >= 1), total = n()) %>%
+  mutate(count = plyr::round_any(count, 10)
+         ,  total = plyr::round_any(total, 10))
+
+write_csv(opapp_count_place, here::here("output", "os_reports", "eol_service", "opapp_count_place.csv"))
+
+# Number of people with at least one outpatient appointment in the last month of life by month and cause of death
+
+opapp_count_cause <- df %>%
+  group_by(study_month, codgrp) %>%
+  summarise(count = sum(opapp_1m >= 1), total = n()) %>%
+  mutate(count = plyr::round_any(count, 10)
+         ,  total = plyr::round_any(total, 10))
+
+write_csv(opapp_count_cause, here::here("output", "os_reports", "eol_service", "opapp_count_cause.csv"))
+
 # Mean outpatient appointments by month and place of death - including all deaths
 opapp_month <- df %>%
   group_by(study_month, pod_ons_new) %>%
