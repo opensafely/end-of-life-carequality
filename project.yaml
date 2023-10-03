@@ -24,10 +24,13 @@ actions:
         monthly_med_CSV: output/os_reports/eol_service/eol_med*.csv
         monthly_aevis_timeseries: output/os_reports/eol_service/aevis_month_*.png
         monthly_aevis_CSV: output/os_reports/eol_service/aevis_month*.csv
+        monthly_aevis_Ccount: output/os_reports/eol_service/aevis_count*.csv
         monthly_op_timeseries: output/os_reports/eol_service/opapp_month_*.png          
         monthly_op_CSV: output/os_reports/eol_service/opapp_month*.csv
+        monthly_op_Count: output/os_reports/eol_service/opapp_count*.csv
         monthly_eladm_timeseries: output/os_reports/eol_service/eladm_month_*.png   
         monthly_eladm_CSV: output/os_reports/eol_service/eladm_month*.csv
+        monthly_eladm_Count: output/os_reports/eol_service/eladm_count*.csv
         monthly_emadm_timeseries: output/os_reports/eol_service/emadm_month_*.png   
         monthly_emadm_CSV: output/os_reports/eol_service/emadm_month*.csv
         monthly_emadm_Count: output/os_reports/eol_service/emadm_count*.csv
