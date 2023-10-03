@@ -10,7 +10,7 @@
 library(tidyverse)
 library(lubridate)
 library(dplyr)
-
+library(data.table)
 
 # Create folder structure -------------------------------------------------
 
@@ -272,7 +272,7 @@ deaths_month <- df %>%
               mutate(pod_ons_new = "All")) %>%
   mutate(count = plyr::round_any(count, 10))
 
-write_csv(deaths_month, here::here("output", "os_reports", "eol_service", "deaths_month.csv"))
+fwrite(deaths_month, here::here("output", "os_reports", "eol_service", "deaths_month.csv"))
 
 deaths_month_plot <- ggplot(deaths_month, aes(x = study_month, y = count
                                               , group = pod_ons_new
@@ -312,7 +312,7 @@ eol_med_month <- df %>%
               mutate(pod_ons_new = "All")) %>% 
   mutate(mean = round(mean,3))
 
-write_csv(eol_med_month, here::here("output", "os_reports", "eol_service", "eol_med_month.csv"))
+fwrite(eol_med_month, here::here("output", "os_reports", "eol_service", "eol_med_month.csv"))
 
 eol_med_month_plot <- ggplot(eol_med_month, aes(x = study_month, y = mean
                                       , group = pod_ons_new
@@ -352,7 +352,7 @@ eol_med_month_cod <- df %>%
               mutate(codgrp = "All")) %>%
   mutate(mean = round(mean, 3))
 
-write_csv(eol_med_month_cod, here::here("output", "os_reports", "eol_service", "eol_med_month_cod.csv"))
+fwrite(eol_med_month_cod, here::here("output", "os_reports", "eol_service", "eol_med_month_cod.csv"))
 
 eol_med_month_cod_plot <- ggplot(eol_med_month_cod, aes(x = study_month, y = mean
                                               , group = codgrp
@@ -392,7 +392,7 @@ gp_month <- df %>%
               mutate(pod_ons_new = "All")) %>%
   mutate(mean = round(mean, 3))
 
-write_csv(gp_month, here::here("output", "os_reports", "eol_service", "gp_month.csv"))
+fwrite(gp_month, here::here("output", "os_reports", "eol_service", "gp_month.csv"))
 
 gp_month_plot <- ggplot(gp_month, aes(x = study_month, y = mean
                                       , group = pod_ons_new
@@ -431,7 +431,7 @@ gp_month_cod <- df %>%
               mutate(codgrp = "All")) %>%
   mutate(mean = round(mean, 3))
 
-write_csv(gp_month_cod, here::here("output", "os_reports", "eol_service", "gp_month_cod.csv"))
+fwrite(gp_month_cod, here::here("output", "os_reports", "eol_service", "gp_month_cod.csv"))
 
 gp_month_cod_plot <- ggplot(gp_month_cod, aes(x = study_month, y = mean
                                       , group = codgrp
@@ -470,7 +470,7 @@ aevis_count_place <- df %>%
   mutate(count = plyr::round_any(count, 10)
          ,  total = plyr::round_any(total, 10))
 
-write_csv(aevis_count_place, here::here("output", "os_reports", "eol_service", "aevis_count_place.csv"))
+fwrite(aevis_count_place, here::here("output", "os_reports", "eol_service", "aevis_count_place.csv"))
 
 # Number of people with at least one A&E visit in the last month of life by month and cause of death
 
@@ -480,7 +480,7 @@ aevis_count_cause <- df %>%
   mutate(count = plyr::round_any(count, 10)
          ,  total = plyr::round_any(total, 10))
 
-write_csv(aevis_count_cause, here::here("output", "os_reports", "eol_service", "aevis_count_cause.csv"))
+fwrite(aevis_count_cause, here::here("output", "os_reports", "eol_service", "aevis_count_cause.csv"))
 
 
 # mean A&E visits in month leading up to death, by month, by place of death.
@@ -494,7 +494,7 @@ aevis_month <- df %>%
   mutate(mean = round(mean, 3))
 
 # save data file
-write_csv(aevis_month, here::here("output", "os_reports", "eol_service", "aevis_month.csv"))
+fwrite(aevis_month, here::here("output", "os_reports", "eol_service", "aevis_month.csv"))
 
 # graph output
 aevis_month_plot <- ggplot(aevis_month, aes(x = study_month, y = mean
@@ -534,7 +534,7 @@ aevis_month_cod <- df %>%
               mutate(codgrp = "All")) %>%
   mutate(mean = round(mean, 3))
 
-write_csv(aevis_month_cod, here::here("output", "os_reports", "eol_service", "aevis_month_cod.csv"))
+fwrite(aevis_month_cod, here::here("output", "os_reports", "eol_service", "aevis_month_cod.csv"))
 
 aevis_month_cod_plot <- ggplot(aevis_month_cod, aes(x = study_month, y = mean
                                             , group = codgrp
@@ -573,7 +573,7 @@ opapp_count_place <- df %>%
   mutate(count = plyr::round_any(count, 10)
          ,  total = plyr::round_any(total, 10))
 
-write_csv(opapp_count_place, here::here("output", "os_reports", "eol_service", "opapp_count_place.csv"))
+fwrite(opapp_count_place, here::here("output", "os_reports", "eol_service", "opapp_count_place.csv"))
 
 # Number of people with at least one outpatient appointment in the last month of life by month and cause of death
 
@@ -583,7 +583,7 @@ opapp_count_cause <- df %>%
   mutate(count = plyr::round_any(count, 10)
          ,  total = plyr::round_any(total, 10))
 
-write_csv(opapp_count_cause, here::here("output", "os_reports", "eol_service", "opapp_count_cause.csv"))
+fwrite(opapp_count_cause, here::here("output", "os_reports", "eol_service", "opapp_count_cause.csv"))
 
 # Mean outpatient appointments by month and place of death - including all deaths
 opapp_month <- df %>%
@@ -595,7 +595,7 @@ opapp_month <- df %>%
               mutate(pod_ons_new = "All")) %>%
   mutate(mean = round(mean, 3))
 
-write_csv(opapp_month, here::here("output", "os_reports", "eol_service", "opapp_month.csv"))
+fwrite(opapp_month, here::here("output", "os_reports", "eol_service", "opapp_month.csv"))
 
 op_month_plot <- ggplot(opapp_month, aes(x = study_month, y = mean
                                          , group = pod_ons_new
@@ -633,7 +633,7 @@ opapp_month_cod <- df %>%
               mutate(codgrp = "All")) %>%
   mutate(mean = round(mean, 3))
 
-write_csv(opapp_month_cod, here::here("output", "os_reports", "eol_service", "opapp_month_cod.csv"))
+fwrite(opapp_month_cod, here::here("output", "os_reports", "eol_service", "opapp_month_cod.csv"))
 
 op_month_cod_plot <- ggplot(opapp_month_cod, aes(x = study_month, y = mean
                                          , group = codgrp
@@ -672,7 +672,7 @@ eladm_count_place <- df %>%
   mutate(count = plyr::round_any(count, 10)
          ,  total = plyr::round_any(total, 10))
 
-write_csv(eladm_count_place, here::here("output", "os_reports", "eol_service", "eladm_count_place.csv"))
+fwrite(eladm_count_place, here::here("output", "os_reports", "eol_service", "eladm_count_place.csv"))
 
 # Number of people with at least one elective admission in the last month of life by month and cause of death
 eladm_count_cause <- df %>%
@@ -681,7 +681,7 @@ eladm_count_cause <- df %>%
   mutate(count = plyr::round_any(count, 10)
          ,  total = plyr::round_any(total, 10))
 
-write_csv(eladm_count_cause, here::here("output", "os_reports", "eol_service", "eladm_count_cause.csv"))
+fwrite(eladm_count_cause, here::here("output", "os_reports", "eol_service", "eladm_count_cause.csv"))
 
 # Mean elective admissions by month and place of death - including all deaths
 eladm_month <- df %>%
@@ -693,7 +693,7 @@ eladm_month <- df %>%
               mutate(pod_ons_new = "All")) %>%
   mutate(mean = round(mean, 3))
 
-write_csv(eladm_month, here::here("output", "os_reports", "eol_service", "eladm_month.csv"))
+fwrite(eladm_month, here::here("output", "os_reports", "eol_service", "eladm_month.csv"))
 
 eladm_month_plot <- ggplot(eladm_month, aes(x = study_month, y = mean
                                       , group = pod_ons_new
@@ -731,7 +731,7 @@ eladm_month_cod <- df %>%
               mutate(codgrp = "All")) %>%
   mutate(mean = round(mean, 3))
 
-write_csv(eladm_month_cod, here::here("output", "os_reports", "eol_service", "eladm_month_cod.csv"))
+fwrite(eladm_month_cod, here::here("output", "os_reports", "eol_service", "eladm_month_cod.csv"))
 
 eladm_month_cod_plot <- ggplot(eladm_month_cod, aes(x = study_month, y = mean
                                               , group = codgrp
@@ -770,7 +770,7 @@ emadm_count_place <- df %>%
   mutate(count = plyr::round_any(count, 10)
        ,  total = plyr::round_any(total, 10))
          
-write_csv(emadm_count_place, here::here("output", "os_reports", "eol_service", "emadm_count_place.csv"))
+fwrite(emadm_count_place, here::here("output", "os_reports", "eol_service", "emadm_count_place.csv"))
 
 # Number of people with at least one emergency admission in the last month of life by month and cause of death
 emadm_count_cause <- df %>%
@@ -779,7 +779,7 @@ emadm_count_cause <- df %>%
   mutate(count = plyr::round_any(count, 10)
          ,  total = plyr::round_any(total, 10))
   
-write_csv(emadm_count_cause, here::here("output", "os_reports", "eol_service", "emadm_count_cause.csv"))
+fwrite(emadm_count_cause, here::here("output", "os_reports", "eol_service", "emadm_count_cause.csv"))
 
 # Mean emergency admissions by month and place of death - including all deaths
 emadm_month <- df %>%
@@ -790,7 +790,7 @@ emadm_month <- df %>%
               summarise(mean = mean(emadm_1m, na.rm = TRUE)) %>%
               mutate(pod_ons_new = "All"))
 
-write_csv(emadm_month, here::here("output", "os_reports", "eol_service", "emadm_month.csv"))
+fwrite(emadm_month, here::here("output", "os_reports", "eol_service", "emadm_month.csv"))
 
 emadm_month_plot <- ggplot(emadm_month, aes(x = study_month, y = mean
                                             , group = pod_ons_new
@@ -828,7 +828,7 @@ emadm_month_cod <- df %>%
               mutate(codgrp = "All")) %>%
   mutate(mean = round(mean, 3))
 
-write_csv(emadm_month_cod, here::here("output", "os_reports", "eol_service", "emadm_month_cod.csv"))
+fwrite(emadm_month_cod, here::here("output", "os_reports", "eol_service", "emadm_month_cod.csv"))
 
 emadm_month_cod_plot <- ggplot(emadm_month_cod, aes(x = study_month, y = mean
                                                     , group = codgrp
@@ -867,7 +867,7 @@ nursing_month <- df %>%
               summarise(mean = mean(nursing_1m, na.rm = TRUE)) %>%
               mutate(pod_ons_new = "All"))
 
-write_csv(nursing_month, here::here("output", "os_reports", "eol_service", "nursing_month.csv"))
+fwrite(nursing_month, here::here("output", "os_reports", "eol_service", "nursing_month.csv"))
 
 nursing_month_plot <- ggplot(nursing_month, aes(x = study_month, y = mean
                                             , group = pod_ons_new
@@ -905,7 +905,7 @@ nursing_month_cod <- df %>%
               mutate(codgrp = "All")) %>%
   mutate(mean = round(mean, 3))
 
-write_csv(nursing_month_cod, here::here("output", "os_reports", "eol_service", "nursing_month_cod.csv"))
+fwrite(nursing_month_cod, here::here("output", "os_reports", "eol_service", "nursing_month_cod.csv"))
 
 nursing_month_cod_plot <- ggplot(nursing_month_cod, aes(x = study_month, y = mean
                                               , group = codgrp
