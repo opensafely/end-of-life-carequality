@@ -11,33 +11,78 @@ actions:
       highly_sensitive:
         cohort: output/os_reports/input_os_reports.csv.gz
            
-  os_report_charts:
-    run: r:latest analysis/os_reports/01_eol_service_report_charts.R
+  os_report_charts_deaths_meds:
+    run: r:latest analysis/os_reports/01_eol_service_report_charts_0_deaths_meds.R
     needs: [generate_study_population_os_reports]
     outputs:
       moderately_sensitive:
         monthly_deaths_place: output/os_reports/eol_service/deaths_month.csv
         monthly_deaths_place_plot: output/os_reports/eol_service/deaths_month_plot.png
-        monthly_gp_timeseries: output/os_reports/eol_service/gp_month_*.png
-        monthly_gp_CSV: output/os_reports/eol_service/gp_month*.csv
         monthly_med_timeseries: output/os_reports/eol_service/eol_med_*.png
         monthly_med_CSV: output/os_reports/eol_service/eol_med*.csv
+        
+  os_report_charts_gp:
+    run: r:latest analysis/os_reports/01_eol_service_report_charts_1_gp.R
+    needs: [generate_study_population_os_reports]
+    outputs:
+      moderately_sensitive:  
+        monthly_gp_timeseries: output/os_reports/eol_service/gp_month_*.png
+        monthly_gp_CSV: output/os_reports/eol_service/gp_month*.csv
+        
+  os_report_charts_ae:
+    run: r:latest analysis/os_reports/01_eol_service_report_charts_2_ae.R
+    needs: [generate_study_population_os_reports]
+    outputs:
+      moderately_sensitive:  
         monthly_aevis_timeseries: output/os_reports/eol_service/aevis_month_*.png
         monthly_aevis_CSV: output/os_reports/eol_service/aevis_month*.csv
+        monthly_aevis_Count: output/os_reports/eol_service/aevis_count*.csv
+                
+  os_report_charts_op:
+    run: r:latest analysis/os_reports/01_eol_service_report_charts_3_op.R
+    needs: [generate_study_population_os_reports]
+    outputs:
+      moderately_sensitive:    
         monthly_op_timeseries: output/os_reports/eol_service/opapp_month_*.png          
         monthly_op_CSV: output/os_reports/eol_service/opapp_month*.csv
+        monthly_op_Count: output/os_reports/eol_service/opapp_count*.csv
+        
+  os_report_charts_el:
+    run: r:latest analysis/os_reports/01_eol_service_report_charts_4_el.R
+    needs: [generate_study_population_os_reports]
+    outputs:
+      moderately_sensitive:     
         monthly_eladm_timeseries: output/os_reports/eol_service/eladm_month_*.png   
         monthly_eladm_CSV: output/os_reports/eol_service/eladm_month*.csv
+        monthly_eladm_Count: output/os_reports/eol_service/eladm_count*.csv
+        
+  os_report_charts_em:
+    run: r:latest analysis/os_reports/01_eol_service_report_charts_5_em.R
+    needs: [generate_study_population_os_reports]
+    outputs:   
+      moderately_sensitive:  
         monthly_emadm_timeseries: output/os_reports/eol_service/emadm_month_*.png   
         monthly_emadm_CSV: output/os_reports/eol_service/emadm_month*.csv
         monthly_emadm_Count: output/os_reports/eol_service/emadm_count*.csv
+               
+  os_report_charts_nursing:
+    run: r:latest analysis/os_reports/01_eol_service_report_charts_6_nursing.R
+    needs: [generate_study_population_os_reports]
+    outputs:
+      moderately_sensitive:  
         monthly_nursing_timeseries: output/os_reports/eol_service/nursing_month_*.png
         monthly_nursing_CSV: output/os_reports/eol_service/nursing_month*.csv 
 
-
   os_report:
     run: r:latest analysis/os_reports/03_eol_service_report_html.R
-    needs: [os_report_charts]
+    needs:
+      - os_report_charts_deaths_meds
+      - os_report_charts_gp
+      - os_report_charts_ae
+      - os_report_charts_op
+      - os_report_charts_el
+      - os_report_charts_em
+      - os_report_charts_nursing
     outputs:
       moderately_sensitive:
         os_report: output/os_reports/eol_service/eol_service_report.html
