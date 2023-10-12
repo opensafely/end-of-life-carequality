@@ -146,7 +146,7 @@ In our previous work we reported that the proportion of people who died at home 
 
 _Table 4: Number of people with at least one medication prescribed in the last month of life by month and place of death_
 ```{r table4}
-knitr::kable(read_csv(here::here("output", "os_reports", "eol_service", "eol_count_place.csv")))
+knitr::kable(read_csv(here::here("output", "os_reports", "eol_service", "eol_med_count_place.csv")))
 
 ```
 
@@ -158,7 +158,7 @@ knitr::include_graphics(here::here("output", "os_reports", "eol_service", "eol_m
 
 _Table 5: Number of people with at least one medication prescribed in the last month of life by month and cause of death_
 ```{r table5}
-knitr::kable(read_csv(here::here("output", "os_reports", "eol_service", "eol_count_cause.csv")))
+knitr::kable(read_csv(here::here("output", "os_reports", "eol_service", "eol_med_count_cause.csv")))
 
 ```
 

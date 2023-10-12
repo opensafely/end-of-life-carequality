@@ -20,11 +20,13 @@ actions:
         monthly_deaths_place_plot: output/os_reports/eol_service/deaths_month_plot.png
         monthly_gp_timeseries: output/os_reports/eol_service/gp_month_*.png
         monthly_gp_CSV: output/os_reports/eol_service/gp_month*.csv
+        monthly_gp_Count: output/os_reports/eol_service/gp_count*.csv
         monthly_med_timeseries: output/os_reports/eol_service/eol_med_*.png
         monthly_med_CSV: output/os_reports/eol_service/eol_med*.csv
+        monthly_med_Count: output/os-reports/eol_service/eol_count*.csv
         monthly_aevis_timeseries: output/os_reports/eol_service/aevis_month_*.png
         monthly_aevis_CSV: output/os_reports/eol_service/aevis_month*.csv
-        monthly_aevis_Ccount: output/os_reports/eol_service/aevis_count*.csv
+        monthly_aevis_Count: output/os_reports/eol_service/aevis_count*.csv
         monthly_op_timeseries: output/os_reports/eol_service/opapp_month_*.png          
         monthly_op_CSV: output/os_reports/eol_service/opapp_month*.csv
         monthly_op_Count: output/os_reports/eol_service/opapp_count*.csv
@@ -36,6 +38,7 @@ actions:
         monthly_emadm_Count: output/os_reports/eol_service/emadm_count*.csv
         monthly_nursing_timeseries: output/os_reports/eol_service/nursing_month_*.png
         monthly_nursing_CSV: output/os_reports/eol_service/nursing_month*.csv 
+        montly_nursing_Count: output/os_reports/eol_service/nursing_count*.csv
 
 
   os_report:

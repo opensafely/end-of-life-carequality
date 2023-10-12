@@ -304,23 +304,23 @@ ggsave(deaths_month_plot, dpi = 600, width = 20, height = 10, unit = "cm"
 
 # Number of people with at least one medication prescribed for symptom management in the last month of life by month and place of death - all deaths
 
-eol_count_place <- df %>%
+eol_med_count_place <- df %>%
   group_by(study_month, pod_ons_new) %>%
   summarise(count = sum(eol_med_1m >= 1), total = n()) %>%
   mutate(count = plyr::round_any(count, 10)
          ,  total = plyr::round_any(total, 10))
 
-fwrite(eol_count_place, here::here("output", "os_reports", "eol_service", "eol_count_place.csv"))
+fwrite(eol_med_count_place, here::here("output", "os_reports", "eol_service", "eol_med_count_place.csv"))
 
 # Number of people with at least one medication prescribed for symptom management in the last month of life by month and cause of death
 
-eol_count_cause <- df %>%
+eol_med_count_cause <- df %>%
   group_by(study_month, codgrp) %>%
   summarise(count = sum(eol_med_1m >= 1), total = n()) %>%
   mutate(count = plyr::round_any(count, 10)
          ,  total = plyr::round_any(total, 10))
 
-fwrite(eol_count_cause, here::here("output", "os_reports", "eol_service", "eol_count_cause.csv"))
+fwrite(eol_med_count_cause, here::here("output", "os_reports", "eol_service", "eol_med_count_cause.csv"))
 
 # Medication use by place of death - including all deaths
 eol_med_month <- df %>%
