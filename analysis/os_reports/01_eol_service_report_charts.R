@@ -302,6 +302,26 @@ ggsave(deaths_month_plot, dpi = 600, width = 20, height = 10, unit = "cm"
 
 # Use of medications for symptom management  -------------------------------------------
 
+# Number of people with at least one medication prescribed for symptom management in the last month of life by month and place of death - all deaths
+
+eol_count_place <- df %>%
+  group_by(study_month, pod_ons_new) %>%
+  summarise(count = sum(eol_med_1m >= 1), total = n()) %>%
+  mutate(count = plyr::round_any(count, 10)
+         ,  total = plyr::round_any(total, 10))
+
+fwrite(eol_count_place, here::here("output", "os_reports", "eol_service", "eol_count_place.csv"))
+
+# Number of people with at least one medication prescribed for symptom management in the last month of life by month and cause of death
+
+eol_count_cause <- df %>%
+  group_by(study_month, codgrp) %>%
+  summarise(count = sum(eol_med_1m >= 1), total = n()) %>%
+  mutate(count = plyr::round_any(count, 10)
+         ,  total = plyr::round_any(total, 10))
+
+fwrite(eol_count_cause, here::here("output", "os_reports", "eol_service", "eol_count_cause.csv"))
+
 # Medication use by place of death - including all deaths
 eol_med_month <- df %>%
   group_by(study_month, pod_ons_new) %>%
@@ -381,6 +401,26 @@ ggsave(eol_med_month_cod_plot, dpi = 600, width = 20, height = 10, unit = "cm"
        , path = here::here("output", "os_reports", "eol_service"))
 
 # General practice interactions -------------------------------------------
+
+# Number of people with at least one general practice interaction in the last month of life by month and place of death - all deaths
+
+gp_count_place <- df %>%
+  group_by(study_month, pod_ons_new) %>%
+  summarise(count = sum(gp_1m >= 1), total = n()) %>%
+  mutate(count = plyr::round_any(count, 10)
+         ,  total = plyr::round_any(total, 10))
+
+fwrite(gp_count_place, here::here("output", "os_reports", "eol_service", "gp_count_place.csv"))
+
+# Number of people with at least one general practice interaction in the last month of life by month and cause of death
+
+gp_count_cause <- df %>%
+  group_by(study_month, codgrp) %>%
+  summarise(count = sum(gp_1m >= 1), total = n()) %>%
+  mutate(count = plyr::round_any(count, 10)
+         ,  total = plyr::round_any(total, 10))
+
+fwrite(gp_count_cause, here::here("output", "os_reports", "eol_service", "gp_count_cause.csv"))
 
 # Mean GP interactions by month and place of death - including all deaths
 gp_month <- df %>%
@@ -857,6 +897,27 @@ ggsave(emadm_month_cod_plot, dpi = 600, width = 20, height = 10, unit = "cm"
        , path = here::here("output", "os_reports", "eol_service"))
 
 # Community nurse contacts---------------------------------------------
+
+# Number of people with at least one community nursing contact in the last month of life by month and place of death - all deaths
+
+nursing_count_place <- df %>%
+  group_by(study_month, pod_ons_new) %>%
+  summarise(count = sum(nursing_1m >= 1), total = n()) %>%
+  mutate(count = plyr::round_any(count, 10)
+         ,  total = plyr::round_any(total, 10))
+
+fwrite(nursing_count_place, here::here("output", "os_reports", "eol_service", "nursing_count_place.csv"))
+
+# Number of people with at least one community nursing contact in the last month of life by month and cause of death
+
+nursing_count_cause <- df %>%
+  group_by(study_month, codgrp) %>%
+  summarise(count = sum(nursing_1m >= 1), total = n()) %>%
+  mutate(count = plyr::round_any(count, 10)
+         ,  total = plyr::round_any(total, 10))
+
+fwrite(nursing_count_cause, here::here("output", "os_reports", "eol_service", "nursing_count_cause.csv"))
+
 
 # Mean number of community nurse contacts by month and place of death - including all deaths
 nursing_month <- df %>%
