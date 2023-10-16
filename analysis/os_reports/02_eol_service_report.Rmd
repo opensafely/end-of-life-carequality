@@ -36,23 +36,15 @@ This report extends on the analysis published [here](https://www.nuffieldtrust.o
     + Place of death
     + Cause of death
 5. A&E visits
-    + Number of people with at least one A&E visit by place of death
-    + Number of people with at least one A&E visit by cause of death
     + Place of death
     + Cause of death
 6. Outpatient appointments
-    + Number of people with at least one outpatient admission by place of death
-    + Number of people with at least one outpatient admission by cause of death
     + Place of death
     + Cause of death   
 7. Elective admissions
-    + Number of people with at least one elective admission by place of death
-    + Number of people with at least one elective admission by cause of death
     + Place of death
     + Cause of death
 8. Emergency admissions
-    + Number of people with at least one emergency admission by place of death
-    + Number of people with at least one emergency admission by cause of death
     + Place of death
     + Cause of death
 9. Community nursing contacts
@@ -109,13 +101,21 @@ knitr::include_graphics(here::here("output", "os_reports", "eol_service", "death
 
 ## 3. General practice interactions
 
-General practice interactions cover information drawn from the appointments table. It represents appointments with GPs but also other other healthcare professionals from the GP practice such as nurses. There is no differentiation between face to face or other types of consultation.
+General practice interactions cover information drawn from the appointments table. It represents appointments with GPs but also other healthcare professionals from the GP practice such as nurses. There is no differentiation between face to face or other types of consultation.
 
 We found previously that use of general practice increased during the first year of the pandemic among people who died at home. _Figure 2_ shows this trend, variation by place of death and how things have changed since February 2021.
 
 We also found in our previous work that there was variation by cause of death and people who died from cancer had many more interactions with general practice than people who died from other causes. _Figure 3_ shows variation in general practice interactions by cause of death over time.
 
+_Table 2_ and _Table 3_ show the number of people with at least one GP interaction in the last month of life by place of death and cause of death. 
+
 ### Place of death
+
+_Table 2: Number of people with at least one GP interaction in the last month of life by month and place of death_
+```{r table2}
+knitr::kable(read_csv(here::here("output", "os_reports", "eol_service", "gp_count_place.csv")))
+
+```
 
 _Figure 2: Average number of GP interactions in the last month of life by month and place of death_
 ```{r fig2, fig.height=1, fig.width=2, fig.cap=""}
@@ -123,6 +123,12 @@ knitr::include_graphics(here::here("output", "os_reports", "eol_service", "gp_mo
 ```
 
 ### Cause of death
+
+_Table 3: Number of people with at least one A&E visit in the last month of life by month and cause of death_
+```{r table3}
+knitr::kable(read_csv(here::here("output", "os_reports", "eol_service", "gp_count_cause.csv")))
+
+```
 
 _Figure 3: Average number of GP interactions in the last month of life by month and cause of death_
 ```{r fig3, fig.height=1, fig.width=2, fig.cap=""}
@@ -134,15 +140,27 @@ knitr::include_graphics(here::here("output", "os_reports", "eol_service", "gp_mo
 
 ## 4. Medications for symptom management
 
-In our previous work we reported that the proportion of people who died at home with medications for symptom management that were prescribed by GPs in in the last month of life increased in the pandemic. This may have reflected changes in anticipatory prescribing to ensure that medications were available to patients when needed. _Figure 4_ and _Figure 5_ show how things have changed subsequently.
+In our previous work we reported that the proportion of people who died at home with medications for symptom management that were prescribed by GPs in the last month of life increased in the pandemic. This may have reflected changes in anticipatory prescribing to ensure that medications were available to patients when needed. _Figure 4_ and _Figure 5_ show how things have changed subsequently. _Table 4_ and _Table 5_ show the number of people with at least one medication prescribed in the last month of life by place of death and cause of death. 
 
 ### Place of death
+
+_Table 4: Number of people with at least one medication prescribed in the last month of life by month and place of death_
+```{r table4}
+knitr::kable(read_csv(here::here("output", "os_reports", "eol_service", "eol_med_count_place.csv")))
+
+```
 
 _Figure 4: Average number of medications prescribed in the last month of life by month and place of death_
 ```{r fig4, fig.height=1, fig.width=2, fig.cap=""}
 knitr::include_graphics(here::here("output", "os_reports", "eol_service", "eol_med_month_plot.png"))
 ```
 ### Cause of death
+
+_Table 5: Number of people with at least one medication prescribed in the last month of life by month and cause of death_
+```{r table5}
+knitr::kable(read_csv(here::here("output", "os_reports", "eol_service", "eol_med_count_cause.csv")))
+
+```
 
 _Figure 5: Average number of medications prescribed in the last month of life by month and cause of death_
 ```{r fig5, fig.height=1, fig.width=2, fig.cap=""}
@@ -154,7 +172,7 @@ knitr::include_graphics(here::here("output", "os_reports", "eol_service", "eol_m
 
 ## 5. A&E Visits
 
-There was an increase in the use of Accident and Emergency (A&E) during the pandemic for people who died at home, particularly for people who died from dementia and Alzheimer's disease. _Figure 6_ and _Figure 7_ shows this trend, variation by place of death, cause of death and how things have changed since February 2021. _Table 6_ and _Table 7_ show the number of people who have at least one A&E visit in the last month of life by month, by place of death and cause of death. 
+There was an increase in the use of Accident and Emergency (A&E) during the pandemic for people who died at home, particularly for people who died from dementia and Alzheimer's disease. _Figure 6_ and _Figure 7_ shows this trend, variation by place of death, cause of death and how things have changed since February 2021. _Table 6_ and _Table 7_ show the number of people with at least one A&E visit in the last month of life by place of death and cause of death. 
 
 ### Place of death
 
@@ -187,7 +205,7 @@ knitr::include_graphics(here::here("output", "os_reports", "eol_service", "aevis
 
 ## 6. Outpatient appoitnments
 
-People who died at home during the pandemic had more outpatient appointments overall, however, this will reflect changes in who was dying at home. Deaths from cancer increased at the start of the pandemic for example. For some causes of death like circulatory diseases the number of outpatient appointments decreased. _Table 8_ and _Table 9_ show the number of people who had at least one outpatient appointment in the last month of life by month, by place of death and cause of death. _Figure 8_ and _Figure 9_ highlight these and subsequent trends.
+People who died at home during the pandemic had more outpatient appointments overall, however, this will reflect changes in who was dying at home. Deaths from cancer increased at the start of the pandemic for example. For some causes of death like circulatory diseases the number of outpatient appointments decreased.  _Figure 8_ and _Figure 9_ highlight these and subsequent trends._Table 8_ and _Table 9_ show the number of people who had at least one outpatient appointment in the last month of life by place of death and cause of death.
 
 ### Place of death 
 
@@ -220,7 +238,7 @@ knitr::include_graphics(here::here("output", "os_reports", "eol_service", "opapp
 
 ## 7. Elective admissions
 
-People who died at home were less likely to have planned hospital admissions during the pandemic. This reflected reductions in planned care across the board, as the NHS focused on responding to Covid-19. _Figure 10_ and _Figure 11_ show this trend and how things have changed since February 2021. _Table 10_ and _Table 11_ show the number of people who had at least one elective admission in the last month of life by month, by place of death and cause of death. 
+People who died at home were less likely to have planned hospital admissions during the pandemic. This reflected reductions in planned care across the board, as the NHS focused on responding to Covid-19. _Figure 10_ and _Figure 11_ show this trend and how things have changed since February 2021. _Table 10_ and _Table 11_ show the number of people who had at least one elective admission in the last month of life by place of death and cause of death. 
 
 ### Place of death
 
@@ -259,7 +277,7 @@ emadm_month <- read_csv(here::here("output", "os_reports", "eol_service", "emadm
   group_by(study_month) %>%
   summarise(mean = mean(mean,na.rm=TRUE))
 ```
-Emergency admissions towards the end of life are often not the best care for patients. _Table 12_ and _Table 13_ show the number of people who had at least one emergency admission in the last month of life by month by place of death and cause of death. We previously reported that over the last three months of life, average emergency admissions per person during the pandemic were similar to pre-pandemic levels. _Figure 12_ and _Figure 13_ show this trend and how things have changed in the intervening period. In the most recent month (`r emadm_month %>% select(study_month) %>% slice(1) %>% pull`) there were an average of `r emadm_month %>% select(mean) %>% slice(1) %>% pull` emergency admissions for patients who died at home recorded in OpenSAFELY-TPP.
+Emergency admissions towards the end of life are often not the best care for patients. _Table 12_ and _Table 13_ show the number of people who had at least one emergency admission in the last month of life by place of death and cause of death. We previously reported that over the last three months of life, average emergency admissions per person during the pandemic were similar to pre-pandemic levels. _Figure 12_ and _Figure 13_ show this trend and how things have changed in the intervening period. In the most recent month (`r emadm_month %>% select(study_month) %>% slice(1) %>% pull`) there were an average of `r emadm_month %>% select(mean) %>% slice(1) %>% pull` emergency admissions for patients who died at home recorded in OpenSAFELY-TPP.
 
 ### Place of death
 
@@ -291,9 +309,15 @@ knitr::include_graphics(here::here("output", "os_reports", "eol_service", "emadm
 
 ### 9. Community nursing contacts
 
-In our previous work we reported that people who died at home during the pandemic were as likely as people who died at home pre-pandemic to have community nursing team care coded in their GP record in the last month of life. _Figure 14_ and _Figure 15_ show this pattern as well as subsequent changes. 
+In our previous work we reported that people who died at home during the pandemic were as likely as people who died at home pre-pandemic to have community nursing team care coded in their GP record in the last month of life. _Figure 14_ and _Figure 15_ show this pattern as well as subsequent changes. _Table 14_ and _Table 15_ show the number of people with at least one emergency admission in the last month of life by month and place of death. 
 
 ### Place of death
+
+_Table 14: Number of people with at least one emergency admission in the last month of life by month and place of death_
+```{r table14}
+knitr::kable(read_csv(here::here("output", "os_reports", "eol_service", "nursing_count_place.csv")))
+
+```
 
 _Figure 14: Average number of community nursing contacts in the last month of life by month and place of death_
 ```{r fig14, fig.height=1, fig.width=2, fig.cap=""}
@@ -301,6 +325,12 @@ knitr::include_graphics(here::here("output", "os_reports", "eol_service", "nursi
 ```
 
 ### Cause of death
+
+_Table 15: Number of people with at least one community nursing contact in the last month of life by month and cause of death_
+```{r table15}
+knitr::kable(read_csv(here::here("output", "os_reports", "eol_service", "nursing_count_cause.csv")))
+
+```
 
 _Figure 15: Average number of community nursing contacts in the last month of life by month and cause of death_
 ```{r fig15, fig.height=1, fig.width=2, fig.cap=""}
