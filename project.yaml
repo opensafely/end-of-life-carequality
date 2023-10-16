@@ -23,7 +23,7 @@ actions:
         monthly_gp_Count: output/os_reports/eol_service/gp_count*.csv
         monthly_med_timeseries: output/os_reports/eol_service/eol_med_*.png
         monthly_med_CSV: output/os_reports/eol_service/eol_med*.csv
-        monthly_med_Count: output/os-reports/eol_service/eol_count*.csv
+        monthly_med_Count: output/os_reports/eol_service/eol_med_count*.csv
         monthly_aevis_timeseries: output/os_reports/eol_service/aevis_month_*.png
         monthly_aevis_CSV: output/os_reports/eol_service/aevis_month*.csv
         monthly_aevis_Count: output/os_reports/eol_service/aevis_count*.csv
