@@ -324,10 +324,12 @@ eol_med_count_cause <- df %>%
 
 fwrite(eol_med_count_cause, here::here("output", "os_reports", "eol_service", "eol_med_count_cause.csv"))
 
+
 # Medication use by place of death - including all deaths
 eol_med_month <- df %>%
   group_by(study_month, pod_ons_new) %>%
-  summarise(mean = mean(eol_med_1m, na.rm = TRUE)) %>%
+  summarise(mean = mean(eol_med_1m, na.rm = TRUE)
+            , sd = sd(eol_med_1m, na.rm = TRUE)) %>%
   bind_rows(df %>%
               group_by(study_month) %>%
               summarise(mean = mean(eol_med_1m, na.rm = TRUE)) %>%
@@ -363,11 +365,13 @@ ggsave(eol_med_month_plot, dpi = 600, width = 20, height = 10, unit = "cm"
        , filename = "eol_med_month_plot.png"
        , path = here::here("output", "os_reports", "eol_service"))
 
+
 # Medication use by month and cause of death
 
 eol_med_month_cod <- df %>%
   group_by(study_month, codgrp) %>%
-  summarise(mean = mean(eol_med_1m, na.rm = TRUE)) %>%
+  summarise(mean = mean(eol_med_1m, na.rm = TRUE)
+            , sd = sd(eol_med_1m, na.rm = TRUE)) %>%
   bind_rows(df %>%
               group_by(study_month) %>%
               summarise(mean = mean(eol_med_1m, na.rm = TRUE)) %>%
@@ -426,10 +430,12 @@ gp_count_cause <- df %>%
 
 fwrite(gp_count_cause, here::here("output", "os_reports", "eol_service", "gp_count_cause.csv"))
 
+
 # Mean GP interactions by month and place of death - including all deaths
 gp_month <- df %>%
   group_by(study_month, pod_ons_new) %>%
-  summarise(mean = mean(gp_1m, na.rm = TRUE)) %>%
+  summarise(mean = mean(gp_1m, na.rm = TRUE)
+            , sd = sd(gp_1m, na.rm = TRUE)) %>%
   bind_rows(df %>%
               group_by(study_month) %>%
               summarise(mean = mean(gp_1m, na.rm = TRUE)) %>%
@@ -468,7 +474,8 @@ ggsave(gp_month_plot, dpi = 600, width = 20, height = 10, unit = "cm"
 # Mean GP interactions by month and cause of death
 gp_month_cod <- df %>%
   group_by(study_month, codgrp) %>%
-  summarise(mean = mean(gp_1m, na.rm = TRUE)) %>%
+  summarise(mean = mean(gp_1m, na.rm = TRUE)
+            , sd = sd(gp_1m, na.rm = TRUE)) %>%
   bind_rows(df %>%
               group_by(study_month) %>%
               summarise(mean = mean(gp_1m, na.rm = TRUE)) %>%
@@ -532,7 +539,8 @@ fwrite(aevis_count_cause, here::here("output", "os_reports", "eol_service", "aev
 # mean A&E visits in month leading up to death, by month, by place of death.
 aevis_month <- df %>% 
   group_by(study_month, pod_ons_new) %>%
-  summarise(mean = mean(aevis_1m, na.rm = TRUE)) %>%
+  summarise(mean = mean(aevis_1m, na.rm = TRUE)
+            , sd = sd(aevis_1m, na.rm = TRUE)) %>%
   bind_rows(df %>%
               group_by(study_month) %>%
               summarise(mean = mean(aevis_1m, na.rm = TRUE)) %>%
@@ -573,7 +581,8 @@ ggsave(aevis_month_plot, dpi = 600, width = 20, height = 10, unit = "cm"
 # Mean A&E visits in month leading up to death, by month, by cause of death
 aevis_month_cod <- df %>% 
   group_by(study_month, codgrp) %>%
-  summarise(mean = mean(aevis_1m, na.rm = TRUE)) %>%
+  summarise(mean = mean(aevis_1m, na.rm = TRUE)
+            , sd = sd(aevis_1m, na.rm = TRUE)) %>%
   bind_rows(df %>%
               group_by(study_month) %>%
               summarise(mean = mean(aevis_1m, na.rm = TRUE)) %>%
@@ -633,10 +642,12 @@ opapp_count_cause <- df %>%
 
 fwrite(opapp_count_cause, here::here("output", "os_reports", "eol_service", "opapp_count_cause.csv"))
 
+
 # Mean outpatient appointments by month and place of death - including all deaths
 opapp_month <- df %>%
   group_by(study_month, pod_ons_new) %>%
-  summarise(mean = mean(opapp_1m, na.rm = TRUE)) %>%
+  summarise(mean = mean(opapp_1m, na.rm = TRUE)
+            , sd = sd(opapp_1m, na.rm =TRUE)) %>%
   bind_rows(df %>%
               group_by(study_month) %>%
               summarise(mean = mean(opapp_1m, na.rm = TRUE)) %>%
@@ -671,10 +682,12 @@ ggsave(op_month_plot, dpi = 600, width = 20, height = 10, unit = "cm"
        , filename = "opapp_month_plot.png"
        , path = here::here("output", "os_reports", "eol_service"))
 
+
 # Mean outpatient appointments by month and cause of death - including all deaths
 opapp_month_cod <- df %>%
   group_by(study_month, codgrp) %>%
-  summarise(mean = mean(opapp_1m, na.rm = TRUE)) %>%
+  summarise(mean = mean(opapp_1m, na.rm = TRUE)
+            , sd = sd(opapp_1m, na.rm = TRUE)) %>%
   bind_rows(df %>%
               group_by(study_month) %>%
               summarise(mean = mean(opapp_1m, na.rm = TRUE)) %>%
@@ -733,10 +746,12 @@ eladm_count_cause <- df %>%
 
 fwrite(eladm_count_cause, here::here("output", "os_reports", "eol_service", "eladm_count_cause.csv"))
 
+
 # Mean elective admissions by month and place of death - including all deaths
 eladm_month <- df %>%
   group_by(study_month, pod_ons_new) %>%
-  summarise(mean = mean(eladm_1m, na.rm = TRUE)) %>%
+  summarise(mean = mean(eladm_1m, na.rm = TRUE)
+            , sd = sd(eladm_1m, na.rm = TRUE)) %>%
   bind_rows(df %>%
               group_by(study_month) %>%
               summarise(mean = mean(eladm_1m, na.rm = TRUE)) %>%
@@ -771,10 +786,12 @@ ggsave(eladm_month_plot, dpi = 600, width = 20, height = 10, unit = "cm"
        , filename = "eladm_month_plot.png"
        , path = here::here("output", "os_reports", "eol_service"))
 
+
 # Mean elective admissions by month and cause of death
 eladm_month_cod <- df %>%
   group_by(study_month, codgrp) %>%
-  summarise(mean = mean(eladm_1m, na.rm = TRUE)) %>%
+  summarise(mean = mean(eladm_1m, na.rm = TRUE)
+            , sd = sd(eladm_1m, na.rm = TRUE)) %>%
   bind_rows(df %>%
               group_by(study_month) %>%
               summarise(mean = mean(eladm_1m, na.rm = TRUE)) %>%
@@ -833,10 +850,12 @@ emadm_count_cause <- df %>%
   
 fwrite(emadm_count_cause, here::here("output", "os_reports", "eol_service", "emadm_count_cause.csv"))
 
+
 # Mean emergency admissions by month and place of death - including all deaths
 emadm_month <- df %>%
   group_by(study_month, pod_ons_new) %>%
-  summarise(mean = mean(emadm_1m, na.rm = TRUE)) %>%
+  summarise(mean = mean(emadm_1m, na.rm = TRUE)
+            , sd = sd(emadm_1m, na.rm = TRUE)) %>%
   bind_rows(df %>%
               group_by(study_month) %>%
               summarise(mean = mean(emadm_1m, na.rm = TRUE)) %>%
@@ -870,10 +889,12 @@ ggsave(emadm_month_plot, dpi = 600, width = 20, height = 10, unit = "cm"
        , filename = "emadm_month_plot.png"
        , path = here::here("output", "os_reports", "eol_service"))
 
+
 # Mean emergency admissions by month and cause of death
 emadm_month_cod <- df %>%
   group_by(study_month, codgrp) %>%
-  summarise(mean = mean(emadm_1m, na.rm = TRUE)) %>%
+  summarise(mean = mean(emadm_1m, na.rm = TRUE)
+            , sd = sd(emadm_1m, na.rm = TRUE)) %>%
   bind_rows(df %>%
               group_by(study_month) %>%
               summarise(mean = mean(emadm_1m, na.rm = TRUE)) %>%
@@ -923,23 +944,6 @@ fwrite(nursing_count_place, here::here("output", "os_reports", "eol_service", "n
 
 # Number of people with at least one community nursing contact in the last month of life by month and cause of death
 
-# Rounding and redaction - test code
-rounding <- function(vars) {
-  case_when(vars >= 7 ~ round(vars/10) * 10)
-}
-
-nursing_count_cause <- df %>%
-  group_by(study_month, codgrp) %>%
-  summarise(count = sum(nursing_1m >= 1), total = n()) %>%
-  subset(count >=7) %>%
-  mutate(proportion = count / total
-         ,  count_round = rounding(count)
-         ,  total_round = rounding(total))
-
-
-fwrite(nursing_count_cause, here::here("output", "os_reports", "eol_service", "nursing_count_cause.csv"))
-
-
 nursing_count_cause <- df %>%
   group_by(study_month, codgrp) %>%
   summarise(count = sum(nursing_1m >= 1), total = n()) %>%
@@ -947,14 +951,14 @@ nursing_count_cause <- df %>%
          ,  count = plyr::round_any(count, 10)
          ,  total = plyr::round_any(total, 10))
 
-
 fwrite(nursing_count_cause, here::here("output", "os_reports", "eol_service", "nursing_count_cause.csv"))
 
 
 # Mean number of community nurse contacts by month and place of death - including all deaths
 nursing_month <- df %>%
   group_by(study_month, pod_ons_new) %>%
-  summarise(mean = mean(nursing_1m, na.rm = TRUE)) %>%
+  summarise(mean = mean(nursing_1m, na.rm = TRUE)
+              , sd = sd(nursing_1m, na.rm = TRUE)) %>%
   bind_rows(df %>%
               group_by(study_month) %>%
               summarise(mean = mean(nursing_1m, na.rm = TRUE)) %>%
@@ -988,10 +992,12 @@ ggsave(nursing_month_plot, dpi = 600, width = 20, height = 10, unit = "cm"
        , filename = "nursing_month_plot.png"
        , path = here::here("output", "os_reports", "eol_service"))
 
+
 # Mean community nursing interactions by month and cause of death
 nursing_month_cod <- df %>%
   group_by(study_month, codgrp) %>%
-  summarise(mean = mean(nursing_1m, na.rm = TRUE)) %>%
+  summarise(mean = mean(nursing_1m, na.rm = TRUE)
+            , sd = sd(nursing_1m, na.rm = TRUE)) %>%
   bind_rows(df %>%
               group_by(study_month) %>%
               summarise(mean = mean(nursing_1m, na.rm = TRUE)) %>%
