@@ -306,7 +306,7 @@ ggsave(deaths_month_plot, dpi = 600, width = 20, height = 10, unit = "cm"
 
 eol_med_count_place <- df %>%
   group_by(study_month, pod_ons_new) %>%
-  summarise(count = sum(eol_med_1m >= 1), total = n()) %>%
+  summarise(count = sum(eol_med_1m >= 1, na.rm = TRUE), total = n()) %>%
   mutate (proportion = count / total
          ,  count = plyr::round_any(count, 10)
          ,  total = plyr::round_any(total, 10))
@@ -317,7 +317,7 @@ fwrite(eol_med_count_place, here::here("output", "os_reports", "eol_service", "e
 
 eol_med_count_cause <- df %>%
   group_by(study_month, codgrp) %>%
-  summarise(count = sum(eol_med_1m >= 1), total = n()) %>%
+  summarise(count = sum(eol_med_1m >= 1, na.rm = TRUE), total = n()) %>%
   mutate (proportion = count / total
          ,  count = plyr::round_any(count, 10)
          ,  total = plyr::round_any(total, 10))
@@ -412,7 +412,7 @@ ggsave(eol_med_month_cod_plot, dpi = 600, width = 20, height = 10, unit = "cm"
 
 gp_count_place <- df %>%
   group_by(study_month, pod_ons_new) %>%
-  summarise(count = sum(gp_1m >= 1), total = n()) %>%
+  summarise(count = sum(gp_1m >= 1, na.rm = TRUE), total = n()) %>%
   mutate(proportion = count / total
          ,  count = plyr::round_any(count, 10)
          ,  total = plyr::round_any(total, 10))
@@ -423,7 +423,7 @@ fwrite(gp_count_place, here::here("output", "os_reports", "eol_service", "gp_cou
 
 gp_count_cause <- df %>%
   group_by(study_month, codgrp) %>%
-  summarise(count = sum(gp_1m >= 1), total = n()) %>%
+  summarise(count = sum(gp_1m >= 1, na.rm = TRUE), total = n()) %>%
   mutate(proportion = count / total
          ,  count = plyr::round_any(count, 10)
          ,  total = plyr::round_any(total, 10))
@@ -517,7 +517,7 @@ ggsave(gp_month_cod_plot, dpi = 600, width = 20, height = 10, unit = "cm"
 
 aevis_count_place <- df %>%
   group_by(study_month, pod_ons_new) %>%
-  summarise(count = sum(aevis_1m >= 1), total = n()) %>%
+  summarise(count = sum(aevis_1m >= 1, na.rm = TRUE), total = n()) %>%
   mutate(proportion = count / total
          ,  count = plyr::round_any(count, 10)
          ,  total = plyr::round_any(total, 10))
@@ -528,7 +528,7 @@ fwrite(aevis_count_place, here::here("output", "os_reports", "eol_service", "aev
 
 aevis_count_cause <- df %>%
   group_by(study_month, codgrp) %>%
-  summarise(count = sum(aevis_1m >= 1), total = n()) %>%
+  summarise(count = sum(aevis_1m >= 1, na.rm = TRUE), total = n()) %>%
   mutate(proportion = count / total
          ,  count = plyr::round_any(count, 10)
          ,  total = plyr::round_any(total, 10))
@@ -624,7 +624,7 @@ ggsave(aevis_month_cod_plot, dpi = 600, width = 20, height = 10, unit = "cm"
 
 opapp_count_place <- df %>%
   group_by(study_month, pod_ons_new) %>%
-  summarise(count = sum(opapp_1m >= 1), total = n()) %>%
+  summarise(count = sum(opapp_1m >= 1, na.rm = TRUE), total = n()) %>%
   mutate(proportion = count / total
          ,  count = plyr::round_any(count, 10)
          ,  total = plyr::round_any(total, 10))
@@ -635,7 +635,7 @@ fwrite(opapp_count_place, here::here("output", "os_reports", "eol_service", "opa
 
 opapp_count_cause <- df %>%
   group_by(study_month, codgrp) %>%
-  summarise(count = sum(opapp_1m >= 1), total = n()) %>%
+  summarise(count = sum(opapp_1m >= 1, na.rm = TRUE), total = n()) %>%
   mutate(proportion = count / total
          ,  count = plyr::round_any(count, 10)
          ,  total = plyr::round_any(total, 10))
@@ -729,7 +729,7 @@ ggsave(op_month_cod_plot, dpi = 600, width = 20, height = 10, unit = "cm"
 
 eladm_count_place <- df %>%
   group_by(study_month, pod_ons_new) %>%
-  summarise(count = sum(eladm_1m >= 1), total = n()) %>%
+  summarise(count = sum(eladm_1m >= 1, na.rm = TRUE), total = n()) %>%
   mutate(proportion = count / total
          ,  count = plyr::round_any(count, 10)
          ,  total = plyr::round_any(total, 10))
@@ -739,7 +739,7 @@ fwrite(eladm_count_place, here::here("output", "os_reports", "eol_service", "ela
 # Number of people with at least one elective admission in the last month of life by month and cause of death
 eladm_count_cause <- df %>%
   group_by(study_month, codgrp) %>%
-  summarise(count = sum(eladm_1m >= 1), total = n()) %>%
+  summarise(count = sum(eladm_1m >= 1, na.rm = TRUE), total = n()) %>%
   mutate(proportion = count / total
          , count = plyr::round_any(count, 10)
          ,  total = plyr::round_any(total, 10))
@@ -833,7 +833,7 @@ ggsave(eladm_month_cod_plot, dpi = 600, width = 20, height = 10, unit = "cm"
 
 emadm_count_place <- df %>%
   group_by(study_month, pod_ons_new) %>%
-  summarise(count = sum(emadm_1m >= 1), total = n()) %>%
+  summarise(count = sum(emadm_1m >= 1, na.rm = TRUE), total = n()) %>%
   mutate(proportion = count / total
        ,  count = plyr::round_any(count, 10)
        ,  total = plyr::round_any(total, 10))
@@ -843,7 +843,7 @@ fwrite(emadm_count_place, here::here("output", "os_reports", "eol_service", "ema
 # Number of people with at least one emergency admission in the last month of life by month and cause of death
 emadm_count_cause <- df %>%
   group_by(study_month, codgrp) %>%
-  summarise(count = sum(emadm_1m >= 1), total = n()) %>%
+  summarise(count = sum(emadm_1m >= 1, na.rm = TRUE), total = n()) %>%
   mutate(proportion = count / total
          ,  count = plyr::round_any(count, 10)
          ,  total = plyr::round_any(total, 10))
@@ -935,7 +935,7 @@ ggsave(emadm_month_cod_plot, dpi = 600, width = 20, height = 10, unit = "cm"
 
 nursing_count_place <- df %>%
   group_by(study_month, pod_ons_new) %>%
-  summarise(count = sum(nursing_1m >= 1), total = n()) %>%
+  summarise(count = sum(nursing_1m >= 1, na.rm = TRUE), total = n()) %>%
   mutate(proportion = count / total
          ,  count = plyr::round_any(count, 10)
          ,  total = plyr::round_any(total, 10))
@@ -946,7 +946,7 @@ fwrite(nursing_count_place, here::here("output", "os_reports", "eol_service", "n
 
 nursing_count_cause <- df %>%
   group_by(study_month, codgrp) %>%
-  summarise(count = sum(nursing_1m >= 1), total = n()) %>%
+  summarise(count = sum(nursing_1m >= 1, na.rm = TRUE), total = n()) %>%
   mutate(proportion = count / total
          ,  count = plyr::round_any(count, 10)
          ,  total = plyr::round_any(total, 10))
