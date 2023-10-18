@@ -132,3 +132,8 @@ dataset.palliative_3m = clinical_events.where(
 ).where(
     clinical_events.date.is_on_or_between(dod_ons - days(90), dod_ons)
 ).count_for_patient()
+
+## A&E visits last 3 months of life
+dataset.aevis_3m = emergency_care_attendances.where(
+    emergency_care_attendances.arrival_date.is_on_or_between(dod_ons - days(90), dod_ons)
+).count_for_patient()
