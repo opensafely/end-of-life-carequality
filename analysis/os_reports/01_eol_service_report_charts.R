@@ -304,25 +304,42 @@ ggsave(deaths_month_plot, dpi = 600, width = 20, height = 10, unit = "cm"
 
 # Number of people with at least one medication prescribed for symptom management in the last month of life by month and place of death - all deaths
 
-eol_med_count_place <- df %>%
+eol_med_count_place_RAW <- df %>%
   group_by(study_month, pod_ons_new) %>%
   summarise(count = sum(eol_med_1m >= 1, na.rm = TRUE), total = n()) %>%
-  mutate (proportion = count / total
-         ,  count = plyr::round_any(count, 10)
-         ,  total = plyr::round_any(total, 10))
+  mutate (proportion = round(count / total *100,1))
 
-fwrite(eol_med_count_place, here::here("output", "os_reports", "eol_service", "eol_med_count_place.csv"))
+fwrite(eol_med_count_place_RAW, here::here("output", "os_reports", "eol_service", "eol_med_count_place_RAW.csv"))
+
+eol_med_count_place_ROUND <- df %>%
+  group_by(study_month, pod_ons_new) %>%
+  summarise(count = sum(eol_med_1m >= 1, na.rm = TRUE), total = n()) %>%
+  mutate (count = plyr::round_any(count, 10)
+          ,  total = plyr::round_any(total, 10)
+          ,  proportion = round(count / total * 100, 1))
+
+fwrite(eol_med_count_place_ROUND, here::here("output", "os_reports", "eol_service", "eol_med_count_place_ROUND.csv"))
+
 
 # Number of people with at least one medication prescribed for symptom management in the last month of life by month and cause of death
 
-eol_med_count_cause <- df %>%
+
+eol_med_count_cause_RAW <- df %>%
   group_by(study_month, codgrp) %>%
   summarise(count = sum(eol_med_1m >= 1, na.rm = TRUE), total = n()) %>%
-  mutate (proportion = count / total
-         ,  count = plyr::round_any(count, 10)
-         ,  total = plyr::round_any(total, 10))
+  mutate (proportion = round(count / total *100,1))
 
-fwrite(eol_med_count_cause, here::here("output", "os_reports", "eol_service", "eol_med_count_cause.csv"))
+fwrite(eol_med_count_cause_RAW, here::here("output", "os_reports", "eol_service", "eol_med_count_cause_RAW.csv"))
+
+
+eol_med_count_cause_ROUND <- df %>%
+  group_by(study_month, codgrp) %>%
+  summarise(count = sum(eol_med_1m >= 1, na.rm = TRUE), total = n()) %>%
+  mutate (count = plyr::round_any(count, 10)
+         ,  total = plyr::round_any(total, 10)
+         ,  proportion = round(count / total *100, 1))
+
+fwrite(eol_med_count_cause_ROUND, here::here("output", "os_reports", "eol_service", "eol_med_count_cause_ROUND.csv"))
 
 
 # Medication use by place of death - including all deaths
@@ -410,26 +427,40 @@ ggsave(eol_med_month_cod_plot, dpi = 600, width = 20, height = 10, unit = "cm"
 
 # Number of people with at least one general practice interaction in the last month of life by month and place of death - all deaths
 
-gp_count_place <- df %>%
+gp_count_place_RAW <- df %>%
   group_by(study_month, pod_ons_new) %>%
   summarise(count = sum(gp_1m >= 1, na.rm = TRUE), total = n()) %>%
-  mutate(proportion = count / total
-         ,  count = plyr::round_any(count, 10)
-         ,  total = plyr::round_any(total, 10))
+  mutate(proportion = round(count / total*100,1))
 
-fwrite(gp_count_place, here::here("output", "os_reports", "eol_service", "gp_count_place.csv"))
+fwrite(gp_count_place_RAW, here::here("output", "os_reports", "eol_service", "gp_count_place_RAW.csv"))
+
+gp_count_place_ROUND <- df %>%
+  group_by(study_month, pod_ons_new) %>%
+  summarise(count = sum(gp_1m >= 1, na.rm = TRUE), total = n()) %>%
+  mutate(count = plyr::round_any(count, 10)
+          , total = plyr::round_any(total, 10)
+          , proportion = round(count / total*100,1))
+
+fwrite(gp_count_place_ROUND, here::here("output", "os_reports", "eol_service", "gp_count_place_ROUND.csv"))
+
 
 # Number of people with at least one general practice interaction in the last month of life by month and cause of death
 
-gp_count_cause <- df %>%
+gp_count_cause_RAW <- df %>%
   group_by(study_month, codgrp) %>%
   summarise(count = sum(gp_1m >= 1, na.rm = TRUE), total = n()) %>%
-  mutate(proportion = count / total
-         ,  count = plyr::round_any(count, 10)
-         ,  total = plyr::round_any(total, 10))
+  mutate(proportion = round(count / total*100,1))
 
-fwrite(gp_count_cause, here::here("output", "os_reports", "eol_service", "gp_count_cause.csv"))
+fwrite(gp_count_cause_RAW, here::here("output", "os_reports", "eol_service", "gp_count_cause_RAW.csv"))
 
+gp_count_cause_ROUND <- df %>%
+  group_by(study_month, codgrp) %>%
+  summarise(count = sum(gp_1m >= 1, na.rm = TRUE), total = n()) %>%
+  mutate(count = plyr::round_any(count, 10)
+         ,  total = plyr::round_any(total, 10)
+         , proportion = round(count / total*100,1))
+
+fwrite(gp_count_cause_ROUND, here::here("output", "os_reports", "eol_service", "gp_count_cause_ROUND.csv"))
 
 # Mean GP interactions by month and place of death - including all deaths
 gp_month <- df %>%
@@ -515,25 +546,43 @@ ggsave(gp_month_cod_plot, dpi = 600, width = 20, height = 10, unit = "cm"
 
 # Number of people with at least one A&E visit in the last month of life by month and place of death - all deaths
 
-aevis_count_place <- df %>%
+aevis_count_place_RAW <- df %>%
   group_by(study_month, pod_ons_new) %>%
   summarise(count = sum(aevis_1m >= 1, na.rm = TRUE), total = n()) %>%
-  mutate(proportion = count / total
-         ,  count = plyr::round_any(count, 10)
-         ,  total = plyr::round_any(total, 10))
+  mutate(proportion = round(count / total*100,1))
 
-fwrite(aevis_count_place, here::here("output", "os_reports", "eol_service", "aevis_count_place.csv"))
+fwrite(aevis_count_place_RAW, here::here("output", "os_reports", "eol_service", "aevis_count_place_RAW.csv"))
+
+aevis_count_place_ROUND <- df %>%
+  group_by(study_month, pod_ons_new) %>%
+  summarise(count = sum(aevis_1m >= 1, na.rm = TRUE), total = n()) %>%
+  mutate(   count = plyr::round_any(count, 10)
+         ,  total = plyr::round_any(total, 10)
+         ,  proportion = round(count/total*100,1))
+
+fwrite(aevis_count_place_ROUND, here::here("output", "os_reports", "eol_service", "aevis_count_place_ROUND.csv"))
+
 
 # Number of people with at least one A&E visit in the last month of life by month and cause of death
 
-aevis_count_cause <- df %>%
+aevis_count_cause_RAW <- df %>%
   group_by(study_month, codgrp) %>%
   summarise(count = sum(aevis_1m >= 1, na.rm = TRUE), total = n()) %>%
   mutate(proportion = count / total
          ,  count = plyr::round_any(count, 10)
          ,  total = plyr::round_any(total, 10))
 
-fwrite(aevis_count_cause, here::here("output", "os_reports", "eol_service", "aevis_count_cause.csv"))
+fwrite(aevis_count_cause_RAW, here::here("output", "os_reports", "eol_service", "aevis_count_cause_RAW.csv"))
+
+aevis_count_cause_ROUND <- df %>%
+  group_by(study_month, codgrp) %>%
+  summarise(count = sum(aevis_1m >= 1, na.rm = TRUE), total = n()) %>%
+  mutate(count = plyr::round_any(count, 10)
+         ,  total = plyr::round_any(total, 10)
+         ,  proportion = round(count / total*100,1))
+
+fwrite(aevis_count_cause_ROUND, here::here("output", "os_reports", "eol_service", "aevis_count_cause_ROUND.csv"))
+
 
 
 # mean A&E visits in month leading up to death, by month, by place of death.
