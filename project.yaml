@@ -41,9 +41,3 @@ actions:
         montly_nursing_Count: output/os_reports/eol_service/nursing_count*.csv
 
 
-  os_report:
-    run: r:latest analysis/os_reports/03_eol_service_report_html.R
-    needs: [os_report_charts]
-    outputs:
-      moderately_sensitive:
-        os_report: output/os_reports/eol_service/eol_service_report.html
