@@ -45,14 +45,6 @@ actions:
         monthly_nursing_cause: output/os_reports/eol_service/nursing_month_cod.csv 
         monthly_nursing_cause_plot: output/os_reports/eol_service/nursing_month_cod_plot.png
 
-
-  os_report:
-    run: r:latest analysis/os_reports/03_eol_service_report_html.R
-    needs: [os_report_charts]
-    outputs:
-      moderately_sensitive:
-        os_report: output/os_reports/eol_service/eol_service_report.html
-
   WP2_outputs:
     run: r:latest analysis/os_reports/04_eol_WP2_quality_indicators.R
     needs: [generate_study_population_os_reports]

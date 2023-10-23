@@ -269,7 +269,7 @@ proportion_palcare_rounding <- df %>%
   summarise(count = n()) %>%
   mutate(count = plyr::round_any(count, 10)
          , total = sum(count)
-         , proportion = count / total) %>%
+         , proportion = round(count / total*100,1)) %>%
   filter(palcare_code == "Palcare_code") %>%
   select(-c(total, palcare_code))
 
@@ -284,7 +284,7 @@ proportion_palcare_pod_rounding <- df %>%
   summarise(count = n()) %>%
   mutate(count = plyr::round_any(count, 10)
          , total = sum(count)
-         , proportion = count / total) %>%
+         , proportion = round(count / total*100,1)) %>%
   filter(palcare_code == "Palcare_code") %>%
   select(-c(total, palcare_code))
 
@@ -299,7 +299,7 @@ proportion_palcare_cod_rounding <- df %>%
   summarise(count = n()) %>%
   mutate(count = plyr::round_any(count, 10)
          , total = sum(count)
-         , proportion = count / total) %>%
+         , proportion = round(count / total*100,1)) %>%
   filter(palcare_code == "Palcare_code") %>%
   select(-c(total, palcare_code))
 
@@ -313,7 +313,7 @@ proportion_palcare <- df %>%
   group_by(study_month, palcare_code) %>%
   summarise(count = n()) %>%
   mutate(total = sum(count)
-         , proportion = count / total) %>%
+         , proportion = round(count / total*100,1)) %>%
   filter(palcare_code == "Palcare_code") %>%
   select(-c(total, palcare_code))
 
@@ -326,7 +326,7 @@ proportion_palcare_pod <- df %>%
   group_by(study_month, pod_ons_new, palcare_code) %>%
   summarise(count = n()) %>%
   mutate(total = sum(count)
-         , proportion = count / total) %>%
+         , proportion = round(count / total*100,1)) %>%
   filter(palcare_code == "Palcare_code") %>%
   select(-c(total, palcare_code))
 
@@ -339,7 +339,7 @@ proportion_palcare_cod <- df %>%
   group_by(study_month, codgrp, palcare_code) %>%
   summarise(count = n()) %>%
   mutate(total = sum(count)
-         , proportion = count / total) %>%
+         , proportion = round(count / total*100,1)) %>%
   filter(palcare_code == "Palcare_code") %>%
   select(-c(total, palcare_code))
 
@@ -355,7 +355,7 @@ proportion_aevis1_3m_rounding <- df %>%
   summarise(count = n()) %>% 
   mutate(count = plyr::round_any(count, 10)
          , total = sum(count)
-         , proportion = count / total) %>%
+         , proportion = round(count / total*100,1)) %>%
   filter(aevis_atleast1 == "aevis_atleast1") %>%
   select(-c(total, aevis_atleast1))
 
@@ -369,7 +369,7 @@ proportion_aevis1_3m_pod_rounding <- df %>%
   summarise(count = n()) %>% 
   mutate(count = plyr::round_any(count, 10)
          , total = sum(count)
-         , proportion = count / total) %>%
+         , proportion = round(count / total*100,1)) %>%
   filter(aevis_atleast1 == "aevis_atleast1") %>%
   select(-c(total, aevis_atleast1))
 
@@ -384,7 +384,7 @@ proportion_aevis1_3m_cod_rounding <- df %>%
   summarise(count = n()) %>% 
   mutate(count = plyr::round_any(count, 10)
          , total = sum(count)
-         , proportion = count / total) %>%
+         , proportion = round(count / total*100,1)) %>%
   filter(aevis_atleast1 == "aevis_atleast1") %>%
   select(-c(total, aevis_atleast1))
 
@@ -398,7 +398,7 @@ proportion_aevis1_3m <- df %>%
   group_by(study_month, aevis_atleast1) %>%
   summarise(count = n()) %>% 
   mutate(total = sum(count)
-         , proportion = count / total) %>%
+         , proportion = round(count / total*100,1)) %>%
   filter(aevis_atleast1 == "aevis_atleast1") %>%
   select(-c(total, aevis_atleast1))
 
@@ -411,7 +411,7 @@ proportion_aevis1_3m_pod <- df %>%
   group_by(study_month, pod_ons_new, aevis_atleast1) %>%
   summarise(count = n()) %>% 
   mutate(total = sum(count)
-         , proportion = count / total) %>%
+         , proportion = round(count / total*100,1)) %>%
   filter(aevis_atleast1 == "aevis_atleast1") %>%
   select(-c(total, aevis_atleast1))
 
@@ -424,7 +424,7 @@ proportion_aevis1_3m_cod <- df %>%
   group_by(study_month, codgrp, aevis_atleast1) %>%
   summarise(count = n()) %>% 
   mutate(total = sum(count)
-         , proportion = count / total) %>%
+         , proportion = round(count / total*100,1)) %>%
   filter(aevis_atleast1 == "aevis_atleast1") %>%
   select(-c(total, aevis_atleast1))
 
@@ -438,7 +438,7 @@ proportion_aevis3_3m_rounding <- df %>%
   summarise(count = n()) %>% 
   mutate(count = plyr::round_any(count, 10)
          , total = sum(count)
-         , proportion = count / total) %>%
+         , proportion = round(count / total*100,1)) %>%
   filter(aevis_atleast3 == "aevis_atleast3") %>%
   select(-c(total, aevis_atleast3))
 
@@ -452,7 +452,7 @@ proportion_aevis3_3m_pod_rounding <- df %>%
   summarise(count = n()) %>% 
   mutate(count = plyr::round_any(count, 10)
          , total = sum(count)
-         , proportion = count / total) %>%
+         , proportion = round(count / total*100,1)) %>%
   filter(aevis_atleast3 == "aevis_atleast3") %>%
   select(-c(total, aevis_atleast3))
 
@@ -467,7 +467,7 @@ proportion_aevis3_3m_cod_rounding <- df %>%
   summarise(count = n()) %>% 
   mutate(count = plyr::round_any(count, 10)
          , total = sum(count)
-         , proportion = count / total) %>%
+         , proportion = round(count / total*100,1)) %>%
   filter(aevis_atleast3 == "aevis_atleast3") %>%
   select(-c(total, aevis_atleast3))
 
@@ -481,7 +481,7 @@ proportion_aevis3_3m <- df %>%
   group_by(study_month, aevis_atleast3) %>%
   summarise(count = n()) %>% 
   mutate(total = sum(count)
-         , proportion = count / total) %>%
+         , proportion = round(count / total*100,1)) %>%
   filter(aevis_atleast3 == "aevis_atleast3") %>%
   select(-c(total, aevis_atleast3))
 
@@ -494,7 +494,7 @@ proportion_aevis3_3m_pod <- df %>%
   group_by(study_month, pod_ons_new, aevis_atleast3) %>%
   summarise(count = n()) %>% 
   mutate(total = sum(count)
-         , proportion = count / total) %>%
+         , proportion = round(count / total*100,1)) %>%
   filter(aevis_atleast3 == "aevis_atleast3") %>%
   select(-c(total, aevis_atleast3))
 
@@ -507,7 +507,7 @@ proportion_aevis3_3m_cod <- df %>%
   group_by(study_month, codgrp, aevis_atleast3) %>%
   summarise(count = n()) %>% 
   mutate(total = sum(count)
-         , proportion = count / total) %>%
+         , proportion = round(count / total*100,1)) %>%
   filter(aevis_atleast3 == "aevis_atleast3") %>%
   select(-c(total, aevis_atleast3))
 
