@@ -11,39 +11,39 @@ actions:
       highly_sensitive:
         cohort: output/os_reports/input_os_reports.csv.gz
            
-  os_report_charts:
-    run: r:latest analysis/os_reports/01_eol_service_report_charts.R
-    needs: [generate_study_population_os_reports]
-    outputs:
-      moderately_sensitive:
-        monthly_deaths_place: output/os_reports/eol_service/deaths_month.csv
-        monthly_deaths_place_plot: output/os_reports/eol_service/deaths_month_plot.png
-        monthly_gp_place: output/os_reports/eol_service/gp_month.csv
-        monthly_gp_place_plot: output/os_reports/eol_service/gp_month_plot.png
-        monthly_gp_cause: output/os_reports/eol_service/gp_month_cod.csv
-        monthly_gp_cause_plot: output/os_reports/eol_service/gp_month_cod_plot.png
-        monthly_med_place: output/os_reports/eol_service/eol_med_month.csv
-        monthly_med_place_plot: output/os_reports/eol_service/eol_med_month_plot.png
-        monthly_aevis_place: output/os_reports/eol_service/aevis_month.csv
-        monthly_aevis_place_plot: output/os_reports/eol_service/aevis_month_plot.png
-        monthly_aevis_cause: output/os_reports/eol_service/aevis_month_cod.csv
-        monthly_aevis_cause_plot: output/os_reports/eol_service/aevis_month_cod_plot.png
-        monthly_op_place: output/os_reports/eol_service/opapp_month.csv
-        monthly_op_place_plot: output/os_reports/eol_service/opapp_month_plot.png
-        monthly_op_cause: output/os_reports/eol_service/opapp_month_cod.csv
-        monthly_op_cause_plot: output/os_reports/eol_service/opapp_month_cod_plot.png
-        monthly_eladm_place: output/os_reports/eol_service/eladm_month.csv
-        monthly_eladm_place_plot: output/os_reports/eol_service/eladm_month_plot.png
-        monthly_eladm_cause: output/os_reports/eol_service/eladm_month_cod.csv
-        monthly_eladm_cause_plot: output/os_reports/eol_service/eladm_month_cod_plot.png
-        monthly_emadm_place: output/os_reports/eol_service/emadm_month.csv 
-        monthly_emadm_place_plot: output/os_reports/eol_service/emadm_month_plot.png
-        monthly_emadm_cause: output/os_reports/eol_service/emadm_month_cod.csv
-        monthly_emadm_cause_plot: output/os_reports/eol_service/emadm_month_cod_plot.png
-        monthly_nursing_place: output/os_reports/eol_service/nursing_month.csv 
-        monthly_nursing_place_plot: output/os_reports/eol_service/nursing_month_plot.png
-        monthly_nursing_cause: output/os_reports/eol_service/nursing_month_cod.csv 
-        monthly_nursing_cause_plot: output/os_reports/eol_service/nursing_month_cod_plot.png
+  #os_report_charts:
+    #run: r:latest analysis/os_reports/01_eol_service_report_charts.R
+    #needs: [generate_study_population_os_reports]
+    #outputs:
+      #moderately_sensitive:
+        #monthly_deaths_place: output/os_reports/eol_service/deaths_month.csv
+        #monthly_deaths_place_plot: output/os_reports/eol_service/deaths_month_plot.png
+        #monthly_gp_place: output/os_reports/eol_service/gp_month.csv
+        #monthly_gp_place_plot: output/os_reports/eol_service/gp_month_plot.png
+        #monthly_gp_cause: output/os_reports/eol_service/gp_month_cod.csv
+        #monthly_gp_cause_plot: output/os_reports/eol_service/gp_month_cod_plot.png
+        #monthly_med_place: output/os_reports/eol_service/eol_med_month.csv
+        #monthly_med_place_plot: output/os_reports/eol_service/eol_med_month_plot.png
+        #monthly_aevis_place: output/os_reports/eol_service/aevis_month.csv
+        #monthly_aevis_place_plot: output/os_reports/eol_service/aevis_month_plot.png
+        #monthly_aevis_cause: output/os_reports/eol_service/aevis_month_cod.csv
+        #monthly_aevis_cause_plot: output/os_reports/eol_service/aevis_month_cod_plot.png
+        #monthly_op_place: output/os_reports/eol_service/opapp_month.csv
+        #monthly_op_place_plot: output/os_reports/eol_service/opapp_month_plot.png
+        #monthly_op_cause: output/os_reports/eol_service/opapp_month_cod.csv
+        #monthly_op_cause_plot: output/os_reports/eol_service/opapp_month_cod_plot.png
+        #monthly_eladm_place: output/os_reports/eol_service/eladm_month.csv
+        #monthly_eladm_place_plot: output/os_reports/eol_service/eladm_month_plot.png
+        #monthly_eladm_cause: output/os_reports/eol_service/eladm_month_cod.csv
+        #monthly_eladm_cause_plot: output/os_reports/eol_service/eladm_month_cod_plot.png
+        #monthly_emadm_place: output/os_reports/eol_service/emadm_month.csv 
+        #monthly_emadm_place_plot: output/os_reports/eol_service/emadm_month_plot.png
+        #monthly_emadm_cause: output/os_reports/eol_service/emadm_month_cod.csv
+        #monthly_emadm_cause_plot: output/os_reports/eol_service/emadm_month_cod_plot.png
+        #monthly_nursing_place: output/os_reports/eol_service/nursing_month.csv 
+        #monthly_nursing_place_plot: output/os_reports/eol_service/nursing_month_plot.png
+        #monthly_nursing_cause: output/os_reports/eol_service/nursing_month_cod.csv 
+        #monthly_nursing_cause_plot: output/os_reports/eol_service/nursing_month_cod_plot.png
 
   WP2_outputs:
     run: r:latest analysis/os_reports/04_eol_WP2_quality_indicators.R
