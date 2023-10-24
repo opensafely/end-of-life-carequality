@@ -137,3 +137,10 @@ dataset.palliative_3m = clinical_events.where(
 dataset.aevis_3m = emergency_care_attendances.where(
     emergency_care_attendances.arrival_date.is_on_or_between(dod_ons - days(90), dod_ons)
 ).count_for_patient()
+
+## Medications for symptom management last 3 months of life
+dataset.eol_med_3m = medications.where(
+    medications.dmd_code.is_in(codelists.eol_med_codes)
+).where(
+    medications.date.is_on_or_between(dod_ons - days(90), dod_ons)
+).count_for_patient() 
