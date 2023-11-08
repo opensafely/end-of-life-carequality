@@ -1,3 +1,4 @@
-dmd_type,dmd_id,dmd_name,bnf_code
-VMP,36044111000001101,Hyoscine butylbromide 20mg/1ml solution for injection ampoules,0102000N0AAAAAA
-AMP,3242611000001101,Buscopan 20mg/1ml solution for injection ampoules,0102000N0BBABAA
+code,term,dmd_id
+36044111000001101,Hyoscine butylbromide 20mg/1ml solution for injection ampoules,36044111000001101
+3242611000001101,Buscopan 20mg/1ml solution for injection ampoules,3242611000001101
+317118006,VMP previous to 36044111000001101,317118006
