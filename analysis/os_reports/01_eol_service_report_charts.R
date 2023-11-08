@@ -1031,16 +1031,24 @@ ggsave(eladm_month_cod_plot, dpi = 600, width = 20, height = 10, unit = "cm"
 emadm_count_place_RAW <- df %>%
   group_by(study_month, pod_ons_new) %>%
   summarise(count = sum(emadm_1m >= 1, na.rm = TRUE), total = n()) %>%
-  mutate(proportion = round(count / total*100,1))
+  bind_rows(df %>%
+           group_by(study_month) %>%
+           summarise(count = sum(emadm_1m >= 1, na.rm = TRUE), total = n()) %>% 
+           mutate(pod_ons_new = "All") %>% 
+           mutate(proportion = round(count / total*100,1)))
          
 fwrite(emadm_count_place_RAW, here::here("output", "os_reports", "eol_service", "emadm_count_place_RAW.csv"))
 
 emadm_count_place_ROUND <- df %>%
   group_by(study_month, pod_ons_new) %>%
   summarise(count = sum(emadm_1m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = sum(emadm_1m >= 1, na.rm = TRUE), total = n()) %>% 
+              mutate(pod_ons_new = "All") %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
-  mutate(proportion = round(count / total*100,1))
+  mutate(proportion = round(count / total*100,1)))
 
 fwrite(emadm_count_place_ROUND, here::here("output", "os_reports", "eol_service", "emadm_count_place_ROUND.csv"))
 
@@ -1049,16 +1057,24 @@ fwrite(emadm_count_place_ROUND, here::here("output", "os_reports", "eol_service"
 emadm_count_cause_RAW <- df %>%
   group_by(study_month, codgrp) %>%
   summarise(count = sum(emadm_1m >= 1, na.rm = TRUE), total = n()) %>%
-  mutate(proportion = round(count / total*100,1))
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = sum(emadm_1m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(codgrp = "All") %>%
+              mutate(proportion = round(count / total*100,1)))
   
 fwrite(emadm_count_cause_RAW, here::here("output", "os_reports", "eol_service", "emadm_count_cause_RAW.csv"))
 
 emadm_count_cause_ROUND <- df %>%
   group_by(study_month, codgrp) %>%
   summarise(count = sum(emadm_1m >= 1, na.rm = TRUE), total = n()) %>%
-  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
-  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
-  mutate(proportion = round(count / total*100,1))
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = sum(emadm_1m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(codgrp = "All") %>%
+              dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+              dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
+              mutate(proportion = round(count / total*100,1)))
 
 fwrite(emadm_count_cause_ROUND, here::here("output", "os_reports", "eol_service", "emadm_count_cause_ROUND.csv"))
 
@@ -1147,16 +1163,24 @@ ggsave(emadm_month_cod_plot, dpi = 600, width = 20, height = 10, unit = "cm"
 nursing_count_place_RAW <- df %>%
   group_by(study_month, pod_ons_new) %>%
   summarise(count = sum(nursing_1m >= 1, na.rm = TRUE), total = n()) %>%
-  mutate(proportion = round(count / total*100,1))
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = sum(nursing_1m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(pod_ons_new = "All") %>%
+              mutate(proportion = round(count / total*100,1)))
 
 fwrite(nursing_count_place_RAW, here::here("output", "os_reports", "eol_service", "nursing_count_place_RAW.csv"))
 
 nursing_count_place_ROUND <- df %>%
   group_by(study_month, pod_ons_new) %>%
   summarise(count = sum(nursing_1m >= 1, na.rm = TRUE), total = n()) %>%
-  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
-  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
-  mutate(proportion = round(count / total*100,1))
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = sum(nursing_1m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(pod_ons_new = "All") %>%
+              dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+              dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
+              mutate(proportion = round(count / total*100,1)))
 
 fwrite(nursing_count_place_ROUND, here::here("output", "os_reports", "eol_service", "nursing_count_place_ROUND.csv"))
 
@@ -1166,16 +1190,24 @@ fwrite(nursing_count_place_ROUND, here::here("output", "os_reports", "eol_servic
 nursing_count_cause_RAW <- df %>%
   group_by(study_month, codgrp) %>%
   summarise(count = sum(nursing_1m >= 1, na.rm = TRUE), total = n()) %>%
-  mutate(proportion = round(count / total*100,1))
+  bind_rows(df%>%
+              group_by(study_month) %>%
+              summarise(count = sum(nursing_1m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(codgrp = "All") %>%
+              mutate(proportion = round(count / total*100,1)))
 
 fwrite(nursing_count_cause_RAW, here::here("output", "os_reports", "eol_service", "nursing_count_cause_RAW.csv"))
 
 nursing_count_cause_ROUND <- df %>%
   group_by(study_month, codgrp) %>%
   summarise(count = sum(nursing_1m >= 1, na.rm = TRUE), total = n()) %>%
-  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
-  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
-  mutate(proportion = round(count / total*100,1))
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = sum(nursing_1m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(codgrp = "All") %>%
+              dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+              dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
+              mutate(proportion = round(count / total*100,1)))
 
 fwrite(nursing_count_cause_ROUND, here::here("output", "os_reports", "eol_service", "nursing_count_cause_ROUND.csv"))
 
