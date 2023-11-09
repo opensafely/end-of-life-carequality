@@ -406,6 +406,22 @@ eol_med_month <- df %>%
 
 fwrite(eol_med_month, here::here("output", "os_reports", "eol_service", "eol_med_month.csv"))
 
+eol_med_month_Test <- df %>%
+  group_by(study_month, pod_ons_new) %>%
+  summarise(count = n(), mean = ifelse(mean(count) > 7, (mean(eol_med_1m, na.rm=TRUE)),  NA)) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = n(), mean = ifelse(mean(count) > 7, (mean(eol_med_1m, na.rm=TRUE)),  NA)) %>%
+              mutate(pod_ons_new = "All")) %>%
+              mutate(mean = round(mean,3)) %>%
+              select(-c(count))
+            
+fwrite(eol_med_month_Test, here::here("output", "os_reports", "eol_service", "eol_med_month_Test.csv"))
+
+
+
+
+
 eol_med_month_plot <- ggplot(eol_med_month, aes(x = study_month, y = mean
                                       , group = pod_ons_new
                                       , colour = pod_ons_new
