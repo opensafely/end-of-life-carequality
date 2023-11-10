@@ -17,10 +17,8 @@ actions:
     outputs:
       moderately_sensitive:
         monthly_deaths_place: output/os_reports/eol_service/deaths_month*.csv
-        monthly_gp_timeseries: output/os_reports/eol_service/gp_month_*.png
         monthly_gp_CSV: output/os_reports/eol_service/gp_month*.csv
         monthly_gp_Count: output/os_reports/eol_service/gp_count*.csv
-        monthly_med_timeseries: output/os_reports/eol_service/eol_med_*.png
         monthly_med_CSV: output/os_reports/eol_service/eol_med*.csv
         monthly_med_Count: output/os_reports/eol_service/eol_med_count*.csv
         monthly_aevis_timeseries: output/os_reports/eol_service/aevis_month_*.png
