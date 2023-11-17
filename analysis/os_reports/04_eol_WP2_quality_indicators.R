@@ -263,13 +263,17 @@ df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.g
          ,aevis_atleast3 = case_when( aevis_3m >= 3 ~ "aevis_atleast3")) %>%
   filter(study_month >= startdate & study_month <= enddate) 
 
+#Col of interest for redaction------------------------------ 
+cols_of_interest <- c("count", "total")
+  
 #Palliative care recorded, with rounding ----------------------------------------------------
 proportion_palcare_rounding <- df %>%
   group_by(study_month, palcare_code) %>%
   summarise(count = n()) %>%
-  mutate(count = plyr::round_any(count, 10)
-         , total = sum(count)
-         , proportion = round(count / total*100,1)) %>%
+  mutate(total = sum(count)) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
+  mutate(proportion = round(count / total*100,1)) %>%
   filter(palcare_code == "Palcare_code") %>%
   select(-c(total, palcare_code))
 
@@ -282,9 +286,10 @@ knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators
 proportion_palcare_pod_rounding <- df %>%
   group_by(study_month, pod_ons_new, palcare_code) %>%
   summarise(count = n()) %>%
-  mutate(count = plyr::round_any(count, 10)
-         , total = sum(count)
-         , proportion = round(count / total*100,1)) %>%
+  mutate(total = sum(count)) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
+  mutate( proportion = round(count / total*100,1)) %>%
   filter(palcare_code == "Palcare_code") %>%
   select(-c(total, palcare_code))
 
@@ -297,9 +302,10 @@ knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators
 proportion_palcare_cod_rounding <- df %>%
   group_by(study_month, codgrp, palcare_code) %>%
   summarise(count = n()) %>%
-  mutate(count = plyr::round_any(count, 10)
-         , total = sum(count)
-         , proportion = round(count / total*100,1)) %>%
+  mutate(total = sum(count)) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
+  mutate(proportion = round(count / total*100,1)) %>%
   filter(palcare_code == "Palcare_code") %>%
   select(-c(total, palcare_code))
 
@@ -353,9 +359,10 @@ knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators
 proportion_aevis1_3m_rounding <- df %>% 
   group_by(study_month, aevis_atleast1) %>%
   summarise(count = n()) %>% 
-  mutate(count = plyr::round_any(count, 10)
-         , total = sum(count)
-         , proportion = round(count / total*100,1)) %>%
+  mutate(total = sum(count)) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
+  mutate(proportion = round(count / total*100,1)) %>%
   filter(aevis_atleast1 == "aevis_atleast1") %>%
   select(-c(total, aevis_atleast1))
 
@@ -367,9 +374,10 @@ knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators
 proportion_aevis1_3m_pod_rounding <- df %>% 
   group_by(study_month, pod_ons_new, aevis_atleast1) %>%
   summarise(count = n()) %>% 
-  mutate(count = plyr::round_any(count, 10)
-         , total = sum(count)
-         , proportion = round(count / total*100,1)) %>%
+  mutate(total = sum(count)) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
+  mutate(proportion = round(count / total*100,1)) %>%
   filter(aevis_atleast1 == "aevis_atleast1") %>%
   select(-c(total, aevis_atleast1))
 
@@ -382,9 +390,10 @@ knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators
 proportion_aevis1_3m_cod_rounding <- df %>% 
   group_by(study_month, codgrp, aevis_atleast1) %>%
   summarise(count = n()) %>% 
-  mutate(count = plyr::round_any(count, 10)
-         , total = sum(count)
-         , proportion = round(count / total*100,1)) %>%
+  mutate(total = sum(count)) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
+  mutate(proportion = round(count / total*100,1)) %>%
   filter(aevis_atleast1 == "aevis_atleast1") %>%
   select(-c(total, aevis_atleast1))
 
@@ -436,9 +445,10 @@ knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators
 proportion_aevis3_3m_rounding <- df %>% 
   group_by(study_month, aevis_atleast3) %>%
   summarise(count = n()) %>% 
-  mutate(count = plyr::round_any(count, 10)
-         , total = sum(count)
-         , proportion = round(count / total*100,1)) %>%
+  mutate(total = sum(count)) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
+  mutate(proportion = round(count / total*100,1)) %>%
   filter(aevis_atleast3 == "aevis_atleast3") %>%
   select(-c(total, aevis_atleast3))
 
@@ -450,9 +460,10 @@ knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators
 proportion_aevis3_3m_pod_rounding <- df %>% 
   group_by(study_month, pod_ons_new, aevis_atleast3) %>%
   summarise(count = n()) %>% 
-  mutate(count = plyr::round_any(count, 10)
-         , total = sum(count)
-         , proportion = round(count / total*100,1)) %>%
+  mutate(total = sum(count)) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
+  mutate(proportion = round(count / total*100,1)) %>%
   filter(aevis_atleast3 == "aevis_atleast3") %>%
   select(-c(total, aevis_atleast3))
 
@@ -465,9 +476,10 @@ knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators
 proportion_aevis3_3m_cod_rounding <- df %>% 
   group_by(study_month, codgrp, aevis_atleast3) %>%
   summarise(count = n()) %>% 
-  mutate(count = plyr::round_any(count, 10)
-         , total = sum(count)
-         , proportion = round(count / total*100,1)) %>%
+  mutate(total = sum(count)) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
+  mutate(proportion = round(count / total*100,1)) %>%
   filter(aevis_atleast3 == "aevis_atleast3") %>%
   select(-c(total, aevis_atleast3))
 
