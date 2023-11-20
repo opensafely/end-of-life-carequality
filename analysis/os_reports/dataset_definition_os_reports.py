@@ -32,9 +32,7 @@ date_range = (earliest_date, latest_date)
 
 dataset = Dataset()
 
-last_ons_death = ons_deaths.sort_by(ons_deaths.date).last_for_patient()
-
-dod_ons = last_ons_death.date
+dod_ons = ons_deaths.date
 
 has_died = dod_ons.is_on_or_between(*date_range)
 
@@ -55,13 +53,13 @@ dataset.define_population(
 ## Key cohort variables ##
 
 ## ONS date of death
-dataset.dod_ons = last_ons_death.date
+dataset.dod_ons = ons_deaths.date
 
 ## ONS place of death
-dataset.pod_ons = last_ons_death.place
+dataset.pod_ons = ons_deaths.place
 
 ## ONS cause of death
-dataset.cod_ons = last_ons_death.underlying_cause_of_death
+dataset.cod_ons = ons_deaths.underlying_cause_of_death
 
 ## Demographics ##
 
@@ -144,3 +142,25 @@ dataset.eol_med_3m = medications.where(
 ).where(
     medications.date.is_on_or_between(dod_ons - days(90), dod_ons)
 ).count_for_patient() 
+
+## Advance care plan
+dataset.has_careplan = clinical_events.where(
+    clinical_events.snomedct_code.is_in(codelists.care_plan_palcare)
+).where(
+    clinical_events.date.is_on_or_between(dod_ons - days(90), dod_ons)
+).exists_for_patient()
+
+dataset.careplan_3m = clinical_events.where(
+    clinical_events.snomedct_code.is_in(codelists.care_plan_palcare)
+).where(
+    clinical_events.date.is_on_or_between(dod_ons - days(90), dod_ons)
+).count_for_patient()
+
+first_careplan = clinical_events.where(
+    clinical_events.snomedct_code.is_in(codelists.care_plan_palcare)
+).where(
+    clinical_events.date.is_on_or_after(dod_ons - days(90))
+).sort_by(
+    clinical_events.date).first_for_patient().date
+
+dataset.length_careplan = (dod_ons - first_careplan).days

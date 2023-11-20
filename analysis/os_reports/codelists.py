@@ -265,3 +265,8 @@ all_mdt_codes = (
     mdt_codes +
     cancer_mdt_codes
 )
+
+care_plan_palcare = codelist_from_csv(
+    "codelists/user-stuti_bagri-care_plan_palcare.csv",
+    column = "code"
+)
