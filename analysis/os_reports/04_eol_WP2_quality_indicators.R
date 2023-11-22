@@ -282,7 +282,7 @@ write.csv(proportion_palcare_rounding, here::here("output", "os_reports", "WP2_q
 knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_rounding.csv")))
 
 
-#By place of death 
+#By place of death
 proportion_palcare_pod_rounding <- df %>%
   group_by(study_month, pod_ons_new, palcare_code) %>%
   summarise(count = n()) %>%
@@ -501,7 +501,7 @@ write.csv(proportion_aevis3_3m, here::here("output", "os_reports", "WP2_quality_
 
 knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3.csv")))
 
-#By place of death 
+#By place of death
 proportion_aevis3_3m_pod <- df %>% 
   group_by(study_month, pod_ons_new, aevis_atleast3) %>%
   summarise(count = n()) %>% 
