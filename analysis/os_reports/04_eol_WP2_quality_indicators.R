@@ -244,6 +244,23 @@ enddate <- dmy("30-06-2023")
 df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.gz")) %>%
   mutate(dod_ons = as_date(dod_ons)
          , study_month = floor_date(dod_ons, unit = "month")
+         , study_quarter = case_when(month(dod_ons) %in% c(6, 7, 8) & year(dod_ons) == 2019 ~ 1
+                                     , month(dod_ons) %in% c(9, 10, 11) & year(dod_ons) == 2019 ~ 2
+                                     , (month(dod_ons) == 12 & year(dod_ons) == 2019) | (month(dod_ons) %in% c(1, 2) & year(dod_ons) == 2020) ~ 3
+                                     , month(dod_ons) %in% c(3, 4, 5) & year(dod_ons) == 2020 ~ 4
+                                     , month(dod_ons) %in% c(6, 7, 8) & year(dod_ons) == 2020 ~ 5
+                                     , month(dod_ons) %in% c(9, 10, 11) & year(dod_ons) == 2020 ~ 6
+                                     , (month(dod_ons) == 12 & year(dod_ons) == 2020) | (month(dod_ons) %in% c(1, 2) & year(dod_ons) == 2021) ~ 7
+                                     , month(dod_ons) %in% c(3, 4, 5) & year(dod_ons) == 2021 ~ 8
+                                     , month(dod_ons) %in% c(6, 7, 8) & year(dod_ons) == 2021 ~ 9
+                                     , month(dod_ons) %in% c(9, 10, 11) & year(dod_ons) == 2021 ~10
+                                     , (month(dod_ons) == 12 & year(dod_ons) == 2021) | (month(dod_ons) %in% c(1, 2) & year(dod_ons) == 2022) ~ 11
+                                     , month(dod_ons) %in% c(3, 4, 5) & year(dod_ons) == 2022 ~ 12
+                                     , month(dod_ons) %in% c(6, 7, 8) & year(dod_ons) == 2022 ~ 13
+                                     , month(dod_ons) %in% c(9, 10, 11) & year(dod_ons) == 2022 ~ 14
+                                     , (month(dod_ons) == 12 & year(dod_ons) == 2022) | (month(dod_ons) %in% c(1, 2) & year(dod_ons) == 2023) ~ 15
+                                     , month(dod_ons) %in% c(3, 4, 5) & year(dod_ons) == 2023 ~ 16
+                                     , month(dod_ons) %in% c(6, 7, 8) & year(dod_ons) == 2023 ~ 17) #month 7 and 8 to come?#
          , pod_ons_new = case_when(pod_ons == "Elsewhere" 
                                    | pod_ons == "Other communal establishment" ~ "Elsewhere/other"
                                    , TRUE ~ as.character(pod_ons))
