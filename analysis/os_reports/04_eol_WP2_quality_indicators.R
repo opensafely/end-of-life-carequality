@@ -236,7 +236,7 @@ NT_style <- function(){
 # Code settings -----------------------------------------------------------
 # need to decide on this
 startdate <- dmy("01-06-2019")
-enddate <- dmy("30-06-2023")
+enddate <- dmy("30-08-2023")
 
 
 # Prepare data ------------------------------------------------------------
