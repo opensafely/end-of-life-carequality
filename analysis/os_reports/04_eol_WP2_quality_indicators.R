@@ -9,6 +9,8 @@
 
 library(tidyverse)
 library(lubridate)
+library(dplyr)
+library(data.table)
 
 
 # Create folder structure -------------------------------------------------
@@ -260,7 +262,7 @@ df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.g
                                      , month(dod_ons) %in% c(9, 10, 11) & year(dod_ons) == 2022 ~ 14
                                      , (month(dod_ons) == 12 & year(dod_ons) == 2022) | (month(dod_ons) %in% c(1, 2) & year(dod_ons) == 2023) ~ 15
                                      , month(dod_ons) %in% c(3, 4, 5) & year(dod_ons) == 2023 ~ 16
-                                     , month(dod_ons) %in% c(6, 7, 8) & year(dod_ons) == 2023 ~ 17) #month 7 and 8 to come?#
+                                     , month(dod_ons) %in% c(6, 7, 8) & year(dod_ons) == 2023 ~ 17) 
          , pod_ons_new = case_when(pod_ons == "Elsewhere" 
                                    | pod_ons == "Other communal establishment" ~ "Elsewhere/other"
                                    , TRUE ~ as.character(pod_ons))
@@ -284,524 +286,544 @@ df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.g
 cols_of_interest <- c("count", "total")
   
 #Palliative care recorded, with rounding ----------------------------------------------------
-proportion_palcare_rounding <- df %>%
-  group_by(study_month, palcare_code) %>%
-  summarise(count = n()) %>%
-  mutate(total = sum(count)) %>%
-  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
-  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
-  mutate(proportion = round(count / total*100,1)) %>%
-  filter(palcare_code == "Palcare_code") %>%
-  select(-c(total, palcare_code))
+#   proportion_palcare_rounding <- df %>%
+#   group_by(study_month, palcare_code) %>%
+#   summarise(count = n()) %>%
+#   mutate(total = sum(count)) %>%
+#   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+#   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
+#   mutate(proportion = round(count / total*100,1)) %>%
+#   filter(palcare_code == "Palcare_code") %>%
+#   select(-c(total, palcare_code))
+# 
+# write.csv(proportion_palcare_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_rounding.csv"))
+# 
+# knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_rounding.csv")))
 
-write.csv(proportion_palcare_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_rounding.csv"))
 
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_rounding.csv")))
-
-
-#By place of death
+#By place of death- new code ----------------
 proportion_palcare_pod_rounding <- df %>%
-  group_by(study_month, pod_ons_new, palcare_code) %>%
-  summarise(count = n()) %>%
-  mutate(total = sum(count)) %>%
+  group_by(study_month, pod_ons_new) %>%
+  summarise(count = sum(palliative_3m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = sum(palliative_3m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(pod_ons_new = "All")) %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
-  mutate( proportion = round(count / total*100,1)) %>%
-  filter(palcare_code == "Palcare_code") %>%
-  select(-c(total, palcare_code))
+  mutate(proportion = round(count / total*100,1))
 
 
-write.csv(proportion_palcare_pod_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_pod_rounding.csv"))
+fwrite(proportion_palcare_pod_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_pod_rounding.csv"))
 
 knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_pod_rounding.csv")))
 
 #By cause of death 
 proportion_palcare_cod_rounding <- df %>%
-  group_by(study_month, codgrp, palcare_code) %>%
-  summarise(count = n()) %>%
-  mutate(total = sum(count)) %>%
+  group_by(study_month, codgrp) %>%
+  summarise(count = sum(palliative_3m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = sum(palliative_3m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(codgrp = "All")) %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
-  mutate(proportion = round(count / total*100,1)) %>%
-  filter(palcare_code == "Palcare_code") %>%
-  select(-c(total, palcare_code))
+  mutate(proportion = round(count / total*100,1))
 
 
-write.csv(proportion_palcare_cod_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_cod_rounding.csv"))
+fwrite(proportion_palcare_cod_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_cod_rounding.csv"))
 
 knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_cod_rounding.csv")))
 
 #Palliative care recorded, without rounding--------------------------
-proportion_palcare <- df %>%
-  group_by(study_month, palcare_code) %>%
-  summarise(count = n()) %>%
-  mutate(total = sum(count)
-         , proportion = round(count / total*100,1)) %>%
-  filter(palcare_code == "Palcare_code") %>%
-  select(-c(total, palcare_code))
+# proportion_palcare <- df %>%
+#   group_by(study_month, palcare_code) %>%
+#   summarise(count = n()) %>%
+#   mutate(total = sum(count)
+#          , proportion = round(count / total*100,1)) %>%
+#   filter(palcare_code == "Palcare_code") %>%
+#   select(-c(total, palcare_code))
+# 
+# write.csv(proportion_palcare, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare.csv"))
+# 
+# knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare.csv")))
 
-write.csv(proportion_palcare, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare.csv"))
-
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare.csv")))
-
-#By place of death 
+#By place of death - new code-----------------
 proportion_palcare_pod <- df %>%
-  group_by(study_month, pod_ons_new, palcare_code) %>%
-  summarise(count = n()) %>%
-  mutate(total = sum(count)
-         , proportion = round(count / total*100,1)) %>%
-  filter(palcare_code == "Palcare_code") %>%
-  select(-c(total, palcare_code))
+  group_by(study_month, pod_ons_new) %>%
+  summarise(count = sum(palliative_3m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = sum(palliative_3m >= 1, na.rm = TRUE), total = n()) %>%
+  mutate(pod_ons_new = "All")) %>%
+  mutate(proportion = round(count / total*100,1))
+  
 
-write.csv(proportion_palcare_pod, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_pod.csv"))
+fwrite(proportion_palcare_pod, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_pod.csv"))
 
 knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_pod.csv")))
 
 #By cause of death 
 proportion_palcare_cod <- df %>%
-  group_by(study_month, codgrp, palcare_code) %>%
-  summarise(count = n()) %>%
-  mutate(total = sum(count)
-         , proportion = round(count / total*100,1)) %>%
-  filter(palcare_code == "Palcare_code") %>%
-  select(-c(total, palcare_code))
+  group_by(study_month, codgrp) %>%
+  summarise(count = sum(palliative_3m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = sum(palliative_3m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(codgrp = "All")) %>%
+  mutate(proportion = round(count / total*100,1))
 
 
-write.csv(proportion_palcare_cod, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_cod.csv"))
+fwrite(proportion_palcare_cod, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_cod.csv"))
 
 knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_cod.csv")))
 
-
 #At least one A&E visits last 3 months of life, with rounding --------------------------
-proportion_aevis1_3m_rounding <- df %>% 
-  group_by(study_month, aevis_atleast1) %>%
-  summarise(count = n()) %>% 
-  mutate(total = sum(count)) %>%
-  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
-  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
-  mutate(proportion = round(count / total*100,1)) %>%
-  filter(aevis_atleast1 == "aevis_atleast1") %>%
-  select(-c(total, aevis_atleast1))
-
-write.csv(proportion_aevis1_3m_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_rounding.csv"))
-
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_rounding.csv")))
+# proportion_aevis1_3m_rounding <- df %>% 
+#   group_by(study_month, aevis_atleast1) %>%
+#   summarise(count = n()) %>% 
+#   mutate(total = sum(count)) %>%
+#   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+#   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
+#   mutate(proportion = round(count / total*100,1)) %>%
+#   filter(aevis_atleast1 == "aevis_atleast1") %>%
+#   select(-c(total, aevis_atleast1))
+# 
+# write.csv(proportion_aevis1_3m_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_rounding.csv"))
+# 
+# knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_rounding.csv")))
 
 #By place of death 
 proportion_aevis1_3m_pod_rounding <- df %>% 
-  group_by(study_month, pod_ons_new, aevis_atleast1) %>%
-  summarise(count = n()) %>% 
-  mutate(total = sum(count)) %>%
+  group_by(study_month, pod_ons_new) %>%
+  summarise(count = sum(aevis_3m >= 1, na.rm = TRUE), total = n()) %>% 
+  bind_rows(df %>%
+              group_by(study_month) %>% 
+            summarise(count = sum(aevis_3m >= 1, na.rm = TRUE), total = n()) %>%
+            mutate(pod_ons_new = "All")) %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
-  mutate(proportion = round(count / total*100,1)) %>%
-  filter(aevis_atleast1 == "aevis_atleast1") %>%
-  select(-c(total, aevis_atleast1))
+  mutate(proportion = round(count / total*100,1))
 
-write.csv(proportion_aevis1_3m_pod_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_pod_rounding.csv"))
+fwrite(proportion_aevis1_3m_pod_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_pod_rounding.csv"))
 
 knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_pod_rounding.csv")))
 
 
 #By cause of death 
 proportion_aevis1_3m_cod_rounding <- df %>% 
-  group_by(study_month, codgrp, aevis_atleast1) %>%
-  summarise(count = n()) %>% 
-  mutate(total = sum(count)) %>%
+  group_by(study_month, codgrp) %>%
+  summarise(count = sum(aevis_3m >= 1, na.rm = TRUE), total = n()) %>% 
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = sum(aevis_3m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(codgrp = "All")) %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
-  mutate(proportion = round(count / total*100,1)) %>%
-  filter(aevis_atleast1 == "aevis_atleast1") %>%
-  select(-c(total, aevis_atleast1))
+  mutate(proportion = round(count / total*100,1)) 
 
-write.csv(proportion_aevis1_3m_cod_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_cod_rounding.csv"))
+fwrite(proportion_aevis1_3m_cod_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_cod_rounding.csv"))
 
 knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_cod_rounding.csv")))
 
 
 #At least one A&E visits last 3 months of life, without rounding --------------------------
-proportion_aevis1_3m <- df %>% 
-  group_by(study_month, aevis_atleast1) %>%
-  summarise(count = n()) %>% 
-  mutate(total = sum(count)
-         , proportion = round(count / total*100,1)) %>%
-  filter(aevis_atleast1 == "aevis_atleast1") %>%
-  select(-c(total, aevis_atleast1))
-
-write.csv(proportion_aevis1_3m, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1.csv"))
-
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1.csv")))
-
+# proportion_aevis1_3m <- df %>% 
+#   group_by(study_month, aevis_atleast1) %>%
+#   summarise(count = n()) %>% 
+#   mutate(total = sum(count)
+#          , proportion = round(count / total*100,1)) %>%
+#   filter(aevis_atleast1 == "aevis_atleast1") %>%
+#   select(-c(total, aevis_atleast1))
+# 
+# write.csv(proportion_aevis1_3m, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1.csv"))
+# 
+# knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1.csv")))
+# 
 #By place of death 
 proportion_aevis1_3m_pod <- df %>% 
-  group_by(study_month, pod_ons_new, aevis_atleast1) %>%
-  summarise(count = n()) %>% 
-  mutate(total = sum(count)
-         , proportion = round(count / total*100,1)) %>%
-  filter(aevis_atleast1 == "aevis_atleast1") %>%
-  select(-c(total, aevis_atleast1))
+  group_by(study_month, pod_ons_new) %>%
+  summarise(count = sum(aevis_3m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = sum(aevis_3m >+ 1, na.rm = TRUE), total = n()) %>%
+              mutate(pod_ons_new = "All")) %>%
+  mutate(proportion = round(count / total*100,1))
 
-write.csv(proportion_aevis1_3m_pod, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_pod.csv"))
+
+fwrite(proportion_aevis1_3m_pod, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_pod.csv"))
 
 knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_pod.csv")))
 
 #By cause of death 
 proportion_aevis1_3m_cod <- df %>% 
-  group_by(study_month, codgrp, aevis_atleast1) %>%
-  summarise(count = n()) %>% 
-  mutate(total = sum(count)
-         , proportion = round(count / total*100,1)) %>%
-  filter(aevis_atleast1 == "aevis_atleast1") %>%
-  select(-c(total, aevis_atleast1))
+  group_by(study_month, codgrp) %>%
+  summarise(count = sum(aevis_3m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = sum(aevis_3m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(codgrp = "All")) %>%
+  mutate(proportion = round(count / total*100,1))
 
-write.csv(proportion_aevis1_3m_cod, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_cod.csv"))
+fwrite(proportion_aevis1_3m_cod, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_cod.csv"))
 
 knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_cod.csv")))
 
 #At least 3 A&E visits last 3 months of life, with rounding --------------------------
-proportion_aevis3_3m_rounding <- df %>% 
-  group_by(study_month, aevis_atleast3) %>%
-  summarise(count = n()) %>% 
-  mutate(total = sum(count)) %>% 
-  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
-  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
-  mutate(proportion = round(count / total*100,1)) %>%
-  filter(aevis_atleast3 == "aevis_atleast3") %>%
-  select(-c(total, aevis_atleast3))
-
-write.csv(proportion_aevis3_3m_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_rounding.csv"))
-
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_rounding.csv")))
+# proportion_aevis3_3m_rounding <- df %>% 
+#   group_by(study_month, aevis_atleast3) %>%
+#   summarise(count = n()) %>% 
+#   mutate(total = sum(count)) %>% 
+#   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+#   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
+#   mutate(proportion = round(count / total*100,1)) %>%
+#   filter(aevis_atleast3 == "aevis_atleast3") %>%
+#   select(-c(total, aevis_atleast3))
+# 
+# write.csv(proportion_aevis3_3m_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_rounding.csv"))
+# 
+# knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_rounding.csv")))
 
 #By place of death 
 proportion_aevis3_3m_pod_rounding <- df %>% 
-  group_by(study_month, pod_ons_new, aevis_atleast3) %>%
-  summarise(count = n()) %>% 
-  mutate(total = sum(count)) %>% 
+  group_by(study_month, pod_ons_new) %>%
+  summarise(count = sum(aevis_3m >= 3, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = sum(aevis_3m >= 3, na.rm = TRUE), total = n()) %>%
+              mutate(pod_ons_new = "All")) %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
-  mutate(proportion = round(count / total*100,1)) %>%
-  filter(aevis_atleast3 == "aevis_atleast3") %>%
-  select(-c(total, aevis_atleast3))
+  mutate(proportion = round(count / total*100,1))
 
-write.csv(proportion_aevis3_3m_pod_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_pod_rounding.csv"))
+fwrite(proportion_aevis3_3m_pod_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_pod_rounding.csv"))
 
 knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_pod_rounding.csv")))
 
 
 #By cause of death 
 proportion_aevis3_3m_cod_rounding <- df %>% 
-  group_by(study_month, codgrp, aevis_atleast3) %>%
-  summarise(count = n()) %>% 
-  mutate(total = sum(count)) %>%
+  group_by(study_month, codgrp) %>%
+  summarise(count = sum(aevis_3m >= 3, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = sum(aevis_3m >= 3, na.rm = TRUE), total = n()) %>%
+              mutate(codgrp = "All")) %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
-  mutate(proportion = round(count / total*100,1)) %>%
-  filter(aevis_atleast3 == "aevis_atleast3") %>%
-  select(-c(total, aevis_atleast3))
+  mutate(proportion = round(count / total*100,1)) 
 
-write.csv(proportion_aevis3_3m_cod_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_cod_rounding.csv"))
+fwrite(proportion_aevis3_3m_cod_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_cod_rounding.csv"))
 
 knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_cod_rounding.csv")))
 
 
 #At least 3 A&E visits last 3 months of life, without rounding --------------------------
-proportion_aevis3_3m <- df %>% 
-  group_by(study_month, aevis_atleast3) %>%
-  summarise(count = n()) %>% 
-  mutate(total = sum(count)
-         , proportion = round(count / total*100,1)) %>%
-  filter(aevis_atleast3 == "aevis_atleast3") %>%
-  select(-c(total, aevis_atleast3))
-
-write.csv(proportion_aevis3_3m, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3.csv"))
-
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3.csv")))
+# proportion_aevis3_3m <- df %>% 
+#   group_by(study_month, aevis_atleast3) %>%
+#   summarise(count = n()) %>% 
+#   mutate(total = sum(count)
+#          , proportion = round(count / total*100,1)) %>%
+#   filter(aevis_atleast3 == "aevis_atleast3") %>%
+#   select(-c(total, aevis_atleast3))
+# 
+# write.csv(proportion_aevis3_3m, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3.csv"))
+# 
+# knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3.csv")))
 
 #By place of death
 proportion_aevis3_3m_pod <- df %>% 
-  group_by(study_month, pod_ons_new, aevis_atleast3) %>%
-  summarise(count = n()) %>% 
-  mutate(total = sum(count)
-         , proportion = round(count / total*100,1)) %>%
-  filter(aevis_atleast3 == "aevis_atleast3") %>%
-  select(-c(total, aevis_atleast3))
+  group_by(study_month, pod_ons_new) %>%
+  summarise(count = sum(aevis_3m >= 3, na.rm = TRUE), total = n()) %>% 
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = sum(aevis_3m >= 3, na.rm = TRUE), total = n()) %>%
+              mutate(pod_ons_new = "All")) %>%
+  mutate(proportion = round(count / total*100,1)) 
 
-write.csv(proportion_aevis3_3m_pod, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_pod.csv"))
+fwrite(proportion_aevis3_3m_pod, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_pod.csv"))
 
 knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_pod.csv")))
 
 #By cause of death 
 proportion_aevis3_3m_cod <- df %>% 
-  group_by(study_month, codgrp, aevis_atleast3) %>%
-  summarise(count = n()) %>% 
-  mutate(total = sum(count)
-         , proportion = round(count / total*100,1)) %>%
-  filter(aevis_atleast3 == "aevis_atleast3") %>%
-  select(-c(total, aevis_atleast3))
+  group_by(study_month, codgrp) %>%
+  summarise(count = sum(aevis_3m >= 3, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = sum(aevis_3m >= 3, na.rm = TRUE), total = n()) %>%
+              mutate(codgrp = "All")) %>%
+  mutate(proportion = round(count / total*100,1))
 
-write.csv(proportion_aevis3_3m_cod, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_cod.csv"))
+fwrite(proportion_aevis3_3m_cod, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_cod.csv"))
 
 knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_cod.csv")))
 
 # Quarterly---------------------------------------
 #Quarterly Palliative care recorded, with rounding ----------------------------------------------------
-proportion_palcare_rounding_quarter <- df %>%
-  group_by(study_quarter, palcare_code) %>%
-  summarise(count = n()) %>%
-  mutate(total = sum(count)) %>%
-  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
-  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
-  mutate(proportion = round(count / total*100,1)) %>%
-  filter(palcare_code == "Palcare_code") %>%
-  select(-c(total, palcare_code))
-
-write.csv(proportion_palcare_rounding_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_rounding_quarter.csv"))
-
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_rounding_quarter.csv")))
+# proportion_palcare_rounding_quarter <- df %>%
+#   group_by(study_quarter, palcare_code) %>%
+#   summarise(count = n()) %>%
+#   mutate(total = sum(count)) %>%
+#   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+#   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
+#   mutate(proportion = round(count / total*100,1)) %>%
+#   filter(palcare_code == "Palcare_code") %>%
+#   select(-c(total, palcare_code))
+# 
+# write.csv(proportion_palcare_rounding_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_rounding_quarter.csv"))
+# 
+# knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_rounding_quarter.csv")))
 
 
 #By place of death
 proportion_palcare_pod_rounding_quarter <- df %>%
-  group_by(study_quarter, pod_ons_new, palcare_code) %>%
-  summarise(count = n()) %>%
-  mutate(total = sum(count)) %>%
+  group_by(study_quarter, pod_ons_new) %>%
+  summarise(count = sum(palliative_3m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_quarter) %>%
+              summarise(count = sum(palliative_3m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(pod_ons_new = "All")) %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
-  mutate( proportion = round(count / total*100,1)) %>%
-  filter(palcare_code == "Palcare_code") %>%
-  select(-c(total, palcare_code))
+  mutate(proportion = round(count / total*100,1))
 
-
-write.csv(proportion_palcare_pod_rounding_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_pod_rounding_quarter.csv"))
+fwrite(proportion_palcare_pod_rounding_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_pod_rounding_quarter.csv"))
 
 knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_pod_rounding_quarter.csv")))
 
 #By cause of death 
 proportion_palcare_cod_rounding_quarter <- df %>%
-  group_by(study_quarter, codgrp, palcare_code) %>%
-  summarise(count = n()) %>%
-  mutate(total = sum(count)) %>%
+  group_by(study_quarter, codgrp) %>%
+  summarise(count = sum(palliative_3m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_quarter) %>%
+              summarise(count = sum(palliative_3m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(codgrp = "All")) %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
-  mutate(proportion = round(count / total*100,1)) %>%
-  filter(palcare_code == "Palcare_code") %>%
-  select(-c(total, palcare_code))
+  mutate(proportion = round(count / total*100,1))
 
-
-write.csv(proportion_palcare_cod_rounding_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_cod_rounding_quarter.csv"))
+fwrite(proportion_palcare_cod_rounding_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_cod_rounding_quarter.csv"))
 
 knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_cod_rounding_quarter.csv")))
 
 #Quarterly Palliative care recorded, without rounding--------------------------
-proportion_palcare_quarter <- df %>%
-  group_by(study_quarter, palcare_code) %>%
-  summarise(count = n()) %>%
-  mutate(total = sum(count)
-         , proportion = round(count / total*100,1)) %>%
-  filter(palcare_code == "Palcare_code") %>%
-  select(-c(total, palcare_code))
-
-write.csv(proportion_palcare_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_quarter.csv"))
-
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_quarter.csv")))
+# proportion_palcare_quarter <- df %>%
+#   group_by(study_quarter, palcare_code) %>%
+#   summarise(count = n()) %>%
+#   mutate(total = sum(count)
+#          , proportion = round(count / total*100,1)) %>%
+#   filter(palcare_code == "Palcare_code") %>%
+#   select(-c(total, palcare_code))
+# 
+# write.csv(proportion_palcare_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_quarter.csv"))
+# 
+# knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_quarter.csv")))
 
 #By place of death 
 proportion_palcare_pod_quarter <- df %>%
-  group_by(study_quarter, pod_ons_new, palcare_code) %>%
-  summarise(count = n()) %>%
-  mutate(total = sum(count)
-         , proportion = round(count / total*100,1)) %>%
-  filter(palcare_code == "Palcare_code") %>%
-  select(-c(total, palcare_code))
+  group_by(study_quarter, pod_ons_new) %>%
+  summarise(count = sum(palliative_3m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_quarter) %>%
+              summarise(count = sum(palliative_3m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(pod_ons_new = "All")) %>%
+  mutate(proportion = round(count / total*100,1))
 
-write.csv(proportion_palcare_pod_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_pod_quarter.csv"))
+fwrite(proportion_palcare_pod_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_pod_quarter.csv"))
 
 knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_pod_quarter.csv")))
 
 #By cause of death 
 proportion_palcare_cod_quarter <- df %>%
-  group_by(study_quarter, codgrp, palcare_code) %>%
-  summarise(count = n()) %>%
-  mutate(total = sum(count)
-         , proportion = round(count / total*100,1)) %>%
-  filter(palcare_code == "Palcare_code") %>%
-  select(-c(total, palcare_code))
+  group_by(study_quarter, codgrp) %>%
+  summarise(count = sum(palliative_3m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>% 
+              group_by(study_quarter) %>%
+              summarise(count = sum(palliative_3m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(codgrp = "All")) %>%
+  mutate(proportion = round(count / total*100,1))
 
-
-write.csv(proportion_palcare_cod_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_cod_quarter.csv"))
+fwrite(proportion_palcare_cod_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_cod_quarter.csv"))
 
 knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_cod_quarter.csv")))
 
 
 #Quarterly At least one A&E visits last 3 months of life, with rounding --------------------------
-proportion_aevis1_3m_rounding_quarter <- df %>% 
-  group_by(study_quarter, aevis_atleast1) %>%
-  summarise(count = n()) %>% 
-  mutate(total = sum(count)) %>%
-  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
-  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
-  mutate(proportion = round(count / total*100,1)) %>%
-  filter(aevis_atleast1 == "aevis_atleast1") %>%
-  select(-c(total, aevis_atleast1))
-
-write.csv(proportion_aevis1_3m_rounding_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_rounding_quarter.csv"))
-
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_rounding_quarter.csv")))
+# proportion_aevis1_3m_rounding_quarter <- df %>% 
+#   group_by(study_quarter, aevis_atleast1) %>%
+#   summarise(count = n()) %>% 
+#   mutate(total = sum(count)) %>%
+#   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+#   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
+#   mutate(proportion = round(count / total*100,1)) %>%
+#   filter(aevis_atleast1 == "aevis_atleast1") %>%
+#   select(-c(total, aevis_atleast1))
+# 
+# write.csv(proportion_aevis1_3m_rounding_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_rounding_quarter.csv"))
+# 
+# knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_rounding_quarter.csv")))
 
 #By place of death 
 proportion_aevis1_3m_pod_rounding_quarter <- df %>% 
-  group_by(study_quarter, pod_ons_new, aevis_atleast1) %>%
-  summarise(count = n()) %>% 
-  mutate(total = sum(count)) %>%
+  group_by(study_quarter, pod_ons_new) %>%
+  summarise(count = sum(aevis_3m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_quarter) %>%
+              summarise(count = sum(aevis_3m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(pod_ons_new = "All")) %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
-  mutate(proportion = round(count / total*100,1)) %>%
-  filter(aevis_atleast1 == "aevis_atleast1") %>%
-  select(-c(total, aevis_atleast1))
+  mutate(proportion = round(count / total*100,1))
 
-write.csv(proportion_aevis1_3m_pod_rounding_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_pod_rounding_quarter.csv"))
+fwrite(proportion_aevis1_3m_pod_rounding_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_pod_rounding_quarter.csv"))
 
 knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_pod_rounding_quarter.csv")))
 
 
 #By cause of death 
 proportion_aevis1_3m_cod_rounding_quarter <- df %>% 
-  group_by(study_quarter, codgrp, aevis_atleast1) %>%
-  summarise(count = n()) %>% 
-  mutate(total = sum(count)) %>%
+  group_by(study_quarter, codgrp) %>%
+  summarise(count = sum(aevis_3m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_quarter) %>%
+              summarise(count = sum(aevis_3m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(codgrp = "All")) %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
-  mutate(proportion = round(count / total*100,1)) %>%
-  filter(aevis_atleast1 == "aevis_atleast1") %>%
-  select(-c(total, aevis_atleast1))
+  mutate(proportion = round(count / total*100,1))
 
-write.csv(proportion_aevis1_3m_cod_rounding_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_cod_rounding_quarter.csv"))
+fwrite(proportion_aevis1_3m_cod_rounding_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_cod_rounding_quarter.csv"))
 
 knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_cod_rounding_quarter.csv")))
 
-
 #Quarterly At least one A&E visits last 3 months of life, without rounding --------------------------
-proportion_aevis1_3m_quarter <- df %>% 
-  group_by(study_quarter, aevis_atleast1) %>%
-  summarise(count = n()) %>% 
-  mutate(total = sum(count)
-         , proportion = round(count / total*100,1)) %>%
-  filter(aevis_atleast1 == "aevis_atleast1") %>%
-  select(-c(total, aevis_atleast1))
-
-write.csv(proportion_aevis1_3m_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_quarter.csv"))
-
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_quarter.csv")))
+# proportion_aevis1_3m_quarter <- df %>% 
+#   group_by(study_quarter, aevis_atleast1) %>%
+#   summarise(count = n()) %>% 
+#   mutate(total = sum(count)
+#          , proportion = round(count / total*100,1)) %>%
+#   filter(aevis_atleast1 == "aevis_atleast1") %>%
+#   select(-c(total, aevis_atleast1))
+# 
+# write.csv(proportion_aevis1_3m_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_quarter.csv"))
+# 
+# knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_quarter.csv")))
 
 #By place of death 
 proportion_aevis1_3m_pod_quarter <- df %>% 
-  group_by(study_quarter, pod_ons_new, aevis_atleast1) %>%
-  summarise(count = n()) %>% 
-  mutate(total = sum(count)
-         , proportion = round(count / total*100,1)) %>%
-  filter(aevis_atleast1 == "aevis_atleast1") %>%
-  select(-c(total, aevis_atleast1))
+  group_by(study_quarter, pod_ons_new) %>%
+  summarise(count = sum(aevis_3m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_quarter) %>%
+              summarise(count = sum(aevis_3m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(pod_ons_new = "All")) %>%
+  mutate(proportion = round(count / total*100,1))
 
-write.csv(proportion_aevis1_3m_pod_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_pod_quarter.csv"))
+fwrite(proportion_aevis1_3m_pod_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_pod_quarter.csv"))
 
 knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_pod_quarter.csv")))
 
 #By cause of death 
 proportion_aevis1_3m_cod_quarter <- df %>% 
-  group_by(study_quarter, codgrp, aevis_atleast1) %>%
-  summarise(count = n()) %>% 
-  mutate(total = sum(count)
-         , proportion = round(count / total*100,1)) %>%
-  filter(aevis_atleast1 == "aevis_atleast1") %>%
-  select(-c(total, aevis_atleast1))
+  group_by(study_quarter, codgrp) %>%
+  summarise(count = sum(aevis_3m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_quarter) %>%
+              summarise(count = sum(aevis_3m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(codgrp = "All")) %>%
+  mutate(proportion = round(count / total*100,1))
 
-write.csv(proportion_aevis1_3m_cod_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_cod_quarter.csv"))
+fwrite(proportion_aevis1_3m_cod_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_cod_quarter.csv"))
 
 knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_cod_quarter.csv")))
 
 #Quarterly At least 3 A&E visits last 3 months of life, with rounding --------------------------
-proportion_aevis3_3m_rounding_quarter <- df %>% 
-  group_by(study_quarter, aevis_atleast3) %>%
-  summarise(count = n()) %>% 
-  mutate(total = sum(count)) %>% 
-  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
-  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
-  mutate(proportion = round(count / total*100,1)) %>%
-  filter(aevis_atleast3 == "aevis_atleast3") %>%
-  select(-c(total, aevis_atleast3))
-
-write.csv(proportion_aevis3_3m_rounding_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_rounding_quarter.csv"))
-
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_rounding_quarter.csv")))
+# proportion_aevis3_3m_rounding_quarter <- df %>% 
+#   group_by(study_quarter, aevis_atleast3) %>%
+#   summarise(count = n()) %>% 
+#   mutate(total = sum(count)) %>% 
+#   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+#   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
+#   mutate(proportion = round(count / total*100,1)) %>%
+#   filter(aevis_atleast3 == "aevis_atleast3") %>%
+#   select(-c(total, aevis_atleast3))
+# 
+# write.csv(proportion_aevis3_3m_rounding_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_rounding_quarter.csv"))
+# 
+# knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_rounding_quarter.csv")))
 
 #By place of death 
 proportion_aevis3_3m_pod_rounding_quarter <- df %>% 
-  group_by(study_quarter, pod_ons_new, aevis_atleast3) %>%
-  summarise(count = n()) %>% 
-  mutate(total = sum(count)) %>% 
+  group_by(study_quarter, pod_ons_new) %>%
+  summarise(count = sum(aevis_3m >= 3, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_quarter) %>%
+              summarise(count = sum(aevis_3m >= 3, na.rm = TRUE), total = n()) %>%
+              mutate(pod_ons_new = "All")) %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
-  mutate(proportion = round(count / total*100,1)) %>%
-  filter(aevis_atleast3 == "aevis_atleast3") %>%
-  select(-c(total, aevis_atleast3))
+  mutate(proportion = round(count / total*100,1))
 
-write.csv(proportion_aevis3_3m_pod_rounding_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_pod_rounding_quarter.csv"))
+fwrite(proportion_aevis3_3m_pod_rounding_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_pod_rounding_quarter.csv"))
 
 knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_pod_rounding_quarter.csv")))
 
-
 #By cause of death 
 proportion_aevis3_3m_cod_rounding_quarter <- df %>% 
-  group_by(study_quarter, codgrp, aevis_atleast3) %>%
-  summarise(count = n()) %>% 
-  mutate(total = sum(count)) %>%
+  group_by(study_quarter, codgrp) %>%
+  summarise(count = sum(aevis_3m >= 3, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_quarter) %>%
+              summarise(count = sum(aevis_3m >= 3, na.rm = TRUE), total = n()) %>%
+              mutate(codgrp = "All")) %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
-  mutate(proportion = round(count / total*100,1)) %>%
-  filter(aevis_atleast3 == "aevis_atleast3") %>%
-  select(-c(total, aevis_atleast3))
+  mutate(proportion = round(count / total*100,1))
 
-write.csv(proportion_aevis3_3m_cod_rounding_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_cod_rounding_quarter.csv"))
+fwrite(proportion_aevis3_3m_cod_rounding_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_cod_rounding_quarter.csv"))
 
 knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_cod_rounding_quarter.csv")))
 
 
 #Quarterly At least 3 A&E visits last 3 months of life, without rounding --------------------------
-proportion_aevis3_3m_quarter <- df %>% 
-  group_by(study_quarter, aevis_atleast3) %>%
-  summarise(count = n()) %>% 
-  mutate(total = sum(count)
-         , proportion = round(count / total*100,1)) %>%
-  filter(aevis_atleast3 == "aevis_atleast3") %>%
-  select(-c(total, aevis_atleast3))
-
-write.csv(proportion_aevis3_3m_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_quarter.csv"))
-
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_quarter.csv")))
+# proportion_aevis3_3m_quarter <- df %>% 
+#   group_by(study_quarter, aevis_atleast3) %>%
+#   summarise(count = n()) %>% 
+#   mutate(total = sum(count)
+#          , proportion = round(count / total*100,1)) %>%
+#   filter(aevis_atleast3 == "aevis_atleast3") %>%
+#   select(-c(total, aevis_atleast3))
+# 
+# write.csv(proportion_aevis3_3m_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_quarter.csv"))
+# 
+# knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_quarter.csv")))
 
 #By place of death
 proportion_aevis3_3m_pod_quarter <- df %>% 
-  group_by(study_quarter, pod_ons_new, aevis_atleast3) %>%
-  summarise(count = n()) %>% 
-  mutate(total = sum(count)
-         , proportion = round(count / total*100,1)) %>%
-  filter(aevis_atleast3 == "aevis_atleast3") %>%
-  select(-c(total, aevis_atleast3))
+  group_by(study_quarter, pod_ons_new) %>%
+  summarise(count = sum(aevis_3m >= 3, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_quarter) %>%
+              summarise(count = sum(aevis_3m >= 3, na.rm = TRUE), total = n()) %>%
+              mutate(pod_ons_new = "All")) %>%
+  mutate(proportion = round(count / total*100,1))
 
-write.csv(proportion_aevis3_3m_pod_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_pod_quarter.csv"))
+fwrite(proportion_aevis3_3m_pod_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_pod_quarter.csv"))
 
 knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_pod_quarter.csv")))
 
 #By cause of death 
 proportion_aevis3_3m_cod_quarter <- df %>% 
-  group_by(study_quarter, codgrp, aevis_atleast3) %>%
-  summarise(count = n()) %>% 
-  mutate(total = sum(count)
-         , proportion = round(count / total*100,1)) %>%
-  filter(aevis_atleast3 == "aevis_atleast3") %>%
-  select(-c(total, aevis_atleast3))
+  group_by(study_quarter, codgrp) %>%
+  summarise(count = sum(aevis_3m >= 3, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_quarter) %>%
+              summarise(count = sum(aevis_3m >= 3, na.rm = TRUE), total = n()) %>%
+              mutate(codgrp = "All")) %>%
+  mutate(proportion = round(count / total*100,1))
 
-write.csv(proportion_aevis3_3m_cod_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_cod_quarter.csv"))
+fwrite(proportion_aevis3_3m_cod_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_cod_quarter.csv"))
 
 knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_cod_quarter.csv")))
