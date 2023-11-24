@@ -158,8 +158,6 @@ dataset.careplan_3m = clinical_events.where(
 
 first_careplan = clinical_events.where(
     clinical_events.snomedct_code.is_in(codelists.care_plan_palcare)
-).where(
-    clinical_events.date.is_on_or_after(dod_ons - days(90))
 ).sort_by(
     clinical_events.date).first_for_patient().date
 
