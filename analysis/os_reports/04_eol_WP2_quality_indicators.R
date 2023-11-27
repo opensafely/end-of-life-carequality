@@ -2,7 +2,7 @@
 # Charts for WP2_quality_indicators
 # Date: 18.09.2023
 # Author: Sophie
-# Aim: Create quality indicators for end of life care.
+# Aim: Create quality indicators for end of life care.Each indicator will look back over the last 90 days of life. 
 #-------------------------------------------------------------------------------
 
 # Load packages -----------------------------------------------------------
@@ -446,7 +446,7 @@ proportion_aevis1_3m_pod <- df %>%
   summarise(count = sum(aevis_3m >= 1, na.rm = TRUE), total = n()) %>%
   bind_rows(df %>%
               group_by(study_month) %>%
-              summarise(count = sum(aevis_3m >+ 1, na.rm = TRUE), total = n()) %>%
+              summarise(count = sum(aevis_3m >= 1, na.rm = TRUE), total = n()) %>%
               mutate(pod_ons_new = "All")) %>%
   mutate(proportion = round(count / total*100,1))
 
