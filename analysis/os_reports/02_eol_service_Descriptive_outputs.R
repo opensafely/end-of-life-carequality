@@ -14,7 +14,7 @@
 # - Community nurse contacts
 #---------------------------------------------------------------------------------
 
-# Load packages -----------------------------------------------------------
+# Load packages
 
 library(tidyverse)
 library(lubridate)
