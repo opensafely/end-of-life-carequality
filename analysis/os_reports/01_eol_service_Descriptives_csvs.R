@@ -1,4 +1,4 @@
-#-------------------------------------------------------------------------------
+###############################################################################
 # CSV files for end of life care descriptive analysis
 # Date: 26.07.2023
 # Author: Eilís & Miranda 
@@ -6,15 +6,15 @@
 # Note: Files are created with and without rounding / redaction. Non-rounded/redacted files are not for release
 # PNG/Tables are created using these CSVs in file 02_eol_service_Descriptive_outputs
 # Measures include: 
-# - Deaths in period
-# - Use of medications for symptom management
-# - General practice interactions
-# - A&E visits
-# - Outpatient appointments
-# - Elective admissions
-# - Emergency admissions
-# - Community nurse contacts
--------------------------------------------------------------------------------
+# Deaths in period
+# Use of medications for symptom management
+# General practice interactions
+# A&E visits
+# Outpatient appointments
+# Elective admissions
+# Emergency admissions
+# Community nurse contacts
+###############################################################################
 
 # Load packages
 
@@ -52,7 +52,7 @@ df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.g
   filter(study_month >= startdate & study_month <= enddate) 
 
 
-# Deaths in period --------------------------------------------------------
+# Deaths in period 
 
 # Number of deaths by month and place of death - including all deaths
 
@@ -215,7 +215,7 @@ eol_med_month_cod <- df %>%
 
 fwrite(eol_med_month_cod, here::here("output", "os_reports", "eol_service", "eol_med_month_cod.csv"))
 
-# General practice interactions -------------------------------------------
+# General practice interactions 
 
 # Number of people with at least one general practice interaction in the last month of life by month and place of death - all deaths
 
@@ -344,7 +344,7 @@ gp_month_cod <- df %>%
 
 fwrite(gp_month_cod, here::here("output", "os_reports", "eol_service", "gp_month_cod.csv"))
 
-# A&E visits --------------------------------------------------------------
+# A&E visits 
 
 # Number of people with at least one A&E visit in the last month of life by month and place of death - all deaths
 
@@ -474,7 +474,7 @@ aevis_month_cod <- df %>%
 fwrite(aevis_month_cod, here::here("output", "os_reports", "eol_service", "aevis_month_cod.csv"))
 
 
-# Outpatient appointments -------------------------------------------
+# Outpatient appointments 
 
 # Number of people with at least one outpatient appointment in the last month of life by month and place of death - all deaths
 
@@ -602,7 +602,7 @@ opapp_month_cod <- df %>%
 fwrite(opapp_month_cod, here::here("output", "os_reports", "eol_service", "opapp_month_cod.csv"))
 
 
-# Elective admissions---------------------------------------------
+# Elective admissions
 
 # Number of people with at least one elective admission in the last month of life by month and place of death - all deaths
 
@@ -733,7 +733,7 @@ eladm_month_cod <- df %>%
 fwrite(eladm_month_cod, here::here("output", "os_reports", "eol_service", "eladm_month_cod.csv"))
 
 
-# Emergency admissions---------------------------------------------
+# Emergency admissions
 
 # Number of people with at least one emergency admission in the last month of life by month and place of death - all deaths
 
@@ -865,7 +865,7 @@ emadm_month_cod <- df %>%
 fwrite(emadm_month_cod, here::here("output", "os_reports", "eol_service", "emadm_month_cod.csv"))
 
 
-# Community nurse contacts---------------------------------------------
+# Community nurse contacts
 
 # Number of people with at least one community nursing contact in the last month of life by month and place of death - all deaths
 

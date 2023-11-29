@@ -1,4 +1,4 @@
-#-------------------------------------------------------------------------------
+################################################################################
 # PNG files for end of life care descriptive analysis
 # Date: 29.11.2023
 # Author: Miranda Davies
@@ -12,7 +12,7 @@
 # Elective admissions
 # Emergency admissions
 # Community nurse contacts
-#---------------------------------------------------------------------------------
+################################################################################
 
 # Load packages
 
@@ -26,7 +26,7 @@ library (here)
 
 fs::dir_create("output", "os_reports", "eol_service")
 
-# NT chart functions ------------------------------------------------------
+# NT chart functions
 
 # Nuffield Trust colour list
 
@@ -379,7 +379,7 @@ deaths_place_count <-
         , path = here::here("output", "os_reports", "eol_service"))
  
  
- # End-of-life medication-------------------------------------------------------
+ # End-of-life medication
  
  # Mean by place of death
    
@@ -494,9 +494,9 @@ deaths_place_count <-
          , filename = "eol_med_cod_proportion.png"
          , path = here::here("output", "os_reports", "eol_service"))
    
-  # A&E visits-----------------------------------------------------------------
+  # A&E visits
    
-  # Place of death--------------------------------------------------------------
+  # Place of death
   
   # Mean by place of death
   
@@ -554,7 +554,7 @@ deaths_place_count <-
          , filename = "aevis_place_proportion.png"
          , path = here::here("output", "os_reports", "eol_service")) 
   
-  # Cause of death--------------------------------------------------------------
+  # Cause of death
 
   # Mean by cause of death
   
@@ -613,9 +613,9 @@ deaths_place_count <-
          , path = here::here("output", "os_reports", "eol_service")) 
   
 
-  # Elective admissions---------------------------------------------------------
+  # Elective admissions
   
-  # Place of death--------------------------------------------------------------
+  # Place of death
   
   # Mean by place of death
   
@@ -673,7 +673,7 @@ deaths_place_count <-
          , filename = "eladm_place_proportion.png"
          , path = here::here("output", "os_reports", "eol_service")) 
   
-  # Cause of death--------------------------------------------------------------
+  # Cause of death
   
   # Mean by cause of death
   
@@ -732,9 +732,9 @@ deaths_place_count <-
          , path = here::here("output", "os_reports", "eol_service")) 
   
   
-  # Emergency admissions--------------------------------------------------------
+  # Emergency admissions
  
-  # Place of death--------------------------------------------------------------
+  # Place of death
   
   # Mean by place of death
   
@@ -792,7 +792,7 @@ deaths_place_count <-
          , filename = "emadm_place_proportion.png"
          , path = here::here("output", "os_reports", "eol_service")) 
   
-  # Cause of death--------------------------------------------------------------
+  # Cause of death
   
   # Mean by cause of death
   
@@ -850,9 +850,9 @@ deaths_place_count <-
          , filename = "emadm_cod_proportion.png"
          , path = here::here("output", "os_reports", "eol_service")) 
   
-  # GP contacts-----------------------------------------------------------------
+  # GP contacts
   
-  # Place of death--------------------------------------------------------------
+  # Place of death
   
   # Mean by place of death
   
@@ -910,7 +910,7 @@ deaths_place_count <-
          , filename = "gp_place_proportion.png"
          , path = here::here("output", "os_reports", "eol_service")) 
   
-  # Cause of death--------------------------------------------------------------
+  # Cause of death
   
   # Mean by cause of death
   
@@ -968,9 +968,9 @@ deaths_place_count <-
          , filename = "gp_cod_proportion.png"
          , path = here::here("output", "os_reports", "eol_service"))  
   
-  # Community nursing contacts--------------------------------------------------
+  # Community nursing contacts
   
-  # Place of death--------------------------------------------------------------
+  # Place of death
   
   # Mean by place of death
   
@@ -1028,7 +1028,7 @@ deaths_place_count <-
          , filename = "nursing_place_proportion.png"
          , path = here::here("output", "os_reports", "eol_service")) 
   
-  # Cause of death--------------------------------------------------------------
+  # Cause of death
   
   # Mean by cause of death
   
@@ -1089,7 +1089,7 @@ deaths_place_count <-
   
   # Outpatient appointments
  
-  # Place of death--------------------------------------------------------------
+  # Place of death
   
   # Mean by place of death
   
@@ -1147,7 +1147,7 @@ deaths_place_count <-
          , filename = "opapp_place_proportion.png"
          , path = here::here("output", "os_reports", "eol_service")) 
   
-  # Cause of death--------------------------------------------------------------
+  # Cause of death
   
   # Mean by cause of death
   
