@@ -24,6 +24,7 @@ library (here)
 
 # Create folder structure
 
+fs::dir_create("output", "os_reports", "eol_service")
 fs::dir_create("output", "os_reports", "eol_service", "charts")
 
 # NT chart functions
@@ -249,8 +250,6 @@ startdate <- dmy("01-06-2019")
 enddate <- dmy("30-06-2023")
 
 # Deaths
-
-fs::dir_create("output", "os_reports", "eol_service")
 
 # Place of death
 
@@ -895,12 +894,12 @@ deaths_place_count <-
     scale_colour_NT() +
     scale_x_date(expand = c(0,0), date_breaks = "3 months", date_labels = "%b-%y")+
     scale_y_continuous(expand = c(0,0)
-                       ,limits = c(25,
+                       ,limits = c(0,
                                    plyr::round_any(max(gp_pro_place$proportion, na.rm=TRUE)
                                                    ,100, f = ceiling))
                        ,breaks = seq(25
                                      , plyr::round_any(max(gp_pro_place$proportion, na.rm=TRUE)
-                                                       ,100,f = ceiling)
+                                                   ,100,f = ceiling)
                                      ,25)
                        ,labels = scales::comma)+
     NT_style()+
