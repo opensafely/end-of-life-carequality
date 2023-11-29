@@ -4,6 +4,7 @@
 # Author: Eilís & Miranda 
 # Aim: Create CSV files to show measures by proportion of patients as well as group level means
 # Note: Files are created with and without rounding / redaction. Non-rounded/redacted files are not for release
+# PNG/Tables are created using these CSVs in file 02_eol_service_Descriptive_outputs
 # Measures include: 
 # - Deaths in period
 # - Use of medications for symptom management

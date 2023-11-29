@@ -1,7 +1,7 @@
 #-------------------------------------------------------------------------------
 # PNG files for end of life care descriptive analysis
 # Date: 29.11.2023
-# Author: Miranda 
+# Author: Miranda Davies
 # Aim: Create PNG files to display the WP1 findings
 # Measures include: 
 # - Deaths in period
@@ -974,7 +974,7 @@ deaths_place_count <-
   
   # Proportion with at least one by cause of death------------------------------------------------
   
-  gp_pro_cod <- read_csv(file = gp_count_cause_ROUND)
+  gp_pro_cod <- read_csv(file = "output", "os_reports", "eol_service", "gp_count_cause_ROUND")
   
   gp_cod_proportion <- ggplot(gp_pro_cod, aes(x = study_month, y = proportion
                                                     , group = codgrp
