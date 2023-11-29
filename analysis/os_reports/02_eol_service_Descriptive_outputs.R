@@ -376,36 +376,6 @@ deaths_place_count <-
         , path = here::here("output", "os_reports", "eol_service"))
  
  
- # Table: Number of deaths by 3 month interval and place of death---------------
-
-   knitr::kable(read_csv(here::here(file = "output", "os_reports", "eol_service", "deaths_month_place.csv")) %>%
-   mutate(start_date = as_date(cut(study_month, breaks = "3 months"))
-        , end_date = rollback(start_date + months(3))
-        , time_period = paste0(format(start_date, format = "%b-%y"), " to "
-                              , format(end_date, format = "%b-%y"))) %>%
-  group_by(time_period, start_date, end_date, pod_ons_new) %>%
-  summarise(count = sum(count, na.rm = TRUE)) %>%
-  pivot_wider(names_from = pod_ons_new, values_from = count) %>%
-  arrange(start_date), col.names = c("Time period", "Period start date"
-                                     , "Period end date", "All", "Care home"
-                                     , "Elsewhere/other", "Home", "Hospice", "Hospital"))
-
- 
-   # Table: Number of deaths by 3 month interval and cause of death-------------
-   
-   knitr::kable(read_csv(here::here(file = "output", "os_reports", "eol_service", "deaths_month_cod.csv")) %>%
-                  mutate(start_date = as_date(cut(study_month, breaks = "3 months"))
-                         , end_date = rollback(start_date + months(3))
-                         , time_period = paste0(format(start_date, format = "%b-%y"), " to "
-                                                , format(end_date, format = "%b-%y"))) %>%
-                  group_by(time_period, start_date, end_date, codgrp) %>%
-                  summarise(count = sum(count, na.rm = TRUE)) %>%
-                  pivot_wider(names_from = codgrp, values_from = count) %>%
-                  arrange(start_date), col.names = c("Time period", "Period start date"
-                                                     , "Period end date", "All", "All other causes", "Cancer", "Circulatory diseases","Covid-19"
-                                                     , "Dementia and Alzheimer's disease", "Flu and pneumonia", "Other respiratory diseases"))
-   
- 
  # End-of-life medication-------------------------------------------------------
  
  # Mean by place of death------------------------------------------------------------
