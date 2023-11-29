@@ -301,11 +301,11 @@ deaths_place_count <-
      scale_x_date(expan = c(0,0), date_breaks = "3 months", date_labels = "%b-%y") +
      scale_y_continuous(expand = c(0,0)
                         , limits = c(0, plyr::round_any(max(deaths_place_R$count, na.rm=TRUE)
-                                                        , 15000))
+                                                        , 20000))
                         , breaks = seq(0
                                        , plyr::round_any(max(deaths_place_R$count, na.rm=TRUE)
-                                                         , 15000, f = ceiling)
-                                       , 5000)
+                                                         , 20000, f = ceiling)
+                                       , 20000)
                         , labels = scales::comma) +
      NT_style() +
      theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
@@ -364,11 +364,11 @@ deaths_place_count <-
    scale_x_date(expan = c(0,0), date_breaks = "3 months", date_labels = "%b-%y") +
    scale_y_continuous(expand = c(0,0)
                       , limits = c(0, plyr::round_any(max(deaths_cod_R$count, na.rm=TRUE)
-                                                      , 12000))
+                                                      , 20000))
                       , breaks = seq(0
                                      , plyr::round_any(max(deaths_cod_R$count, na.rm=TRUE)
-                                                       , 12000, f = ceiling)
-                                     , 4000)
+                                                       , 20000, f = ceiling)
+                                     , 20000)
                       , labels = scales::comma) +
    NT_style() +
    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
@@ -480,10 +480,10 @@ deaths_place_count <-
     scale_y_continuous(expand = c(0,0)
                        ,limits = c(0,
                                    plyr::round_any(max(eol_med_cause_pro$proportion, na.rm=TRUE)
-                                                   ,50, f = ceiling))
+                                                   ,100, f = ceiling))
                        ,breaks = seq(0
                                      , plyr::round_any(max(eol_med_cause_pro$proportion, na.rm=TRUE)
-                                                       ,50,f = ceiling)
+                                                       ,100,f = ceiling)
                                      ,10)
                        ,labels = scales::comma)+
     NT_style()+
@@ -512,11 +512,11 @@ deaths_place_count <-
     scale_y_continuous(expand = c(0,0)
                        ,limits = c(0,
                                    plyr::round_any(max(aevis_mean_place$mean, na.rm=TRUE)
-                                                   ,1.5, f = ceiling))
+                                                   ,1, f = ceiling))
                        ,breaks = seq(0
                                      , plyr::round_any(max(aevis_mean_place$mean, na.rm=TRUE)
                                                        ,1,f = ceiling)
-                                     ,0.5)
+                                     ,1)
                        ,labels = scales::comma)+
     NT_style()+
     theme(axis.text.x=element_text(angle = 45, vjust = 1, hjust = 1))
@@ -574,7 +574,7 @@ deaths_place_count <-
                        ,breaks = seq(0
                                      , plyr::round_any(max(aevis_mean_cod$mean, na.rm=TRUE)
                                                        ,1,f = ceiling)
-                                     ,0.20)
+                                     ,1)
                        ,labels = scales::comma)+
     NT_style()+
     theme(axis.text.x=element_text(angle = 45, vjust = 1, hjust = 1))
@@ -631,11 +631,11 @@ deaths_place_count <-
     scale_y_continuous(expand = c(0,0)
                        ,limits = c(0,
                                    plyr::round_any(max(eladm_mean_place$mean, na.rm=TRUE)
-                                                   ,0.3, f = ceiling))
+                                                   ,1, f = ceiling))
                        ,breaks = seq(0
                                      , plyr::round_any(max(eladm_mean_place$mean, na.rm=TRUE)
-                                                       ,0.3,f = ceiling)
-                                     ,0.1)
+                                                       ,1,f = ceiling)
+                                     ,1)
                        ,labels = scales::comma)+
     NT_style()+
     theme(axis.text.x=element_text(angle = 45, vjust = 1, hjust = 1))
@@ -659,10 +659,10 @@ deaths_place_count <-
     scale_y_continuous(expand = c(0,0)
                        ,limits = c(0,
                                    plyr::round_any(max(eladm_pro_place$proportion, na.rm=TRUE)
-                                                   ,20, f = ceiling))
+                                                   ,100, f = ceiling))
                        ,breaks = seq(0
                                      , plyr::round_any(max(eladm_pro_place$proportion, na.rm=TRUE)
-                                                       ,20,f = ceiling)
+                                                       ,100,f = ceiling)
                                      ,10)
                        ,labels = scales::comma)+
     NT_style()+
@@ -689,11 +689,11 @@ deaths_place_count <-
     scale_y_continuous(expand = c(0,0)
                        ,limits = c(0,
                                    plyr::round_any(max(eladm_mean_cod$mean, na.rm=TRUE)
-                                                   ,0.3, f = ceiling))
+                                                   ,1, f = ceiling))
                        ,breaks = seq(0
                                      , plyr::round_any(max(eladm_mean_cod$mean, na.rm=TRUE)
-                                                       ,0.3,f = ceiling)
-                                     ,0.1)
+                                                       ,1,f = ceiling)
+                                     ,1)
                        ,labels = scales::comma)+
     NT_style()+
     theme(axis.text.x=element_text(angle = 45, vjust = 1, hjust = 1))
@@ -717,10 +717,10 @@ deaths_place_count <-
     scale_y_continuous(expand = c(0,0)
                        ,limits = c(0,
                                    plyr::round_any(max(eladm_pro_cod$proportion, na.rm=TRUE)
-                                                   ,20, f = ceiling))
+                                                   ,100, f = ceiling))
                        ,breaks = seq(0
                                      , plyr::round_any(max(eladm_pro_cod$proportion, na.rm=TRUE)
-                                                       ,20,f = ceiling)
+                                                       ,100,f = ceiling)
                                      ,10)
                        ,labels = scales::comma)+
     NT_style()+
@@ -750,11 +750,11 @@ deaths_place_count <-
     scale_y_continuous(expand = c(0,0)
                        ,limits = c(0,
                                    plyr::round_any(max(emadm_mean_place$mean, na.rm=TRUE)
-                                                   ,1.5, f = ceiling))
+                                                   ,1, f = ceiling))
                        ,breaks = seq(0
                                      , plyr::round_any(max(emadm_mean_place$mean, na.rm=TRUE)
-                                                       ,1.5,f = ceiling)
-                                     ,0.5)
+                                                       ,1,f = ceiling)
+                                     ,1)
                        ,labels = scales::comma)+
     NT_style()+
     theme(axis.text.x=element_text(angle = 45, vjust = 1, hjust = 1))
@@ -812,7 +812,7 @@ deaths_place_count <-
                        ,breaks = seq(0
                                      , plyr::round_any(max(emadm_mean_cod$mean, na.rm=TRUE)
                                                        ,1,f = ceiling)
-                                     ,0.25)
+                                     ,1)
                        ,labels = scales::comma)+
     NT_style()+
     theme(axis.text.x=element_text(angle = 45, vjust = 1, hjust = 1))
@@ -897,10 +897,10 @@ deaths_place_count <-
                        ,limits = c(0,
                                    plyr::round_any(max(gp_pro_place$proportion, na.rm=TRUE)
                                                    ,100, f = ceiling))
-                       ,breaks = seq(25
+                       ,breaks = seq(0
                                      , plyr::round_any(max(gp_pro_place$proportion, na.rm=TRUE)
                                                    ,100,f = ceiling)
-                                     ,25)
+                                     ,10)
                        ,labels = scales::comma)+
     NT_style()+
     theme(axis.text.x=element_text(angle = 45, vjust = 1, hjust = 1))
@@ -952,12 +952,12 @@ deaths_place_count <-
     scale_colour_NT() +
     scale_x_date(expand = c(0,0), date_breaks = "3 months", date_labels = "%b-%y")+
     scale_y_continuous(expand = c(0,0)
-                       ,limits = c(50,
+                       ,limits = c(0,
                                    plyr::round_any(max(gp_pro_cod$proportion, na.rm=TRUE)
-                                                   ,90, f = ceiling))
-                       ,breaks = seq(50
+                                                   ,100, f = ceiling))
+                       ,breaks = seq(0
                                      , plyr::round_any(max(gp_pro_cod$proportion, na.rm=TRUE)
-                                                       ,90,f = ceiling)
+                                                       ,100,f = ceiling)
                                      ,10)
                        ,labels = scales::comma)+
     NT_style()+
@@ -986,11 +986,11 @@ deaths_place_count <-
     scale_y_continuous(expand = c(0,0)
                        ,limits = c(0,
                                    plyr::round_any(max(nursing_mean_place$mean, na.rm=TRUE)
-                                                   ,0.2, f = ceiling))
+                                                   ,1, f = ceiling))
                        ,breaks = seq(0
                                      , plyr::round_any(max(nursing_mean_place$mean, na.rm=TRUE)
-                                                       ,0.2,f = ceiling)
-                                     ,0.1)
+                                                       ,1,f = ceiling)
+                                     ,1)
                        ,labels = scales::comma)+
     NT_style()+
     theme(axis.text.x=element_text(angle = 45, vjust = 1, hjust = 1))
@@ -1014,11 +1014,11 @@ deaths_place_count <-
     scale_y_continuous(expand = c(0,0)
                        ,limits = c(0,
                                    plyr::round_any(max(nursing_pro_place$proportion, na.rm=TRUE)
-                                                   ,15, f = ceiling))
+                                                   ,100, f = ceiling))
                        ,breaks = seq(0
                                      , plyr::round_any(max(nursing_pro_place$proportion, na.rm=TRUE)
-                                                       ,15,f = ceiling)
-                                     ,5)
+                                                       ,100,f = ceiling)
+                                     ,10)
                        ,labels = scales::comma)+
     NT_style()+
     theme(axis.text.x=element_text(angle = 45, vjust = 1, hjust = 1))
@@ -1044,11 +1044,11 @@ deaths_place_count <-
     scale_y_continuous(expand = c(0,0)
                        ,limits = c(0,
                                    plyr::round_any(max(nursing_mean_cod$mean, na.rm=TRUE)
-                                                   ,0.2, f = ceiling))
+                                                   ,1, f = ceiling))
                        ,breaks = seq(0
                                      , plyr::round_any(max(nursing_mean_cod$mean, na.rm=TRUE)
-                                                       ,0.2,f = ceiling)
-                                     ,0.05)
+                                                       ,1,f = ceiling)
+                                     ,1)
                        ,labels = scales::comma)+
     NT_style()+
     theme(axis.text.x=element_text(angle = 45, vjust = 1, hjust = 1))
@@ -1072,11 +1072,11 @@ deaths_place_count <-
     scale_y_continuous(expand = c(0,0)
                        ,limits = c(0,
                                    plyr::round_any(max(nursing_pro_cod$proportion, na.rm=TRUE)
-                                                   ,15, f = ceiling))
+                                                   ,100, f = ceiling))
                        ,breaks = seq(0
                                      , plyr::round_any(max(nursing_pro_cod$proportion, na.rm=TRUE)
-                                                       ,15,f = ceiling)
-                                     ,5)
+                                                       ,100,f = ceiling)
+                                     ,10)
                        ,labels = scales::comma)+
     NT_style()+
     theme(axis.text.x=element_text(angle = 45, vjust = 1, hjust = 1))
