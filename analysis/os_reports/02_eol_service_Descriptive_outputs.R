@@ -20,6 +20,7 @@ library(tidyverse)
 library(lubridate)
 library(dplyr)
 library(data.table)
+library (here)
 
 # Create folder structure -------------------------------------------------
 
@@ -249,9 +250,11 @@ enddate <- dmy("30-06-2023")
 
 # Deaths------------------------------------------------------------------------
 
+fs::dir_create("output", "os_reports", "eol_service")
+
 # Place of death----------------------------------------------------------------
 
-deaths_place <- read_csv(file = "output", "os_reports", "eol_service", "deaths_month_place.csv")
+deaths_place <- read_csv(file = here::here("output", "os_reports", "eol_service", "deaths_month_place.csv"))
 
 deaths_place_count <-
   ggplot(deaths_place, aes(x = study_month, y = count
@@ -266,10 +269,10 @@ deaths_place_count <-
    scale_fill_NT() +
    scale_x_date(expan = c(0,0), date_breaks = "3 months", date_labels = "%b-%y") +
    scale_y_continuous(expand = c(0,0)
-                      , limits = c(0, plyr::round_any(max(deaths_place$count)
+                      , limits = c(0, plyr::round_any(max(deaths_place$count, na.rm = TRUE)
                                                       , 20000, f = ceiling))
                       , breaks = seq(0
-                                     , plyr::round_any(max(deaths_place$count)
+                                     , plyr::round_any(max(deaths_place$count, na.rm=TRUE)
                                                        , 20000, f = ceiling)
                                      , 20000)
                       , labels = scales::comma) +
@@ -281,10 +284,9 @@ deaths_place_count <-
         , path = here::here("output", "os_reports", "eol_service"))
  
  # Place of death excluding 'All'-------------------------------------------------
+ deaths_place <- read_csv(file = here::here("output", "os_reports", "eol_service", "deaths_month_place.csv"))
  
- 
- df <- read_csv(file = "output", "os_reports", "eol_service", "deaths_month_place.csv")
-   deaths_place_R<- subset(df, pod_ons_new != "All" )
+   deaths_place_R<- subset(deaths_place, pod_ons_new != "All" )
    
    deaths_place_count_exc_all <- ggplot(deaths_place_R, aes(x = study_month, y = count
                               , group = pod_ons_new
@@ -298,10 +300,10 @@ deaths_place_count <-
      scale_fill_NT() +
      scale_x_date(expan = c(0,0), date_breaks = "3 months", date_labels = "%b-%y") +
      scale_y_continuous(expand = c(0,0)
-                        , limits = c(0, plyr::round_any(max(deaths_place_R$count)
+                        , limits = c(0, plyr::round_any(max(deaths_place_R$count, na.rm=TRUE)
                                                         , 15000))
                         , breaks = seq(0
-                                       , plyr::round_any(max(deaths_place_R$count)
+                                       , plyr::round_any(max(deaths_place_R$count, na.rm=TRUE)
                                                          , 15000, f = ceiling)
                                        , 5000)
                         , labels = scales::comma) +
@@ -315,7 +317,7 @@ deaths_place_count <-
 
  # Cause of death---------------------------------------------------------------
 
- deaths_cod <- read_csv(file = "output", "os_reports", "eol_service", "deaths_month_cod.csv")
+ deaths_cod <- read_csv(file = here::here("output", "os_reports", "eol_service", "deaths_month_cod.csv"))
 
  deaths_cod_count <- ggplot(deaths_cod, aes(x = study_month, y = count
                                                , group = codgrp
@@ -346,7 +348,7 @@ deaths_place_count <-
 
  # Cause of death excluding All-------------------------------------------------
  
- df <- read_csv(file = "output", "os_reports", "eol_service", "deaths_month_cod.csv")
+ df <- read_csv(file = here::here("output", "os_reports", "eol_service", "deaths_month_cod.csv"))
  deaths_cod_R<- subset(df, codgrp != "All" )
  
  deaths_cod_count_exc_all <- ggplot(deaths_cod_R, aes(x = study_month, y = count
@@ -380,7 +382,7 @@ deaths_place_count <-
  
  # Mean by place of death------------------------------------------------------------
    
-  eol_med_place <- read_csv(file = "output", "os_reports", "eol_service", "eol_med_month")
+  eol_med_place <- read_csv(file = here::here("output", "os_reports", "eol_service", "eol_med_month.csv"))
    
   eol_med_place_mean <- ggplot(eol_med_place, aes(x = study_month, y = mean
                                         , group = pod_ons_new
@@ -392,10 +394,10 @@ deaths_place_count <-
     scale_x_date(expand = c(0,0), date_breaks = "3 months", date_labels = "%b-%y")+
     scale_y_continuous(expand = c(0,0)
                        ,limits = c(0,
-                                   plyr::round_any(max(eol_med_place$mean)
+                                   plyr::round_any(max(eol_med_place$mean, na.rm=TRUE)
                                                    ,1, f = ceiling))
                        ,breaks = seq(0
-                                     , plyr::round_any(max(eol_med_place$mean)
+                                     , plyr::round_any(max(eol_med_place$mean, na.rm=TRUE)
                                                        ,1,f = ceiling)
                                      ,1)
                        ,labels = scales::comma)+
@@ -408,7 +410,7 @@ deaths_place_count <-
    
   # Proportion with at least one by place of death------------------------------------------------
   
-  eol_med_place_pro <- read_csv(file = "output", "os_reports", "eol_service", "eol_med_count_place_ROUND")
+  eol_med_place_pro <- read_csv(file = here::here("output", "os_reports", "eol_service", "eol_med_count_place_ROUND.csv"))
   
   eol_med_place_proportion <- ggplot(eol_med_place_pro, aes(x = study_month, y = proportion
                                                   , group = pod_ons_new
@@ -420,10 +422,10 @@ deaths_place_count <-
     scale_x_date(expand = c(0,0), date_breaks = "3 months", date_labels = "%b-%y")+
     scale_y_continuous(expand = c(0,0)
                        ,limits = c(0,
-                                   plyr::round_any(max(eol_med_place_pro$proportion)
+                                   plyr::round_any(max(eol_med_place_pro$proportion, na.rm=TRUE)
                                                    ,100, f = ceiling))
                        ,breaks = seq(0
-                                     , plyr::round_any(max(eol_med_place_pro$proportion)
+                                     , plyr::round_any(max(eol_med_place_pro$proportion, na.rm=TRUE)
                                                        ,100,f = ceiling)
                                      ,10)
                        ,labels = scales::comma)+
@@ -437,7 +439,7 @@ deaths_place_count <-
 
   # Mean by cause of death-----------------------------------------------------------
   
-  eol_med_cod <- read_csv(file = "output", "os_reports", "eol_service", "eol_med_month_cod")
+  eol_med_cod <- read_csv(file = here::here("output", "os_reports", "eol_service", "eol_med_month_cod.csv"))
   
   eol_med_cod_mean <- ggplot(eol_med_cod, aes(x = study_month, y = mean
                                                   , group = codgrp
@@ -465,7 +467,7 @@ deaths_place_count <-
    
   # Proportion with at least one by cause of death------------------------------ 
    
-  eol_med_cause_pro <- read_csv(file = "output", "os_reports", "eol_service", "eol_med_count_cause_ROUND")
+  eol_med_cause_pro <- read_csv(file = here::here("output", "os_reports", "eol_service", "eol_med_count_cause_ROUND.csv"))
   
   eol_med_cod_proportion <- ggplot(eol_med_cause_pro, aes(x = study_month, y = proportion
                                                             , group = codgrp
@@ -497,7 +499,7 @@ deaths_place_count <-
   
   # Mean by place of death------------------------------------------------------
   
-  aevis_mean_place <- read_csv(file = "output", "os_reports", "eol_service", "aevis_month")
+  aevis_mean_place <- read_csv(file = here::here("output", "os_reports", "eol_service", "aevis_month.csv"))
   
   aevis_place_mean <- ggplot(aevis_mean_place, aes(x = study_month, y = mean
                                                , group = pod_ons_new
@@ -509,10 +511,10 @@ deaths_place_count <-
     scale_x_date(expand = c(0,0), date_breaks = "3 months", date_labels = "%b-%y")+
     scale_y_continuous(expand = c(0,0)
                        ,limits = c(0,
-                                   plyr::round_any(max(aevis_mean_place$mean)
+                                   plyr::round_any(max(aevis_mean_place$mean, na.rm=TRUE)
                                                    ,1.5, f = ceiling))
                        ,breaks = seq(0
-                                     , plyr::round_any(max(aevis_mean_place$mean)
+                                     , plyr::round_any(max(aevis_mean_place$mean, na.rm=TRUE)
                                                        ,1,f = ceiling)
                                      ,0.5)
                        ,labels = scales::comma)+
@@ -525,7 +527,7 @@ deaths_place_count <-
   
   # Proportion with at least one by place of death------------------------------------------------
   
-  aevis_pro_place <- read_csv(file = "output", "os_reports", "eol_service", "aevis_count_place_ROUND")
+  aevis_pro_place <- read_csv(file = here::here("output", "os_reports", "eol_service", "aevis_count_place_ROUND.csv"))
   
   aevis_place_proportion <- ggplot(aevis_pro_place, aes(x = study_month, y = proportion
                                                     , group = pod_ons_new
@@ -537,10 +539,10 @@ deaths_place_count <-
     scale_x_date(expand = c(0,0), date_breaks = "3 months", date_labels = "%b-%y")+
     scale_y_continuous(expand = c(0,0)
                        ,limits = c(0,
-                                   plyr::round_any(max(aevis_pro_place$proportion)
+                                   plyr::round_any(max(aevis_pro_place$proportion, na.rm=TRUE)
                                                    ,100, f = ceiling))
                        ,breaks = seq(0
-                                     , plyr::round_any(max(aevis_pro_place$proportion)
+                                     , plyr::round_any(max(aevis_pro_place$proportion, na.rm=TRUE)
                                                        ,100,f = ceiling)
                                      ,10)
                        ,labels = scales::comma)+
@@ -555,7 +557,7 @@ deaths_place_count <-
 
   # Mean by cause of death------------------------------------------------------
   
-  aevis_mean_cod <- read_csv(file = "output", "os_reports", "eol_service", "aevis_month_cod")
+  aevis_mean_cod <- read_csv(file = here::here("output", "os_reports", "eol_service", "aevis_month_cod.csv"))
   
   aevis_cod_mean <- ggplot(aevis_mean_cod, aes(x = study_month, y = mean
                                                    , group = codgrp
@@ -583,7 +585,7 @@ deaths_place_count <-
   
   # Proportion with at least one by cause of death------------------------------------------------
   
-  aevis_pro_cod <- read_csv(file = "output", "os_reports", "eol_service", "aevis_count_cause_ROUND")
+  aevis_pro_cod <- read_csv(file = here::here("output", "os_reports", "eol_service", "aevis_count_cause_ROUND.csv"))
   
   aevis_cod_proportion <- ggplot(aevis_pro_cod, aes(x = study_month, y = proportion
                                                         , group = codgrp
@@ -616,7 +618,7 @@ deaths_place_count <-
   
   # Mean by place of death------------------------------------------------------
   
-  eladm_mean_place <- read_csv(file = "output", "os_reports", "eol_service", "eladm_month" )
+  eladm_mean_place <- read_csv(file = here::here("output", "os_reports", "eol_service", "eladm_month.csv"))
   
   eladm_place_mean <- ggplot(eladm_mean_place, aes(x = study_month, y = mean
                                                    , group = pod_ons_new
@@ -628,10 +630,10 @@ deaths_place_count <-
     scale_x_date(expand = c(0,0), date_breaks = "3 months", date_labels = "%b-%y")+
     scale_y_continuous(expand = c(0,0)
                        ,limits = c(0,
-                                   plyr::round_any(max(eladm_mean_place$mean)
+                                   plyr::round_any(max(eladm_mean_place$mean, na.rm=TRUE)
                                                    ,0.3, f = ceiling))
                        ,breaks = seq(0
-                                     , plyr::round_any(max(eladm_mean_place$mean)
+                                     , plyr::round_any(max(eladm_mean_place$mean, na.rm=TRUE)
                                                        ,0.3,f = ceiling)
                                      ,0.1)
                        ,labels = scales::comma)+
@@ -644,7 +646,7 @@ deaths_place_count <-
   
   # Proportion with at least one by place of death------------------------------------------------
   
-  eladm_pro_place <- read_csv(file = "output", "os_reports", "eol_service", "eladm_count_place_ROUND")
+  eladm_pro_place <- read_csv(file = here::here("output", "os_reports", "eol_service", "eladm_count_place_ROUND.csv"))
   
   eladm_place_proportion <- ggplot(eladm_pro_place, aes(x = study_month, y = proportion
                                                         , group = pod_ons_new
@@ -674,7 +676,7 @@ deaths_place_count <-
   
   # Mean by cause of death------------------------------------------------------------
   
-  eladm_mean_cod <- read_csv(file = "output", "os_reports", "eol_service", "eladm_month_cod")
+  eladm_mean_cod <- read_csv(file = here::here("output", "os_reports", "eol_service", "eladm_month_cod.csv"))
   
   eladm_cod_mean <- ggplot(eladm_mean_cod, aes(x = study_month, y = mean
                                                , group = codgrp
@@ -702,7 +704,7 @@ deaths_place_count <-
   
   # Proportion with at least one by cause of death------------------------------------------------
   
-  eladm_pro_cod <- read_csv(file = "output", "os_reports", "eol_service", "eladm_count_cause_ROUND")
+  eladm_pro_cod <- read_csv(file = here::here("output", "os_reports", "eol_service", "eladm_count_cause_ROUND.csv"))
   
   eladm_cod_proportion <- ggplot(eladm_pro_cod, aes(x = study_month, y = proportion
                                                     , group = codgrp
@@ -735,7 +737,7 @@ deaths_place_count <-
   
   # Mean by place of death------------------------------------------------------
   
-  emadm_mean_place <- read_csv(file = "output", "os_reports", "eol_service", "emadm_month")
+  emadm_mean_place <- read_csv(file = here::here("output", "os_reports", "eol_service", "emadm_month.csv"))
   
   emadm_place_mean <- ggplot(emadm_mean_place, aes(x = study_month, y = mean
                                                    , group = pod_ons_new
@@ -747,10 +749,10 @@ deaths_place_count <-
     scale_x_date(expand = c(0,0), date_breaks = "3 months", date_labels = "%b-%y")+
     scale_y_continuous(expand = c(0,0)
                        ,limits = c(0,
-                                   plyr::round_any(max(emadm_mean_place$mean)
+                                   plyr::round_any(max(emadm_mean_place$mean, na.rm=TRUE)
                                                    ,1.5, f = ceiling))
                        ,breaks = seq(0
-                                     , plyr::round_any(max(emadm_mean_place$mean)
+                                     , plyr::round_any(max(emadm_mean_place$mean, na.rm=TRUE)
                                                        ,1.5,f = ceiling)
                                      ,0.5)
                        ,labels = scales::comma)+
@@ -763,7 +765,7 @@ deaths_place_count <-
   
   # Proportion with at least one by place of death------------------------------------------------
   
-  emadm_pro_place <- read_csv(file = "output", "os_reports", "eol_service", "emadm_count_place_ROUND")
+  emadm_pro_place <- read_csv(file = here::here("output", "os_reports", "eol_service", "emadm_count_place_ROUND.csv"))
   
   emadm_place_proportion <- ggplot(emadm_pro_place, aes(x = study_month, y = proportion
                                                         , group = pod_ons_new
@@ -793,7 +795,7 @@ deaths_place_count <-
   
   # Mean by cause of death------------------------------------------------------------
   
-  emadm_mean_cod <- read_csv(file = "output", "os_reports", "eol_service", "emadm_month_cod")
+  emadm_mean_cod <- read_csv(file = here::here("output", "os_reports", "eol_service", "emadm_month_cod.csv"))
   
   emadm_cod_mean <- ggplot(emadm_mean_cod, aes(x = study_month, y = mean
                                                , group = codgrp
@@ -821,7 +823,7 @@ deaths_place_count <-
   
   # Proportion with at least one by cause of death------------------------------------------------
   
-  emadm_pro_cod <- read_csv(file = "output", "os_reports", "eol_service", "emadm_count_cause_ROUND")
+  emadm_pro_cod <- read_csv(file = here::here("output", "os_reports", "eol_service", "emadm_count_cause_ROUND.csv"))
   
   emadm_cod_proportion <- ggplot(emadm_pro_cod, aes(x = study_month, y = proportion
                                                     , group = codgrp
@@ -853,7 +855,7 @@ deaths_place_count <-
   
   # Mean by place of death------------------------------------------------------
   
-  gp_mean_place <- read_csv(file = "output", "os_reports", "eol_service", "gp_month")
+  gp_mean_place <- read_csv(file = here::here("output", "os_reports", "eol_service", "gp_month.csv"))
   
   gp_place_mean <- ggplot(gp_mean_place, aes(x = study_month, y = mean
                                                    , group = pod_ons_new
@@ -865,10 +867,10 @@ deaths_place_count <-
     scale_x_date(expand = c(0,0), date_breaks = "3 months", date_labels = "%b-%y")+
     scale_y_continuous(expand = c(0,0)
                        ,limits = c(0,
-                                   plyr::round_any(max(gp_mean_place$mean)
+                                   plyr::round_any(max(gp_mean_place$mean, na.rm=TRUE)
                                                    ,1, f = ceiling))
                        ,breaks = seq(0
-                                     , plyr::round_any(max(gp_mean_place$mean)
+                                     , plyr::round_any(max(gp_mean_place$mean, na.rm=TRUE)
                                                        ,1,f = ceiling)
                                      ,1)
                        ,labels = scales::comma)+
@@ -881,7 +883,7 @@ deaths_place_count <-
   
   # Proportion with at least one by place of death------------------------------------------------
   
-  gp_pro_place <- read_csv(file = "output", "os_reports", "eol_service", "gp_count_place_ROUND")
+  gp_pro_place <- read_csv(file = here::here("output", "os_reports", "eol_service", "gp_count_place_ROUND.csv"))
   
   gp_place_proportion <- ggplot(gp_pro_place, aes(x = study_month, y = proportion
                                                         , group = pod_ons_new
@@ -911,7 +913,7 @@ deaths_place_count <-
   
   # Mean by cause of death------------------------------------------------------------
   
-  gp_mean_cod <- read_csv(file = "output", "os_reports", "eol_service", "gp_month_cod")
+  gp_mean_cod <- read_csv(file = here::here("output", "os_reports", "eol_service", "gp_month_cod.csv"))
   
   gp_cod_mean <- ggplot(gp_mean_cod, aes(x = study_month, y = mean
                                                , group = codgrp
@@ -939,7 +941,7 @@ deaths_place_count <-
   
   # Proportion with at least one by cause of death------------------------------------------------
   
-  gp_pro_cod <- read_csv(file = "output", "os_reports", "eol_service", "gp_count_cause_ROUND")
+  gp_pro_cod <- read_csv(file = here::here("output", "os_reports", "eol_service", "gp_count_cause_ROUND.csv"))
   
   gp_cod_proportion <- ggplot(gp_pro_cod, aes(x = study_month, y = proportion
                                                     , group = codgrp
@@ -971,7 +973,7 @@ deaths_place_count <-
   
   # Mean by place of death------------------------------------------------------
   
-  nursing_mean_place <- read_csv(file = "output", "os_reports", "eol_service", "nursing_month")
+  nursing_mean_place <- read_csv(file = here::here("output", "os_reports", "eol_service", "nursing_month.csv"))
   
   nursing_place_mean <- ggplot(nursing_mean_place, aes(x = study_month, y = mean
                                              , group = pod_ons_new
@@ -983,10 +985,10 @@ deaths_place_count <-
     scale_x_date(expand = c(0,0), date_breaks = "3 months", date_labels = "%b-%y")+
     scale_y_continuous(expand = c(0,0)
                        ,limits = c(0,
-                                   plyr::round_any(max(nursing_mean_place$mean)
+                                   plyr::round_any(max(nursing_mean_place$mean, na.rm=TRUE)
                                                    ,0.2, f = ceiling))
                        ,breaks = seq(0
-                                     , plyr::round_any(max(nursing_mean_place$mean)
+                                     , plyr::round_any(max(nursing_mean_place$mean, na.rm=TRUE)
                                                        ,0.2,f = ceiling)
                                      ,0.1)
                        ,labels = scales::comma)+
@@ -999,7 +1001,7 @@ deaths_place_count <-
   
   # Proportion with at least one by place of death------------------------------------------------
   
-  nursing_pro_place <- read_csv(file = "output", "os_reports", "eol_service", "nursing_count_place_ROUND")
+  nursing_pro_place <- read_csv(file = here::here("output", "os_reports", "eol_service", "nursing_count_place_ROUND.csv"))
   
   nursing_place_proportion <- ggplot(nursing_pro_place, aes(x = study_month, y = proportion
                                                   , group = pod_ons_new
@@ -1029,7 +1031,7 @@ deaths_place_count <-
   
   # Mean by cause of death------------------------------------------------------------
   
-  nursing_mean_cod <- read_csv(file = "output", "os_reports", "eol_service", "nursing_month_cod")
+  nursing_mean_cod <- read_csv(file = here::here("output", "os_reports", "eol_service", "nursing_month_cod.csv"))
   
   nursing_cod_mean <- ggplot(nursing_mean_cod, aes(x = study_month, y = mean
                                          , group = codgrp
@@ -1057,7 +1059,7 @@ deaths_place_count <-
   
   # Proportion with at least one by cause of death------------------------------------------------
   
-  nursing_pro_cod <- read_csv(file = "output", "os_reports", "eol_service", "nursing_count_cause_ROUND")
+  nursing_pro_cod <- read_csv(file = here::here("output", "os_reports", "eol_service", "nursing_count_cause_ROUND.csv"))
   
   nursing_cod_proportion <- ggplot(nursing_pro_cod, aes(x = study_month, y = proportion
                                               , group = codgrp
@@ -1090,7 +1092,7 @@ deaths_place_count <-
   
   # Mean by place of death------------------------------------------------------
   
-  opapp_mean_place <- read_csv(file = "output", "os_reports", "eol_service", "opapp_month")
+  opapp_mean_place <- read_csv(file = here::here("output", "os_reports", "eol_service", "opapp_month.csv"))
   
   opapp_place_mean <- ggplot(opapp_mean_place, aes(x = study_month, y = mean
                                                        , group = pod_ons_new
@@ -1102,10 +1104,10 @@ deaths_place_count <-
     scale_x_date(expand = c(0,0), date_breaks = "3 months", date_labels = "%b-%y")+
     scale_y_continuous(expand = c(0,0)
                        ,limits = c(0,
-                                   plyr::round_any(max(opapp_mean_place$mean)
+                                   plyr::round_any(max(opapp_mean_place$mean, na.rm=TRUE)
                                                    ,1, f = ceiling))
                        ,breaks = seq(0
-                                     , plyr::round_any(max(opapp_mean_place$mean)
+                                     , plyr::round_any(max(opapp_mean_place$mean, na.rm=TRUE)
                                                        ,1,f = ceiling)
                                      ,1)
                        ,labels = scales::comma)+
@@ -1118,7 +1120,7 @@ deaths_place_count <-
   
   # Proportion with at least one by place of death------------------------------------------------
   
-  opapp_pro_place <- read_csv(file = "output", "os_reports", "eol_service", "opapp_count_place_ROUND")
+  opapp_pro_place <- read_csv(file = here::here("output", "os_reports", "eol_service", "opapp_count_place_ROUND.csv"))
   
   opapp_place_proportion <- ggplot(opapp_pro_place, aes(x = study_month, y = proportion
                                                             , group = pod_ons_new
@@ -1148,7 +1150,7 @@ deaths_place_count <-
   
   # Mean by cause of death------------------------------------------------------------
   
-  opapp_mean_cod <- read_csv(file = "output", "os_reports", "eol_service", "opapp_month_cod")
+  opapp_mean_cod <- read_csv(file = here::here("output", "os_reports", "eol_service", "opapp_month_cod.csv"))
   
   opapp_cod_mean <- ggplot(opapp_mean_cod, aes(x = study_month, y = mean
                                                    , group = codgrp
@@ -1176,7 +1178,7 @@ deaths_place_count <-
   
   # Proportion with at least one by cause of death------------------------------------------------
   
-  opapp_pro_cod <- read_csv(file = "output", "os_reports", "eol_service", "opapp_count_cause_ROUND")
+  opapp_pro_cod <- read_csv(file = here::here("output", "os_reports", "eol_service", "opapp_count_cause_ROUND.csv"))
   
   opapp_cod_proportion <- ggplot(opapp_pro_cod, aes(x = study_month, y = proportion
                                                         , group = codgrp
