@@ -24,7 +24,7 @@ library (here)
 
 # Create folder structure
 
-fs::dir_create("output", "os_reports", "eol_service")
+fs::dir_create("output", "os_reports", "eol_service", "charts")
 
 # NT chart functions
 
@@ -281,7 +281,7 @@ deaths_place_count <-
  
  ggsave(deaths_place_count, dpi = 600, width = 20, height = 10, unit = "cm"
         , filename = "deaths_place_count.png"
-        , path = here::here("output", "os_reports", "eol_service"))
+        , path = here::here("output", "os_reports", "eol_service", "charts"))
  
  # Place of death excluding 'All'
 
@@ -313,7 +313,7 @@ deaths_place_count <-
    
    ggsave(deaths_place_count_exc_all, dpi = 600, width = 20, height = 10, unit = "cm"
           , filename = "deaths_place_count_exc_all.png"
-          , path = here::here("output", "os_reports", "eol_service"))
+          , path = here::here("output", "os_reports", "eol_service", "charts"))
   
 
  # Cause of death
@@ -344,7 +344,7 @@ deaths_place_count <-
  
  ggsave(deaths_cod_count, dpi = 600, width = 20, height = 9, unit = "cm"
         , filename = "deaths_cod_count.png"
-        , path = here::here("output", "os_reports", "eol_service"))
+        , path = here::here("output", "os_reports", "eol_service", "charts"))
 
 
  # Cause of death excluding All
@@ -376,7 +376,7 @@ deaths_place_count <-
  
  ggsave(deaths_cod_count_exc_all, dpi = 600, width = 20, height = 9, unit = "cm"
         , filename = "deaths_cod_count_exc_all.png"
-        , path = here::here("output", "os_reports", "eol_service"))
+        , path = here::here("output", "os_reports", "eol_service", "charts"))
  
  
  # End-of-life medication
@@ -407,7 +407,7 @@ deaths_place_count <-
   
   ggsave(eol_med_place_mean, dpi=600, width=20,height=10, unit="cm"
          , filename = "eol_med_place_mean.png"
-         , path = here::here("output", "os_reports", "eol_service"))
+         , path = here::here("output", "os_reports", "eol_service", "charts"))
    
   # Proportion with at least one by place of death
   
@@ -435,7 +435,7 @@ deaths_place_count <-
   
   ggsave(eol_med_place_proportion, dpi=600, width=20,height=10, unit="cm"
          , filename = "eol_med_place_proportion.png"
-         , path = here::here("output", "os_reports", "eol_service"))
+         , path = here::here("output", "os_reports", "eol_service", "charts"))
   
 
   # Mean by cause of death
@@ -464,7 +464,7 @@ deaths_place_count <-
   
   ggsave(eol_med_cod_mean, dpi=600, width=20,height=10, unit="cm"
          , filename = "eol_med_cod_mean.png"
-         , path = here::here("output", "os_reports", "eol_service"))
+         , path = here::here("output", "os_reports", "eol_service", "charts"))
    
   # Proportion with at least one by cause of death
    
@@ -492,7 +492,7 @@ deaths_place_count <-
   
   ggsave(eol_med_cod_proportion, dpi=600, width=20,height=10, unit="cm"
          , filename = "eol_med_cod_proportion.png"
-         , path = here::here("output", "os_reports", "eol_service"))
+         , path = here::here("output", "os_reports", "eol_service", "charts"))
    
   # A&E visits
    
@@ -524,7 +524,7 @@ deaths_place_count <-
   
   ggsave(aevis_place_mean, dpi=600, width=20,height=10, unit="cm"
          , filename = "aevis_place_mean.png"
-         , path = here::here("output", "os_reports", "eol_service"))
+         , path = here::here("output", "os_reports", "eol_service", "charts"))
   
   # Proportion with at least one by place of death
   
@@ -552,7 +552,7 @@ deaths_place_count <-
   
   ggsave(aevis_place_proportion, dpi=600, width=20,height=10, unit="cm"
          , filename = "aevis_place_proportion.png"
-         , path = here::here("output", "os_reports", "eol_service")) 
+         , path = here::here("output", "os_reports", "eol_service", "charts")) 
   
   # Cause of death
 
@@ -582,7 +582,7 @@ deaths_place_count <-
   
   ggsave(aevis_cod_mean, dpi=600, width=20,height=10, unit="cm"
          , filename = "aevis_cod_mean.png"
-         , path = here::here("output", "os_reports", "eol_service"))
+         , path = here::here("output", "os_reports", "eol_service", "charts"))
   
   # Proportion with at least one by cause of death
   
@@ -610,7 +610,7 @@ deaths_place_count <-
   
   ggsave(aevis_cod_proportion, dpi=600, width=20,height=10, unit="cm"
          , filename = "aevis_cod_proportion.png"
-         , path = here::here("output", "os_reports", "eol_service")) 
+         , path = here::here("output", "os_reports", "eol_service", "charts")) 
   
 
   # Elective admissions
@@ -643,7 +643,7 @@ deaths_place_count <-
   
   ggsave(eladm_place_mean, dpi=600, width=20,height=10, unit="cm"
          , filename = "eladm_place_mean.png"
-         , path = here::here("output", "os_reports", "eol_service"))
+         , path = here::here("output", "os_reports", "eol_service", "charts"))
   
   # Proportion with at least one by place of death
   
@@ -671,7 +671,7 @@ deaths_place_count <-
   
   ggsave(eladm_place_proportion, dpi=600, width=20,height=10, unit="cm"
          , filename = "eladm_place_proportion.png"
-         , path = here::here("output", "os_reports", "eol_service")) 
+         , path = here::here("output", "os_reports", "eol_service", "charts")) 
   
   # Cause of death
   
@@ -701,7 +701,7 @@ deaths_place_count <-
   
   ggsave(eladm_cod_mean, dpi=600, width=20,height=10, unit="cm"
          , filename = "eladm_cod_mean.png"
-         , path = here::here("output", "os_reports", "eol_service"))
+         , path = here::here("output", "os_reports", "eol_service", "charts"))
   
   # Proportion with at least one by cause of death
   
@@ -729,7 +729,7 @@ deaths_place_count <-
   
   ggsave(eladm_cod_proportion, dpi=600, width=20,height=10, unit="cm"
          , filename = "eladm_cod_proportion.png"
-         , path = here::here("output", "os_reports", "eol_service")) 
+         , path = here::here("output", "os_reports", "eol_service", "charts")) 
   
   
   # Emergency admissions
@@ -762,7 +762,7 @@ deaths_place_count <-
   
   ggsave(emadm_place_mean, dpi=600, width=20,height=10, unit="cm"
          , filename = "emadm_place_mean.png"
-         , path = here::here("output", "os_reports", "eol_service"))
+         , path = here::here("output", "os_reports", "eol_service", "charts"))
   
   # Proportion with at least one by place of death
   
@@ -790,7 +790,7 @@ deaths_place_count <-
   
   ggsave(emadm_place_proportion, dpi=600, width=20,height=10, unit="cm"
          , filename = "emadm_place_proportion.png"
-         , path = here::here("output", "os_reports", "eol_service")) 
+         , path = here::here("output", "os_reports", "eol_service", "charts")) 
   
   # Cause of death
   
@@ -820,7 +820,7 @@ deaths_place_count <-
   
   ggsave(emadm_cod_mean, dpi=600, width=20,height=10, unit="cm"
          , filename = "emadm_cod_mean.png"
-         , path = here::here("output", "os_reports", "eol_service"))
+         , path = here::here("output", "os_reports", "eol_service", "charts")) 
   
   # Proportion with at least one by cause of death
   
@@ -848,7 +848,7 @@ deaths_place_count <-
   
   ggsave(emadm_cod_proportion, dpi=600, width=20,height=10, unit="cm"
          , filename = "emadm_cod_proportion.png"
-         , path = here::here("output", "os_reports", "eol_service")) 
+         , path = here::here("output", "os_reports", "eol_service", "charts")) 
   
   # GP contacts
   
@@ -880,7 +880,7 @@ deaths_place_count <-
   
   ggsave(gp_place_mean, dpi=600, width=20,height=10, unit="cm"
          , filename = "gp_place_mean.png"
-         , path = here::here("output", "os_reports", "eol_service"))
+         , path = here::here("output", "os_reports", "eol_service", "charts"))
   
   # Proportion with at least one by place of death
   
@@ -908,7 +908,7 @@ deaths_place_count <-
   
   ggsave(gp_place_proportion, dpi=600, width=20,height=10, unit="cm"
          , filename = "gp_place_proportion.png"
-         , path = here::here("output", "os_reports", "eol_service")) 
+         , path = here::here("output", "os_reports", "eol_service", "charts")) 
   
   # Cause of death
   
@@ -938,7 +938,7 @@ deaths_place_count <-
   
   ggsave(gp_cod_mean, dpi=600, width=20,height=10, unit="cm"
          , filename = "gp_cod_mean.png"
-         , path = here::here("output", "os_reports", "eol_service"))
+         , path = here::here("output", "os_reports", "eol_service", "charts"))
   
   # Proportion with at least one by cause of death
   
@@ -966,7 +966,7 @@ deaths_place_count <-
   
   ggsave(gp_cod_proportion, dpi=600, width=20,height=10, unit="cm"
          , filename = "gp_cod_proportion.png"
-         , path = here::here("output", "os_reports", "eol_service"))  
+         , path = here::here("output", "os_reports", "eol_service", "charts"))  
   
   # Community nursing contacts
   
@@ -998,7 +998,7 @@ deaths_place_count <-
   
   ggsave(nursing_place_mean, dpi=600, width=20,height=10, unit="cm"
          , filename = "nursing_place_mean.png"
-         , path = here::here("output", "os_reports", "eol_service"))
+         , path = here::here("output", "os_reports", "eol_service", "charts"))
   
   # Proportion with at least one by place of death
   
@@ -1026,7 +1026,7 @@ deaths_place_count <-
   
   ggsave(nursing_place_proportion, dpi=600, width=20,height=10, unit="cm"
          , filename = "nursing_place_proportion.png"
-         , path = here::here("output", "os_reports", "eol_service")) 
+         , path = here::here("output", "os_reports", "eol_service", "charts")) 
   
   # Cause of death
   
@@ -1056,7 +1056,7 @@ deaths_place_count <-
   
   ggsave(nursing_cod_mean, dpi=600, width=20,height=10, unit="cm"
          , filename = "nursing_cod_mean.png"
-         , path = here::here("output", "os_reports", "eol_service"))
+         , path = here::here("output", "os_reports", "eol_service", "charts"))
   
   # Proportion with at least one by cause of death
   
@@ -1084,7 +1084,7 @@ deaths_place_count <-
   
   ggsave(nursing_cod_proportion, dpi=600, width=20,height=10, unit="cm"
          , filename = "nursing_cod_proportion.png"
-         , path = here::here("output", "os_reports", "eol_service"))  
+         , path = here::here("output", "os_reports", "eol_service", "charts"))  
   
   
   # Outpatient appointments
@@ -1117,7 +1117,7 @@ deaths_place_count <-
   
   ggsave(opapp_place_mean, dpi=600, width=20,height=10, unit="cm"
          , filename = "opapp_place_mean.png"
-         , path = here::here("output", "os_reports", "eol_service"))
+         , path = here::here("output", "os_reports", "eol_service", "charts"))
   
   # Proportion with at least one by place of death
   
@@ -1145,7 +1145,7 @@ deaths_place_count <-
   
   ggsave(opapp_place_proportion, dpi=600, width=20,height=10, unit="cm"
          , filename = "opapp_place_proportion.png"
-         , path = here::here("output", "os_reports", "eol_service")) 
+         , path = here::here("output", "os_reports", "eol_service", "charts")) 
   
   # Cause of death
   
@@ -1175,7 +1175,7 @@ deaths_place_count <-
   
   ggsave(opapp_cod_mean, dpi=600, width=20,height=10, unit="cm"
          , filename = "opapp_cod_mean.png"
-         , path = here::here("output", "os_reports", "eol_service"))
+         , path = here::here("output", "os_reports", "eol_service", "charts"))
   
   # Proportion with at least one by cause of death
   
@@ -1203,4 +1203,4 @@ deaths_place_count <-
   
   ggsave(opapp_cod_proportion, dpi=600, width=20,height=10, unit="cm"
          , filename = "opapp_cod_proportion.png"
-         , path = here::here("output", "os_reports", "eol_service"))  
+         , path = here::here("output", "os_reports", "eol_service", "charts"))  
