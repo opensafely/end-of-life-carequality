@@ -14,17 +14,12 @@
 # - Community nurse contacts
 #---------------------------------------------------------------------------------
 
-#Load packages
+# Load packages -----------------------------------------------------------
 
 library(tidyverse)
-library(tidylog)
-library(fs)
-library(janitor)
-library(curl)
-library(ggplot2)
-library(data.table)
-library(here)
+library(lubridate)
 library(dplyr)
+library(data.table)
 
 # Create folder structure -------------------------------------------------
 
