@@ -4,14 +4,14 @@
 # Author: Miranda Davies
 # Aim: Create PNG files to display the WP1 findings
 # Measures include: 
-# - Deaths in period
-# - Use of medications for symptom management
-# - General practice interactions
-# - A&E visits
-# - Outpatient appointments
-# - Elective admissions
-# - Emergency admissions
-# - Community nurse contacts
+# Deaths in period
+# Use of medications for symptom management
+# General practice interactions
+# A&E visits
+# Outpatient appointments
+# Elective admissions
+# Emergency admissions
+# Community nurse contacts
 #---------------------------------------------------------------------------------
 
 # Load packages
@@ -22,7 +22,7 @@ library(dplyr)
 library(data.table)
 library (here)
 
-# Create folder structure -------------------------------------------------
+# Create folder structure
 
 fs::dir_create("output", "os_reports", "eol_service")
 

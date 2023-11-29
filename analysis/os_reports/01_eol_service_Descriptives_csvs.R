@@ -23,7 +23,7 @@ library(lubridate)
 library(dplyr)
 library(data.table)
 
-# Create folder structure -------------------------------------------------
+# Create folder structure
 
 fs::dir_create("output", "os_reports", "eol_service")
 
