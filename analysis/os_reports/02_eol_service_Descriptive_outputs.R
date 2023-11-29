@@ -243,16 +243,16 @@ NT_style <- function(){
 }
 
 
-# Code settings -----------------------------------------------------------
+# Code settings
 
 startdate <- dmy("01-06-2019")
 enddate <- dmy("30-06-2023")
 
-# Deaths------------------------------------------------------------------------
+# Deaths
 
 fs::dir_create("output", "os_reports", "eol_service")
 
-# Place of death----------------------------------------------------------------
+# Place of death
 
 deaths_place <- read_csv(file = here::here("output", "os_reports", "eol_service", "deaths_month_place.csv"))
 
@@ -283,7 +283,8 @@ deaths_place_count <-
         , filename = "deaths_place_count.png"
         , path = here::here("output", "os_reports", "eol_service"))
  
- # Place of death excluding 'All'-------------------------------------------------
+ # Place of death excluding 'All'
+
  deaths_place <- read_csv(file = here::here("output", "os_reports", "eol_service", "deaths_month_place.csv"))
  
    deaths_place_R<- subset(deaths_place, pod_ons_new != "All" )
@@ -315,7 +316,7 @@ deaths_place_count <-
           , path = here::here("output", "os_reports", "eol_service"))
   
 
- # Cause of death---------------------------------------------------------------
+ # Cause of death
 
  deaths_cod <- read_csv(file = here::here("output", "os_reports", "eol_service", "deaths_month_cod.csv"))
 
@@ -346,7 +347,7 @@ deaths_place_count <-
         , path = here::here("output", "os_reports", "eol_service"))
 
 
- # Cause of death excluding All-------------------------------------------------
+ # Cause of death excluding All
  
  df <- read_csv(file = here::here("output", "os_reports", "eol_service", "deaths_month_cod.csv"))
  deaths_cod_R<- subset(df, codgrp != "All" )
@@ -380,7 +381,7 @@ deaths_place_count <-
  
  # End-of-life medication-------------------------------------------------------
  
- # Mean by place of death------------------------------------------------------------
+ # Mean by place of death
    
   eol_med_place <- read_csv(file = here::here("output", "os_reports", "eol_service", "eol_med_month.csv"))
    
@@ -408,7 +409,7 @@ deaths_place_count <-
          , filename = "eol_med_place_mean.png"
          , path = here::here("output", "os_reports", "eol_service"))
    
-  # Proportion with at least one by place of death------------------------------------------------
+  # Proportion with at least one by place of death
   
   eol_med_place_pro <- read_csv(file = here::here("output", "os_reports", "eol_service", "eol_med_count_place_ROUND.csv"))
   
@@ -437,7 +438,7 @@ deaths_place_count <-
          , path = here::here("output", "os_reports", "eol_service"))
   
 
-  # Mean by cause of death-----------------------------------------------------------
+  # Mean by cause of death
   
   eol_med_cod <- read_csv(file = here::here("output", "os_reports", "eol_service", "eol_med_month_cod.csv"))
   
@@ -465,7 +466,7 @@ deaths_place_count <-
          , filename = "eol_med_cod_mean.png"
          , path = here::here("output", "os_reports", "eol_service"))
    
-  # Proportion with at least one by cause of death------------------------------ 
+  # Proportion with at least one by cause of death
    
   eol_med_cause_pro <- read_csv(file = here::here("output", "os_reports", "eol_service", "eol_med_count_cause_ROUND.csv"))
   
@@ -493,11 +494,11 @@ deaths_place_count <-
          , filename = "eol_med_cod_proportion.png"
          , path = here::here("output", "os_reports", "eol_service"))
    
-   # A&E visits-----------------------------------------------------------------
+  # A&E visits-----------------------------------------------------------------
    
   # Place of death--------------------------------------------------------------
   
-  # Mean by place of death------------------------------------------------------
+  # Mean by place of death
   
   aevis_mean_place <- read_csv(file = here::here("output", "os_reports", "eol_service", "aevis_month.csv"))
   
@@ -525,7 +526,7 @@ deaths_place_count <-
          , filename = "aevis_place_mean.png"
          , path = here::here("output", "os_reports", "eol_service"))
   
-  # Proportion with at least one by place of death------------------------------------------------
+  # Proportion with at least one by place of death
   
   aevis_pro_place <- read_csv(file = here::here("output", "os_reports", "eol_service", "aevis_count_place_ROUND.csv"))
   
@@ -555,7 +556,7 @@ deaths_place_count <-
   
   # Cause of death--------------------------------------------------------------
 
-  # Mean by cause of death------------------------------------------------------
+  # Mean by cause of death
   
   aevis_mean_cod <- read_csv(file = here::here("output", "os_reports", "eol_service", "aevis_month_cod.csv"))
   
@@ -583,7 +584,7 @@ deaths_place_count <-
          , filename = "aevis_cod_mean.png"
          , path = here::here("output", "os_reports", "eol_service"))
   
-  # Proportion with at least one by cause of death------------------------------------------------
+  # Proportion with at least one by cause of death
   
   aevis_pro_cod <- read_csv(file = here::here("output", "os_reports", "eol_service", "aevis_count_cause_ROUND.csv"))
   
@@ -616,7 +617,7 @@ deaths_place_count <-
   
   # Place of death--------------------------------------------------------------
   
-  # Mean by place of death------------------------------------------------------
+  # Mean by place of death
   
   eladm_mean_place <- read_csv(file = here::here("output", "os_reports", "eol_service", "eladm_month.csv"))
   
@@ -644,7 +645,7 @@ deaths_place_count <-
          , filename = "eladm_place_mean.png"
          , path = here::here("output", "os_reports", "eol_service"))
   
-  # Proportion with at least one by place of death------------------------------------------------
+  # Proportion with at least one by place of death
   
   eladm_pro_place <- read_csv(file = here::here("output", "os_reports", "eol_service", "eladm_count_place_ROUND.csv"))
   
@@ -674,7 +675,7 @@ deaths_place_count <-
   
   # Cause of death--------------------------------------------------------------
   
-  # Mean by cause of death------------------------------------------------------------
+  # Mean by cause of death
   
   eladm_mean_cod <- read_csv(file = here::here("output", "os_reports", "eol_service", "eladm_month_cod.csv"))
   
@@ -702,7 +703,7 @@ deaths_place_count <-
          , filename = "eladm_cod_mean.png"
          , path = here::here("output", "os_reports", "eol_service"))
   
-  # Proportion with at least one by cause of death------------------------------------------------
+  # Proportion with at least one by cause of death
   
   eladm_pro_cod <- read_csv(file = here::here("output", "os_reports", "eol_service", "eladm_count_cause_ROUND.csv"))
   
@@ -735,7 +736,7 @@ deaths_place_count <-
  
   # Place of death--------------------------------------------------------------
   
-  # Mean by place of death------------------------------------------------------
+  # Mean by place of death
   
   emadm_mean_place <- read_csv(file = here::here("output", "os_reports", "eol_service", "emadm_month.csv"))
   
@@ -763,7 +764,7 @@ deaths_place_count <-
          , filename = "emadm_place_mean.png"
          , path = here::here("output", "os_reports", "eol_service"))
   
-  # Proportion with at least one by place of death------------------------------------------------
+  # Proportion with at least one by place of death
   
   emadm_pro_place <- read_csv(file = here::here("output", "os_reports", "eol_service", "emadm_count_place_ROUND.csv"))
   
@@ -793,7 +794,7 @@ deaths_place_count <-
   
   # Cause of death--------------------------------------------------------------
   
-  # Mean by cause of death------------------------------------------------------------
+  # Mean by cause of death
   
   emadm_mean_cod <- read_csv(file = here::here("output", "os_reports", "eol_service", "emadm_month_cod.csv"))
   
@@ -821,7 +822,7 @@ deaths_place_count <-
          , filename = "emadm_cod_mean.png"
          , path = here::here("output", "os_reports", "eol_service"))
   
-  # Proportion with at least one by cause of death------------------------------------------------
+  # Proportion with at least one by cause of death
   
   emadm_pro_cod <- read_csv(file = here::here("output", "os_reports", "eol_service", "emadm_count_cause_ROUND.csv"))
   
@@ -853,7 +854,7 @@ deaths_place_count <-
   
   # Place of death--------------------------------------------------------------
   
-  # Mean by place of death------------------------------------------------------
+  # Mean by place of death
   
   gp_mean_place <- read_csv(file = here::here("output", "os_reports", "eol_service", "gp_month.csv"))
   
@@ -881,7 +882,7 @@ deaths_place_count <-
          , filename = "gp_place_mean.png"
          , path = here::here("output", "os_reports", "eol_service"))
   
-  # Proportion with at least one by place of death------------------------------------------------
+  # Proportion with at least one by place of death
   
   gp_pro_place <- read_csv(file = here::here("output", "os_reports", "eol_service", "gp_count_place_ROUND.csv"))
   
@@ -911,7 +912,7 @@ deaths_place_count <-
   
   # Cause of death--------------------------------------------------------------
   
-  # Mean by cause of death------------------------------------------------------------
+  # Mean by cause of death
   
   gp_mean_cod <- read_csv(file = here::here("output", "os_reports", "eol_service", "gp_month_cod.csv"))
   
@@ -939,7 +940,7 @@ deaths_place_count <-
          , filename = "gp_cod_mean.png"
          , path = here::here("output", "os_reports", "eol_service"))
   
-  # Proportion with at least one by cause of death------------------------------------------------
+  # Proportion with at least one by cause of death
   
   gp_pro_cod <- read_csv(file = here::here("output", "os_reports", "eol_service", "gp_count_cause_ROUND.csv"))
   
@@ -971,7 +972,7 @@ deaths_place_count <-
   
   # Place of death--------------------------------------------------------------
   
-  # Mean by place of death------------------------------------------------------
+  # Mean by place of death
   
   nursing_mean_place <- read_csv(file = here::here("output", "os_reports", "eol_service", "nursing_month.csv"))
   
@@ -999,7 +1000,7 @@ deaths_place_count <-
          , filename = "nursing_place_mean.png"
          , path = here::here("output", "os_reports", "eol_service"))
   
-  # Proportion with at least one by place of death------------------------------------------------
+  # Proportion with at least one by place of death
   
   nursing_pro_place <- read_csv(file = here::here("output", "os_reports", "eol_service", "nursing_count_place_ROUND.csv"))
   
@@ -1029,7 +1030,7 @@ deaths_place_count <-
   
   # Cause of death--------------------------------------------------------------
   
-  # Mean by cause of death------------------------------------------------------------
+  # Mean by cause of death
   
   nursing_mean_cod <- read_csv(file = here::here("output", "os_reports", "eol_service", "nursing_month_cod.csv"))
   
@@ -1057,7 +1058,7 @@ deaths_place_count <-
          , filename = "nursing_cod_mean.png"
          , path = here::here("output", "os_reports", "eol_service"))
   
-  # Proportion with at least one by cause of death------------------------------------------------
+  # Proportion with at least one by cause of death
   
   nursing_pro_cod <- read_csv(file = here::here("output", "os_reports", "eol_service", "nursing_count_cause_ROUND.csv"))
   
@@ -1090,7 +1091,7 @@ deaths_place_count <-
  
   # Place of death--------------------------------------------------------------
   
-  # Mean by place of death------------------------------------------------------
+  # Mean by place of death
   
   opapp_mean_place <- read_csv(file = here::here("output", "os_reports", "eol_service", "opapp_month.csv"))
   
@@ -1118,7 +1119,7 @@ deaths_place_count <-
          , filename = "opapp_place_mean.png"
          , path = here::here("output", "os_reports", "eol_service"))
   
-  # Proportion with at least one by place of death------------------------------------------------
+  # Proportion with at least one by place of death
   
   opapp_pro_place <- read_csv(file = here::here("output", "os_reports", "eol_service", "opapp_count_place_ROUND.csv"))
   
@@ -1148,7 +1149,7 @@ deaths_place_count <-
   
   # Cause of death--------------------------------------------------------------
   
-  # Mean by cause of death------------------------------------------------------------
+  # Mean by cause of death
   
   opapp_mean_cod <- read_csv(file = here::here("output", "os_reports", "eol_service", "opapp_month_cod.csv"))
   
@@ -1176,7 +1177,7 @@ deaths_place_count <-
          , filename = "opapp_cod_mean.png"
          , path = here::here("output", "os_reports", "eol_service"))
   
-  # Proportion with at least one by cause of death------------------------------------------------
+  # Proportion with at least one by cause of death
   
   opapp_pro_cod <- read_csv(file = here::here("output", "os_reports", "eol_service", "opapp_count_cause_ROUND.csv"))
   

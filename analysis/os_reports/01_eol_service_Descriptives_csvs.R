@@ -27,12 +27,12 @@ library(data.table)
 
 fs::dir_create("output", "os_reports", "eol_service")
 
-# Code settings -----------------------------------------------------------
+# Code settings
 
 startdate <- dmy("01-06-2019")
 enddate <- dmy("30-06-2023")
 
-# Prepare data-------------------------------------------------------------
+# Prepare data
 
 df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.gz")) %>%
   mutate(dod_ons = as_date(dod_ons)
@@ -54,7 +54,7 @@ df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.g
 
 # Deaths in period --------------------------------------------------------
 
-# Number of deaths by month and place of death - including all deaths------
+# Number of deaths by month and place of death - including all deaths
 
 cols_of_interest <- c("count");
 
@@ -70,7 +70,7 @@ deaths_month_place <- df %>%
 
 fwrite(deaths_month_place, here::here("output", "os_reports", "eol_service", "deaths_month_place.csv"))
 
-# Number of deaths by month and cause of death------------------------------
+# Number of deaths by month and cause of death
 
 deaths_month_cod <- df %>%
   group_by(study_month, codgrp) %>%
@@ -85,7 +85,7 @@ deaths_month_cod <- df %>%
 fwrite(deaths_month_cod, here::here("output", "os_reports", "eol_service", "deaths_month_cod.csv"))
 
 
-# Use of medications for symptom management  -------------------------------------------
+# Use of medications for symptom management 
 
 cols_of_interest <- c("count", "total");
 
