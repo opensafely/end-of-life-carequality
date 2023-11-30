@@ -24,8 +24,8 @@ import codelists
 
 ## KEY VARIABLES ##
 
-earliest_date = "2019-06-01"
-latest_date = "2023-06-30"
+earliest_date = "2018-12-01"
+latest_date = "2023-08-30"
 date_range = (earliest_date, latest_date)
 
 ## STUDY DEFINITION ##
@@ -121,3 +121,24 @@ dataset.nursing_1m = clinical_events.where(
 ).where(
     clinical_events.date.is_on_or_between(dod_ons - days(30), dod_ons)
 ).count_for_patient()
+
+## Quality Indicators ## 
+
+## Palliative care
+dataset.palliative_3m = clinical_events.where(
+    clinical_events.snomedct_code.is_in(codelists.palcare_codes1)
+).where(
+    clinical_events.date.is_on_or_between(dod_ons - days(90), dod_ons)
+).count_for_patient()
+
+## A&E visits last 3 months of life
+dataset.aevis_3m = emergency_care_attendances.where(
+    emergency_care_attendances.arrival_date.is_on_or_between(dod_ons - days(90), dod_ons)
+).count_for_patient()
+
+## Medications for symptom management last 3 months of life
+dataset.eol_med_3m = medications.where(
+    medications.dmd_code.is_in(codelists.eol_med_codes)
+).where(
+    medications.date.is_on_or_between(dod_ons - days(90), dod_ons)
+).count_for_patient() 
