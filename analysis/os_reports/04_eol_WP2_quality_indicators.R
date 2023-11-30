@@ -237,7 +237,7 @@ NT_style <- function(){
 
 # Code settings -----------------------------------------------------------
 # need to decide on this
-startdate <- dmy("01-06-2019")
+startdate <- dmy("01-12-2018")
 enddate <- dmy("30-08-2023")
 
 
@@ -246,23 +246,25 @@ enddate <- dmy("30-08-2023")
 df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.gz")) %>%
   mutate(dod_ons = as_date(dod_ons)
          , study_month = floor_date(dod_ons, unit = "month")
-         , study_quarter = case_when(month(dod_ons) %in% c(6, 7, 8) & year(dod_ons) == 2019 ~ 1
-                                     , month(dod_ons) %in% c(9, 10, 11) & year(dod_ons) == 2019 ~ 2
-                                     , (month(dod_ons) == 12 & year(dod_ons) == 2019) | (month(dod_ons) %in% c(1, 2) & year(dod_ons) == 2020) ~ 3
-                                     , month(dod_ons) %in% c(3, 4, 5) & year(dod_ons) == 2020 ~ 4
-                                     , month(dod_ons) %in% c(6, 7, 8) & year(dod_ons) == 2020 ~ 5
-                                     , month(dod_ons) %in% c(9, 10, 11) & year(dod_ons) == 2020 ~ 6
-                                     , (month(dod_ons) == 12 & year(dod_ons) == 2020) | (month(dod_ons) %in% c(1, 2) & year(dod_ons) == 2021) ~ 7
-                                     , month(dod_ons) %in% c(3, 4, 5) & year(dod_ons) == 2021 ~ 8
-                                     , month(dod_ons) %in% c(6, 7, 8) & year(dod_ons) == 2021 ~ 9
-                                     , month(dod_ons) %in% c(9, 10, 11) & year(dod_ons) == 2021 ~10
-                                     , (month(dod_ons) == 12 & year(dod_ons) == 2021) | (month(dod_ons) %in% c(1, 2) & year(dod_ons) == 2022) ~ 11
-                                     , month(dod_ons) %in% c(3, 4, 5) & year(dod_ons) == 2022 ~ 12
-                                     , month(dod_ons) %in% c(6, 7, 8) & year(dod_ons) == 2022 ~ 13
-                                     , month(dod_ons) %in% c(9, 10, 11) & year(dod_ons) == 2022 ~ 14
-                                     , (month(dod_ons) == 12 & year(dod_ons) == 2022) | (month(dod_ons) %in% c(1, 2) & year(dod_ons) == 2023) ~ 15
-                                     , month(dod_ons) %in% c(3, 4, 5) & year(dod_ons) == 2023 ~ 16
-                                     , month(dod_ons) %in% c(6, 7, 8) & year(dod_ons) == 2023 ~ 17) 
+         , study_quarter = case_when((month(dod_ons) == 12 & year(dod_ons) == 2018) | (month(dod_ons) %in% c(1, 2) & year(dod_ons) == 2019) ~ 1
+                                     , month(dod_ons) %in% c(3, 4, 5) & year(dod_ons) == 2019 ~ 2
+                                     , month(dod_ons) %in% c(6, 7, 8) & year(dod_ons) == 2019 ~ 3
+                                     , month(dod_ons) %in% c(9, 10, 11) & year(dod_ons) == 2019 ~ 4
+                                     , (month(dod_ons) == 12 & year(dod_ons) == 2019) | (month(dod_ons) %in% c(1, 2) & year(dod_ons) == 2020) ~ 5
+                                     , month(dod_ons) %in% c(3, 4, 5) & year(dod_ons) == 2020 ~ 6
+                                     , month(dod_ons) %in% c(6, 7, 8) & year(dod_ons) == 2020 ~ 7
+                                     , month(dod_ons) %in% c(9, 10, 11) & year(dod_ons) == 2020 ~ 8
+                                     , (month(dod_ons) == 12 & year(dod_ons) == 2020) | (month(dod_ons) %in% c(1, 2) & year(dod_ons) == 2021) ~ 9
+                                     , month(dod_ons) %in% c(3, 4, 5) & year(dod_ons) == 2021 ~ 10
+                                     , month(dod_ons) %in% c(6, 7, 8) & year(dod_ons) == 2021 ~ 11
+                                     , month(dod_ons) %in% c(9, 10, 11) & year(dod_ons) == 2021 ~12
+                                     , (month(dod_ons) == 12 & year(dod_ons) == 2021) | (month(dod_ons) %in% c(1, 2) & year(dod_ons) == 2022) ~ 13
+                                     , month(dod_ons) %in% c(3, 4, 5) & year(dod_ons) == 2022 ~ 14
+                                     , month(dod_ons) %in% c(6, 7, 8) & year(dod_ons) == 2022 ~ 15
+                                     , month(dod_ons) %in% c(9, 10, 11) & year(dod_ons) == 2022 ~ 16
+                                     , (month(dod_ons) == 12 & year(dod_ons) == 2022) | (month(dod_ons) %in% c(1, 2) & year(dod_ons) == 2023) ~ 17
+                                     , month(dod_ons) %in% c(3, 4, 5) & year(dod_ons) == 2023 ~ 18
+                                     , month(dod_ons) %in% c(6, 7, 8) & year(dod_ons) == 2023 ~ 19) 
          , pod_ons_new = case_when(pod_ons == "Elsewhere" 
                                    | pod_ons == "Other communal establishment" ~ "Elsewhere/other"
                                    , TRUE ~ as.character(pod_ons))
