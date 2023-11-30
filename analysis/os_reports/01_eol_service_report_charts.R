@@ -1,15 +1,16 @@
 #-------------------------------------------------------------------------------
 # Charts for eol_service_report
 # Date: 26.07.2023
-# Author: Eilís
-# Aim: Create png image files of charts for OpenSAFELY reports
+# Author: Eilís & Miranda 
+# Aim: Create CSV files to show measures by proportion of patients as well as group level means. 
 #-------------------------------------------------------------------------------
 
 # Load packages -----------------------------------------------------------
 
 library(tidyverse)
 library(lubridate)
-
+library(dplyr)
+library(data.table)
 
 # Create folder structure -------------------------------------------------
 
@@ -261,555 +262,1440 @@ df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.g
 
 # Deaths in period --------------------------------------------------------
 
+# # Number of deaths by month and place of death - this csv file is no longer being created as rounding and redaction approach amended
+# 
+# deaths_month <- df %>%
+#   group_by(study_month, pod_ons_new) %>%
+#   summarise(count = n()) %>%
+#   bind_rows(df %>%
+#               group_by(study_month) %>%
+#               summarise(count = n()) %>%
+#               mutate(pod_ons_new = "All")) %>%
+#   mutate(count = plyr::round_any(count, 10));
+# 
+# fwrite(deaths_month, here::here("output", "os_reports", "eol_service", "deaths_month.csv"))
+
+# # Plot to illustrate number of deaths by month and place of death - this plot is no longer being run
+# 
+# deaths_month_plot <- ggplot(deaths_month, aes(x = study_month, y = count
+#                                               , group = pod_ons_new
+#                                               , colour = pod_ons_new
+#                                               , fill = pod_ons_new)) +
+#   geom_line(size = 1) +
+#   geom_point(fill = "#F4F4F4", shape = 21, size = 1.5, stroke = 1.3) +
+#   guides(colour = guide_legend(nrow = 1)) +
+#   labs(x = "Month", y = "Number of deaths") +
+#   scale_colour_NT() +
+#   scale_fill_NT() +
+#   scale_x_date(expan = c(0,0), date_breaks = "3 months", date_labels = "%b-%y") +
+#   scale_y_continuous(expand = c(0,0)
+#                      , limits = c(0, plyr::round_any(max(deaths_month$count)
+#                                                      , 20000, f = ceiling))
+#                      , breaks = seq(0
+#                                     , plyr::round_any(max(deaths_month$count)
+#                                                       , 20000, f = ceiling)
+#                                     , 20000)
+#                      , labels = scales::comma) +
+#   NT_style() +
+#   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+# 
+# ggsave(deaths_month_plot, dpi = 600, width = 20, height = 10, unit = "cm"
+#        , filename = "deaths_month_plot.png"
+#        , path = here::here("output", "os_reports", "eol_service"))
+
 # Number of deaths by month and place of death - including all deaths
-deaths_month <- df %>%
+
+cols_of_interest <- c("count");
+
+deaths_month_place <- df %>%
   group_by(study_month, pod_ons_new) %>%
   summarise(count = n()) %>%
   bind_rows(df %>%
               group_by(study_month) %>%
               summarise(count = n()) %>%
               mutate(pod_ons_new = "All")) %>%
-  mutate(count = plyr::round_any(count, 10))
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
 
-write_csv(deaths_month, here::here("output", "os_reports", "eol_service", "deaths_month.csv"))
+fwrite(deaths_month_place, here::here("output", "os_reports", "eol_service", "deaths_month_place.csv"))
 
-deaths_month_plot <- ggplot(deaths_month, aes(x = study_month, y = count
-                                              , group = pod_ons_new
-                                              , colour = pod_ons_new
-                                              , fill = pod_ons_new)) +
-  geom_line(size = 1) +
-  geom_point(fill = "#F4F4F4", shape = 21, size = 1.5, stroke = 1.3) +
-  guides(colour = guide_legend(nrow = 1)) +
-  labs(x = "Month", y = "Number of deaths") +
-  scale_colour_NT() +
-  scale_fill_NT() +
-  scale_x_date(expan = c(0,0), date_breaks = "3 months", date_labels = "%b-%y") +
-  scale_y_continuous(expand = c(0,0)
-                     , limits = c(0, plyr::round_any(max(deaths_month$count)
-                                                     , 20000, f = ceiling))
-                     , breaks = seq(0
-                                    , plyr::round_any(max(deaths_month$count)
-                                                      , 20000, f = ceiling)
-                                    , 20000)
-                     , labels = scales::comma) +
-  NT_style() +
-  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+# Number of deaths by month and cause of death
 
-ggsave(deaths_month_plot, dpi = 600, width = 20, height = 10, unit = "cm"
-       , filename = "deaths_month_plot.png"
-       , path = here::here("output", "os_reports", "eol_service"))
+deaths_month_cod <- df %>%
+  group_by(study_month, codgrp) %>%
+  summarise(count = n()) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = n()) %>%
+              mutate(codgrp = "All")) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+
+fwrite(deaths_month_cod, here::here("output", "os_reports", "eol_service", "deaths_month_cod.csv"))
+
 
 # Use of medications for symptom management  -------------------------------------------
 
-# Medication use by place of death - including all deaths
-eol_med_month <- df %>%
+cols_of_interest <- c("count", "total");
+
+# Number of people with at least one medication prescribed for symptom management in the last month of life by month and place of death - all deaths
+
+eol_med_count_place_RAW <- df %>%
   group_by(study_month, pod_ons_new) %>%
-  summarise(mean = mean(eol_med_1m, na.rm = TRUE)) %>%
+  summarise(count = sum(eol_med_1m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows (df%>%
+               group_by(study_month) %>%
+               summarise(count = sum(eol_med_1m >= 1, na.rm = TRUE), total = n()) %>%
+               mutate (pod_ons_new = "All") %>%
+               mutate (proportion = round(count / total *100,1)))
+
+fwrite(eol_med_count_place_RAW, here::here("output", "os_reports", "eol_service", "eol_med_count_place_RAW.csv"))
+
+eol_med_count_place_ROUND <- df %>%
+  group_by(study_month, pod_ons_new) %>%
+  summarise(count = sum(eol_med_1m >= 1, na.rm = TRUE), total = n()) %>%
   bind_rows(df %>%
               group_by(study_month) %>%
-              summarise(mean = mean(eol_med_1m, na.rm = TRUE)) %>%
-              mutate(pod_ons_new = "All")) %>% 
-  mutate(mean = round(mean,3))
+              summarise(count = sum(eol_med_1m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(pod_ons_new = "All")) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
+  mutate (proportion = round(count / total * 100, 1))
+  
+fwrite(eol_med_count_place_ROUND, here::here("output", "os_reports", "eol_service", "eol_med_count_place_ROUND.csv"))
 
-write_csv(eol_med_month, here::here("output", "os_reports", "eol_service", "eol_med_month.csv"))
 
-eol_med_month_plot <- ggplot(eol_med_month, aes(x = study_month, y = mean
-                                      , group = pod_ons_new
-                                      , colour = pod_ons_new
-                                      , fill = pod_ons_new)) +
-  geom_line(size = 1) +
-  geom_point(fill = "#F4F4F4", shape = 21, size = 1.5, stroke = 1.3) +
-  guides(colour = guide_legend(nrow = 1)) +
-  labs(x = "Month", y = "Average number of medications taken per person") +
-  scale_colour_NT() +
-  scale_fill_NT() +
-  scale_x_date(expand = c(0,0), date_breaks = "3 months", date_labels = "%b-%y") +
-  scale_y_continuous(expand = c(0,0)
-                     , limits = c(0,
-                                  plyr::round_any(max(eol_med_month$mean)
-                                                  , 1, f = ceiling))
-                     , breaks = seq(0
-                                    , plyr::round_any(max(eol_med_month$mean)
-                                                      , 1, f = ceiling)
-                                    , 1)
-                     , labels = scales::comma) +
-  NT_style() +
-  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+# Number of people with at least one medication prescribed for symptom management in the last month of life by month and cause of death
 
-ggsave(eol_med_month_plot, dpi = 600, width = 20, height = 10, unit = "cm"
-       , filename = "eol_med_month_plot.png"
-       , path = here::here("output", "os_reports", "eol_service"))
+eol_med_count_cause_RAW <- df %>%
+  group_by(study_month, codgrp) %>%
+  summarise(count = sum(eol_med_1m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows (df%>%
+               group_by(study_month) %>%
+               summarise(count = sum(eol_med_1m >= 1, na.rm = TRUE), total = n()) %>%
+               mutate (codgrp = "All") %>%
+               mutate (proportion = round(count / total *100,1)))
+
+fwrite(eol_med_count_cause_RAW, here::here("output", "os_reports", "eol_service", "eol_med_count_cause_RAW.csv"))
+
+
+eol_med_count_cause_ROUND <- df %>%
+  group_by(study_month, codgrp) %>%
+  summarise(count = sum(eol_med_1m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = sum(eol_med_1m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(codgrp= "All")) %>%
+              dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+              dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
+              mutate (proportion = round(count / total * 100, 1))
+
+fwrite(eol_med_count_cause_ROUND, here::here("output", "os_reports", "eol_service", "eol_med_count_cause_ROUND.csv"))
+
+# Medication use by place of death (a version including counts (not for release) and a version excluding counts) - including all deaths
+
+eol_med_month_raw <- df %>%
+  group_by(study_month, pod_ons_new) %>%
+  summarise(count = n(),
+            mean = mean(eol_med_1m, na.rm=TRUE),
+            sd = sd(eol_med_1m, na.rm=TRUE)) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = n(),
+                        mean = mean(eol_med_1m, na.rm=TRUE),
+                        sd = sd(eol_med_1m, na.rm=TRUE)) %>%
+              mutate(pod_ons_new = "All")) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ )))
+
+#Save data file 
+fwrite(eol_med_month_raw, here::here("output", "os_reports", "eol_service", "eol_med_month_raw.csv"))
+
+
+
+eol_med_month <- df %>%
+  group_by(study_month, pod_ons_new) %>%
+  summarise(count = n(),
+            mean = mean(eol_med_1m, na.rm=TRUE),
+            sd = sd(eol_med_1m, na.rm=TRUE)) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
+bind_rows(df %>%
+            group_by(study_month) %>%
+            summarise(count = n(),
+                      mean = mean(eol_med_1m, na.rm=TRUE),
+                      sd = sd(eol_med_1m, na.rm=TRUE)) %>%
+            mutate(pod_ons_new = "All")) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
+  select(-c(count))
+
+# Save data file 
+fwrite(eol_med_month, here::here("output", "os_reports", "eol_service", "eol_med_month.csv"))
+
+
+# eol_med_month_plot <- ggplot(eol_med_month, aes(x = study_month, y = mean
+#                                       , group = pod_ons_new
+#                                       , colour = pod_ons_new
+#                                       , fill = pod_ons_new)) +
+#   geom_line(size = 1) +
+#   geom_point(fill = "#F4F4F4", shape = 21, size = 1.5, stroke = 1.3) +
+#   guides(colour = guide_legend(nrow = 1)) +
+#   labs(x = "Month", y = "Average number of medications taken per person") +
+#   scale_colour_NT() +
+#   scale_fill_NT() +
+#   scale_x_date(expand = c(0,0), date_breaks = "3 months", date_labels = "%b-%y") +
+#   scale_y_continuous(expand = c(0,0)
+#                      , limits = c(0,
+#                                   plyr::round_any(max(eol_med_month$mean)
+#                                                   , 1, f = ceiling))
+#                      , breaks = seq(0
+#                                     , plyr::round_any(max(eol_med_month$mean)
+#                                                       , 1, f = ceiling)
+#                                     , 1)
+#                      , labels = scales::comma) +
+#   NT_style() +
+#   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+# 
+# ggsave(eol_med_month_plot, dpi = 600, width = 20, height = 10, unit = "cm"
+#        , filename = "eol_med_month_plot.png"
+#        , path = here::here("output", "os_reports", "eol_service"))
+
+
+# Medication use by month and cause of death (a version including counts (not for release) and a version excluding counts) 
+
+eol_med_month_cod_raw <- df %>%
+  group_by(study_month, codgrp) %>%
+  summarise(count = n(),
+            mean = mean(eol_med_1m, na.rm = TRUE),
+            sd = sd(eol_med_1m, na.rm = TRUE)) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = n(),
+                        mean = mean(eol_med_1m, na.rm = TRUE),
+                        sd = sd(eol_med_1m, na.rm=TRUE)) %>%
+              mutate(codgrp = "All")) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) 
+
+#Save data file 
+fwrite(eol_med_month_cod_raw, here::here("output", "os_reports", "eol_service", "eol_med_month_cod_raw.csv"))
+
+
+eol_med_month_cod <- df %>%
+  group_by(study_month, codgrp) %>%
+  summarise(count = n(),
+            mean = mean(eol_med_1m, na.rm = TRUE),
+            sd = sd(eol_med_1m, na.rm = TRUE)) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = n(),
+                        mean = mean(eol_med_1m, na.rm = TRUE),
+                        sd = sd(eol_med_1m, na.rm=TRUE)) %>%
+  mutate(codgrp = "All")) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
+  select(-c(count))
+
+#Save data file 
+fwrite(eol_med_month_cod, here::here("output", "os_reports", "eol_service", "eol_med_month_cod.csv"))
+
+
+# eol_med_month_cod_plot <- ggplot(eol_med_month_cod, aes(x = study_month, y = mean
+#                                               , group = codgrp
+#                                               , colour = codgrp
+#                                               , fill = codgrp)) +
+#   geom_line(size = 1) +
+#   geom_point(fill = "#F4F4F4", shape = 21, size = 1.5, stroke = 1.3) +
+#   guides(colour = guide_legend(nrow = 1)) +
+#   labs(x = "Month", y = "Average events per person") +
+#   scale_colour_NT() +
+#   scale_fill_NT() +
+#   scale_x_date(expand = c(0,0), date_breaks = "3 months", date_labels = "%b-%y") +
+#   scale_y_continuous(expand = c(0,0)
+#                      , limits = c(0, plyr::round_any(max(eol_med_month_cod$mean)
+#                                                      , 1, f = ceiling))
+#                      , breaks = seq(0
+#                                     , plyr::round_any(max(eol_med_month_cod$mean)
+#                                                       , 1, f = ceiling)
+#                                     , 1)
+#                      , labels = scales::comma) +
+#   NT_style() +
+#   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+# 
+# ggsave(eol_med_month_cod_plot, dpi = 600, width = 20, height = 10, unit = "cm"
+#        , filename = "eol_med_month_cod_plot.png"
+#        , path = here::here("output", "os_reports", "eol_service"))
 
 # General practice interactions -------------------------------------------
 
-# Mean GP interactions by month and place of death - including all deaths
+# Number of people with at least one general practice interaction in the last month of life by month and place of death - all deaths
+
+gp_count_place_RAW <- df %>%
+  group_by(study_month, pod_ons_new) %>%
+  summarise(count = sum(gp_1m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = sum(gp_1m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(pod_ons_new = "All") %>%
+              mutate(proportion = round(count / total*100,1)))
+
+fwrite(gp_count_place_RAW, here::here("output", "os_reports", "eol_service", "gp_count_place_RAW.csv"))
+
+
+cols_of_interest <- c("count", "total");
+
+gp_count_place_ROUND <- df %>%
+  group_by(study_month, pod_ons_new) %>%
+  summarise(count = sum(gp_1m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = sum(gp_1m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(pod_ons_new = "All")) %>%
+              dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+              dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
+              mutate(proportion = round(count / total*100,1))
+
+fwrite(gp_count_place_ROUND, here::here("output", "os_reports", "eol_service", "gp_count_place_ROUND.csv"))
+
+
+# Number of people with at least one general practice interaction in the last month of life by month and cause of death
+
+gp_count_cause_RAW <- df %>%
+  group_by(study_month, codgrp) %>%
+  summarise(count = sum(gp_1m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = sum(gp_1m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(codgrp = "All") %>%
+              mutate(proportion = round(count / total*100,1)))
+
+fwrite(gp_count_cause_RAW, here::here("output", "os_reports", "eol_service", "gp_count_cause_RAW.csv"))
+
+cols_of_interest <- c("count", "total");
+
+gp_count_cause_ROUND <- df %>%
+  group_by(study_month, codgrp) %>%
+  summarise(count = sum(gp_1m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = sum(gp_1m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(codgrp = "All")) %>%
+              dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+              dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
+              mutate(proportion = round(count / total*100,1))
+
+fwrite(gp_count_cause_ROUND, here::here("output", "os_reports", "eol_service", "gp_count_cause_ROUND.csv"))
+
+# Mean GP interactions by month and place of death - including all deaths (a version including counts (not for release) and a version exlcuding counts)
+
+gp_month_raw <- df %>%
+  group_by(study_month, pod_ons_new) %>%
+  summarise(count = n(),
+            mean = mean(gp_1m, na.rm = TRUE)
+            , sd = sd(gp_1m, na.rm = TRUE)) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = n(),
+                        mean = mean(gp_1m, na.rm = TRUE),
+                        sd = sd(gp_1m, na.rm = TRUE)) %>%
+              mutate(pod_ons_new = "All")) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ )))
+
+#Save data file
+fwrite(gp_month_raw, here::here("output", "os_reports", "eol_service", "gp_month_raw.csv"))
+
+
 gp_month <- df %>%
   group_by(study_month, pod_ons_new) %>%
-  summarise(mean = mean(gp_1m, na.rm = TRUE)) %>%
+  summarise(count = n(),
+            mean = mean(gp_1m, na.rm = TRUE)
+            , sd = sd(gp_1m, na.rm = TRUE)) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
   bind_rows(df %>%
               group_by(study_month) %>%
-              summarise(mean = mean(gp_1m, na.rm = TRUE)) %>%
+              summarise(count = n(),
+                        mean = mean(gp_1m, na.rm = TRUE),
+                        sd = sd(gp_1m, na.rm = TRUE)) %>%
               mutate(pod_ons_new = "All")) %>%
-  mutate(mean = round(mean, 3))
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
+  select(-c(count))
 
-write_csv(gp_month, here::here("output", "os_reports", "eol_service", "gp_month.csv"))
-
-gp_month_plot <- ggplot(gp_month, aes(x = study_month, y = mean
-                                      , group = pod_ons_new
-                                      , colour = pod_ons_new
-                                      , fill = pod_ons_new)) +
-  geom_line(size = 1) +
-  geom_point(fill = "#F4F4F4", shape = 21, size = 1.5, stroke = 1.3) +
-  guides(colour = guide_legend(nrow = 1)) +
-  labs(x = "Month", y = "Average events per person") +
-  scale_colour_NT() +
-  scale_fill_NT() +
-  scale_x_date(expand = c(0,0), date_breaks = "3 months", date_labels = "%b-%y") +
-  scale_y_continuous(expand = c(0,0)
-                     , limits = c(0, plyr::round_any(max(gp_month$mean)
-                                                     , 1, f = ceiling))
-                     , breaks = seq(0
-                                    , plyr::round_any(max(gp_month$mean)
-                                                      , 1, f = ceiling)
-                                    , 1)
-                     , labels = scales::comma) +
-  NT_style() +
-  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
-
-ggsave(gp_month_plot, dpi = 600, width = 20, height = 10, unit = "cm"
-       , filename = "gp_month_plot.png"
-       , path = here::here("output", "os_reports", "eol_service"))
+#Save data file
+fwrite(gp_month, here::here("output", "os_reports", "eol_service", "gp_month.csv"))
 
 
-# Mean GP interactions by month and cause of death
+# gp_month_plot <- ggplot(gp_month, aes(x = study_month, y = mean
+#                                       , group = pod_ons_new
+#                                       , colour = pod_ons_new
+#                                       , fill = pod_ons_new)) +
+#   geom_line(size = 1) +
+#   geom_point(fill = "#F4F4F4", shape = 21, size = 1.5, stroke = 1.3) +
+#   guides(colour = guide_legend(nrow = 1)) +
+#   labs(x = "Month", y = "Average events per person") +
+#   scale_colour_NT() +
+#   scale_fill_NT() +
+#   scale_x_date(expand = c(0,0), date_breaks = "3 months", date_labels = "%b-%y") +
+#   scale_y_continuous(expand = c(0,0)
+#                      , limits = c(0, plyr::round_any(max(gp_month$mean)
+#                                                      , 1, f = ceiling))
+#                      , breaks = seq(0
+#                                     , plyr::round_any(max(gp_month$mean)
+#                                                       , 1, f = ceiling)
+#                                     , 1)
+#                      , labels = scales::comma) +
+#   NT_style() +
+#   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+# 
+# ggsave(gp_month_plot, dpi = 600, width = 20, height = 10, unit = "cm"
+#        , filename = "gp_month_plot.png"
+#        , path = here::here("output", "os_reports", "eol_service"))
+
+
+# Mean GP interactions by month and cause of death (versions including and excluding count. Version with count not for release)
+
+gp_month_cod_raw <- df %>%
+  group_by(study_month, codgrp) %>%
+  summarise(count = n(),
+            mean = mean(gp_1m, na.rm = TRUE)
+            , sd = sd(gp_1m, na.rm = TRUE)) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = n(),
+                        mean = mean(gp_1m, na.rm = TRUE),
+                        sd = sd(gp_1m, na.rm = TRUE)) %>%
+              mutate(codgrp = "All")) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ )))
+
+#Save data file
+fwrite(gp_month_cod_raw, here::here("output", "os_reports", "eol_service", "gp_month_cod_raw.csv"))
+
+
 gp_month_cod <- df %>%
   group_by(study_month, codgrp) %>%
-  summarise(mean = mean(gp_1m, na.rm = TRUE)) %>%
+  summarise(count = n(),
+            mean = mean(gp_1m, na.rm = TRUE)
+            , sd = sd(gp_1m, na.rm = TRUE)) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
   bind_rows(df %>%
               group_by(study_month) %>%
-              summarise(mean = mean(gp_1m, na.rm = TRUE)) %>%
+              summarise(count = n(),
+                        mean = mean(gp_1m, na.rm = TRUE),
+                        sd = sd(gp_1m, na.rm = TRUE)) %>%
               mutate(codgrp = "All")) %>%
-  mutate(mean = round(mean, 3))
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
+  select(-c(count))
 
-write_csv(gp_month_cod, here::here("output", "os_reports", "eol_service", "gp_month_cod.csv"))
+fwrite(gp_month_cod, here::here("output", "os_reports", "eol_service", "gp_month_cod.csv"))
 
-gp_month_cod_plot <- ggplot(gp_month_cod, aes(x = study_month, y = mean
-                                      , group = codgrp
-                                      , colour = codgrp
-                                      , fill = codgrp)) +
-  geom_line(size = 1) +
-  geom_point(fill = "#F4F4F4", shape = 21, size = 1.5, stroke = 1.3) +
-  guides(colour = guide_legend(nrow = 1)) +
-  labs(x = "Month", y = "Average events per person") +
-  scale_colour_NT() +
-  scale_fill_NT() +
-  scale_x_date(expand = c(0,0), date_breaks = "3 months", date_labels = "%b-%y") +
-  scale_y_continuous(expand = c(0,0)
-                     , limits = c(0, plyr::round_any(max(gp_month_cod$mean)
-                                                     , 1, f = ceiling))
-                     , breaks = seq(0
-                                    , plyr::round_any(max(gp_month_cod$mean)
-                                                      , 1, f = ceiling)
-                                    , 1)
-                     , labels = scales::comma) +
-  NT_style() +
-  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
 
-ggsave(gp_month_cod_plot, dpi = 600, width = 20, height = 10, unit = "cm"
-       , filename = "gp_month_cod_plot.png"
-       , path = here::here("output", "os_reports", "eol_service"))
+# gp_month_cod_plot <- ggplot(gp_month_cod, aes(x = study_month, y = mean
+#                                       , group = codgrp
+#                                       , colour = codgrp
+#                                       , fill = codgrp)) +
+#   geom_line(size = 1) +
+#   geom_point(fill = "#F4F4F4", shape = 21, size = 1.5, stroke = 1.3) +
+#   guides(colour = guide_legend(nrow = 1)) +
+#   labs(x = "Month", y = "Average events per person") +
+#   scale_colour_NT() +
+#   scale_fill_NT() +
+#   scale_x_date(expand = c(0,0), date_breaks = "3 months", date_labels = "%b-%y") +
+#   scale_y_continuous(expand = c(0,0)
+#                      , limits = c(0, plyr::round_any(max(gp_month_cod$mean)
+#                                                      , 1, f = ceiling))
+#                      , breaks = seq(0
+#                                     , plyr::round_any(max(gp_month_cod$mean)
+#                                                       , 1, f = ceiling)
+#                                     , 1)
+#                      , labels = scales::comma) +
+#   NT_style() +
+#   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+# 
+# ggsave(gp_month_cod_plot, dpi = 600, width = 20, height = 10, unit = "cm"
+#        , filename = "gp_month_cod_plot.png"
+#        , path = here::here("output", "os_reports", "eol_service"))
 
 
 # A&E visits --------------------------------------------------------------
 
-# mean A&E visits in month leading up to death, by month, by place of death.
-aevis_month <- df %>% 
+# Number of people with at least one A&E visit in the last month of life by month and place of death - all deaths
+
+aevis_count_place_RAW <- df %>%
   group_by(study_month, pod_ons_new) %>%
-  summarise(mean = mean(aevis_1m, na.rm = TRUE)) %>%
+  summarise(count = sum(aevis_1m >= 1, na.rm = TRUE), total = n()) %>%
   bind_rows(df %>%
               group_by(study_month) %>%
-              summarise(mean = mean(aevis_1m, na.rm = TRUE)) %>%
+              summarise(count = sum(aevis_1m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(pod_ons_new = "All") %>%
+              mutate(proportion = round(count / total*100,1)))
+
+fwrite(aevis_count_place_RAW, here::here("output", "os_reports", "eol_service", "aevis_count_place_RAW.csv"))
+
+cols_of_interest <- c("count", "total");
+
+aevis_count_place_ROUND <- df %>%
+  group_by(study_month, pod_ons_new) %>%
+  summarise(count = sum(aevis_1m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = sum(aevis_1m >= 1, na.rm = TRUE), total = n()) %>%
               mutate(pod_ons_new = "All")) %>%
-  mutate(mean = round(mean, 3))
+              dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+              dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
+              mutate(proportion = round(count/total*100,1))
+
+#Save data file
+fwrite(aevis_count_place_ROUND, here::here("output", "os_reports", "eol_service", "aevis_count_place_ROUND.csv"))
+
+
+# Number of people with at least one A&E visit in the last month of life by month and cause of death
+
+aevis_count_cause_RAW <- df %>%
+  group_by(study_month, codgrp) %>%
+  summarise(count = sum(aevis_1m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = sum(aevis_1m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(codgrp = "All") %>%
+              mutate(proportion = round(count / total*100,1)))
+
+#Save data file
+fwrite(aevis_count_cause_RAW, here::here("output", "os_reports", "eol_service", "aevis_count_cause_RAW.csv"))
+
+aevis_count_cause_ROUND <- df %>%
+  group_by(study_month, codgrp) %>%
+  summarise(count = sum(aevis_1m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = sum(aevis_1m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(codgrp = "All")) %>%
+              dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+              dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
+              mutate(proportion = round(count / total*100,1))
+
+#save data file
+fwrite(aevis_count_cause_ROUND, here::here("output", "os_reports", "eol_service", "aevis_count_cause_ROUND.csv"))
+
+
+
+# mean A&E visits in month leading up to death, by month, by place of death (version including count not for release)
+
+aevis_month_raw <- df %>% 
+  group_by(study_month, pod_ons_new) %>%
+  summarise(count = n(),
+            mean = mean(aevis_1m, na.rm = TRUE)
+            , sd = sd(aevis_1m, na.rm = TRUE)) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = n(),
+                        mean = mean(aevis_1m, na.rm = TRUE),
+                        sd = sd(aevis_1m, na.rm = TRUE)) %>%
+              mutate(pod_ons_new = "All")) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) 
+
 
 # save data file
-write_csv(aevis_month, here::here("output", "os_reports", "eol_service", "aevis_month.csv"))
+fwrite(aevis_month_raw, here::here("output", "os_reports", "eol_service", "aevis_month_raw.csv"))
 
-# graph output
-aevis_month_plot <- ggplot(aevis_month, aes(x = study_month, y = mean
-                                            , group = pod_ons_new
-                                            , colour = pod_ons_new
-                                            , fill = pod_ons_new)) +
-  geom_line(size = 1) +
-  geom_point(fill = "#F4F4F4", shape = 21, size = 1.5, stroke = 1.3) +
-  guides(colour = guide_legend(nrow = 1)) +
-  labs(x = "Month", y = "Average events per person") +
-  scale_colour_NT() +
-  scale_fill_NT() +
-  scale_x_date(expand = c(0,0), date_breaks = "3 months", date_labels = "%b-%y") +
-  scale_y_continuous(expand = c(0,0)
-                     , limits = c(0, plyr::round_any(max(aevis_month$mean)
-                                                     , 1, f = ceiling))
-                     , breaks = seq(0
-                                    , plyr::round_any(max(aevis_month$mean)
-                                                      , 1, f = ceiling)
-                                    , 1)
-                     , labels = scales::comma) +
-  NT_style() +
-  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+aevis_month <- df %>% 
+  group_by(study_month, pod_ons_new) %>%
+  summarise(count = n(),
+            mean = mean(aevis_1m, na.rm = TRUE)
+            , sd = sd(aevis_1m, na.rm = TRUE)) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = n(),
+                        mean = mean(aevis_1m, na.rm = TRUE),
+                        sd = sd(aevis_1m, na.rm = TRUE)) %>%
+              mutate(pod_ons_new = "All")) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
+  select(-c(count))
 
-ggsave(aevis_month_plot, dpi = 600, width = 20, height = 10, unit = "cm"
-       , filename = "aevis_month_plot.png"
-       , path = here::here("output", "os_reports", "eol_service"))
+
+# save data file
+fwrite(aevis_month, here::here("output", "os_reports", "eol_service", "aevis_month.csv"))
+
+
+# # graph output
+# aevis_month_plot <-
+#   ggplot(
+#     aevis_month,
+#     aes(
+#       x = study_month,
+#       y = mean
+#       ,
+#       group = pod_ons_new
+#       ,
+#       colour = pod_ons_new
+#       ,
+#       fill = pod_ons_new
+#     )
+#   ) +
+#   geom_line(size = 1) +
+#   geom_point(
+#     fill = "#F4F4F4",
+#     shape = 21,
+#     size = 1.5,
+#     stroke = 1.3
+#   ) +
+#   guides(colour = guide_legend(nrow = 1)) +
+#   labs(x = "Month", y = "Average events per person") +
+#   scale_colour_NT() +
+#   scale_fill_NT() +
+#   scale_x_date(expand = c(0, 0),
+#                date_breaks = "3 months",
+#                date_labels = "%b-%y") +
+#   scale_y_continuous(
+#     expand = c(0, 0)
+#     ,
+#     limits = c(0, plyr::round_any(max(aevis_month$mean)
+#                                   , 1, f = ceiling))
+#     ,
+#     breaks = seq(0
+#                  , plyr::round_any(max(aevis_month$mean)
+#                                    , 1, f = ceiling)
+#                  , 1)
+#     ,
+#     labels = scales::comma
+#   ) +
+#   NT_style() +
+#   theme(axis.text.x = element_text(
+#     angle = 45,
+#     vjust = 1,
+#     hjust = 1
+#   ))
+# 
+# ggsave(
+#   aevis_month_plot,
+#   dpi = 600,
+#   width = 20,
+#   height = 10,
+#   unit = "cm"
+#   ,
+#   filename = "aevis_month_plot.png"
+#   ,
+#   path = here::here("output", "os_reports", "eol_service")
+# )
 
 
 # Mean A&E visits in month leading up to death, by month, by cause of death
-aevis_month_cod <- df %>% 
+
+aevis_month_cod_raw <- df %>% 
   group_by(study_month, codgrp) %>%
-  summarise(mean = mean(aevis_1m, na.rm = TRUE)) %>%
+  summarise(count =n(),
+            mean = mean(aevis_1m, na.rm = TRUE)
+            , sd = sd(aevis_1m, na.rm = TRUE)) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%          
   bind_rows(df %>%
               group_by(study_month) %>%
-              summarise(mean = mean(aevis_1m, na.rm = TRUE)) %>%
+              summarise(count = n(),
+                        mean = mean(aevis_1m, na.rm = TRUE)
+                        , sd = sd(aevis_1m, na.rm = TRUE)) %>%
               mutate(codgrp = "All")) %>%
-  mutate(mean = round(mean, 3))
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ )))
 
-write_csv(aevis_month_cod, here::here("output", "os_reports", "eol_service", "aevis_month_cod.csv"))
 
-aevis_month_cod_plot <- ggplot(aevis_month_cod, aes(x = study_month, y = mean
-                                            , group = codgrp
-                                            , colour = codgrp
-                                            , fill = codgrp)) +
-  geom_line(size = 1) +
-  geom_point(fill = "#F4F4F4", shape = 21, size = 1.5, stroke = 1.3) +
-  guides(colour = guide_legend(nrow = 1)) +
-  labs(x = "Month", y = "Average events per person") +
-  scale_colour_NT() +
-  scale_fill_NT() +
-  scale_x_date(expand = c(0,0), date_breaks = "3 months", date_labels = "%b-%y") +
-  scale_y_continuous(expand = c(0,0)
-                     , limits = c(0, plyr::round_any(max(aevis_month_cod$mean)
-                                                     , 1, f = ceiling))
-                     , breaks = seq(0
-                                    , plyr::round_any(max(aevis_month_cod$mean)
-                                                      , 1, f = ceiling)
-                                    , 1)
-                     , labels = scales::comma) +
-  NT_style() +
-  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+#Save data file
+fwrite(aevis_month_cod_raw, here::here("output", "os_reports", "eol_service", "aevis_month_cod_raw.csv"))
 
-ggsave(aevis_month_cod_plot, dpi = 600, width = 20, height = 10, unit = "cm"
-       , filename = "aevis_month_cod_plot.png"
-       , path = here::here("output", "os_reports", "eol_service"))
+
+aevis_month_cod <- df %>% 
+  group_by(study_month, codgrp) %>%
+  summarise(count =n(),
+            mean = mean(aevis_1m, na.rm = TRUE)
+            , sd = sd(aevis_1m, na.rm = TRUE)) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%          
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = n(),
+                mean = mean(aevis_1m, na.rm = TRUE)
+                , sd = sd(aevis_1m, na.rm = TRUE)) %>%
+              mutate(codgrp = "All")) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
+  select(-c(count))
+
+
+#Save data file
+fwrite(aevis_month_cod, here::here("output", "os_reports", "eol_service", "aevis_month_cod.csv"))
+
+
+# aevis_month_cod_plot <- ggplot(aevis_month_cod, aes(x = study_month, y = mean
+#                                             , group = codgrp
+#                                             , colour = codgrp
+#                                             , fill = codgrp)) +
+#   geom_line(size = 1) +
+#   geom_point(fill = "#F4F4F4", shape = 21, size = 1.5, stroke = 1.3) +
+#   guides(colour = guide_legend(nrow = 1)) +
+#   labs(x = "Month", y = "Average events per person") +
+#   scale_colour_NT() +
+#   scale_fill_NT() +
+#   scale_x_date(expand = c(0,0), date_breaks = "3 months", date_labels = "%b-%y") +
+#   scale_y_continuous(expand = c(0,0)
+#                      , limits = c(0, plyr::round_any(max(aevis_month_cod$mean)
+#                                                      , 1, f = ceiling))
+#                      , breaks = seq(0
+#                                     , plyr::round_any(max(aevis_month_cod$mean)
+#                                                       , 1, f = ceiling)
+#                                     , 1)
+#                      , labels = scales::comma) +
+#   NT_style() +
+#   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+# 
+# ggsave(aevis_month_cod_plot, dpi = 600, width = 20, height = 10, unit = "cm"
+#        , filename = "aevis_month_cod_plot.png"
+#        , path = here::here("output", "os_reports", "eol_service"))
 
 
 # Outpatient appointments -------------------------------------------
 
-# Mean outpatient appointments by month and place of death - including all deaths
+# Number of people with at least one outpatient appointment in the last month of life by month and place of death - all deaths
+
+opapp_count_place_RAW <- df %>%
+  group_by(study_month, pod_ons_new) %>%
+  summarise(count = sum(opapp_1m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = sum(opapp_1m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(pod_ons_new = "All") %>%
+              mutate(proportion = round(count / total*100,1)))
+
+fwrite(opapp_count_place_RAW, here::here("output", "os_reports", "eol_service", "opapp_count_place_RAW.csv"))
+
+opapp_count_place_ROUND <- df %>%
+  group_by(study_month, pod_ons_new) %>%
+  summarise(count = sum(opapp_1m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = sum(opapp_1m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(pod_ons_new = "All")) %>%
+              dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+              dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
+              mutate(proportion = round(count / total*100,1))
+
+fwrite(opapp_count_place_ROUND, here::here("output", "os_reports", "eol_service", "opapp_count_place_ROUND.csv"))
+
+# Number of people with at least one outpatient appointment in the last month of life by month and cause of death
+
+opapp_count_cause_RAW <- df %>%
+  group_by(study_month, codgrp) %>%
+  summarise(count = sum(opapp_1m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = sum(opapp_1m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(codgrp = "All") %>%
+              mutate(proportion = round(count / total*100,1)))
+
+fwrite(opapp_count_cause_RAW, here::here("output", "os_reports", "eol_service", "opapp_count_cause_RAW.csv"))
+
+opapp_count_cause_ROUND <- df %>%
+  group_by(study_month, codgrp) %>%
+  summarise(count = sum(opapp_1m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = sum(opapp_1m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(codgrp = "All")) %>%
+              dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+              dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
+              mutate(proportion = round(count / total*100,1))
+
+fwrite(opapp_count_cause_ROUND, here::here("output", "os_reports", "eol_service", "opapp_count_cause_ROUND.csv"))
+
+
+# Mean outpatient appointments by month and place of death - including all deaths (versions including and excluding counts. Version including counts not for release)
+opapp_month_raw <- df %>%
+  group_by(study_month, pod_ons_new) %>%
+  summarise(count = n(),
+            mean = mean(opapp_1m, na.rm = TRUE)
+            , sd = sd(opapp_1m, na.rm =TRUE)) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = n(),
+                        mean = mean(opapp_1m, na.rm = TRUE),
+                        sd = sd(opapp_1m, na.rm =TRUE))%>%
+              mutate(pod_ons_new = "All")) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ )))
+
+
+#Save data file
+fwrite(opapp_month_raw, here::here("output", "os_reports", "eol_service", "opapp_month_raw.csv"))
+
+
 opapp_month <- df %>%
   group_by(study_month, pod_ons_new) %>%
-  summarise(mean = mean(opapp_1m, na.rm = TRUE)) %>%
+  summarise(count = n(),
+            mean = mean(opapp_1m, na.rm = TRUE)
+            , sd = sd(opapp_1m, na.rm =TRUE)) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
   bind_rows(df %>%
               group_by(study_month) %>%
-              summarise(mean = mean(opapp_1m, na.rm = TRUE)) %>%
+              summarise(count = n(),
+              mean = mean(opapp_1m, na.rm = TRUE),
+              sd = sd(opapp_1m, na.rm =TRUE))%>%
               mutate(pod_ons_new = "All")) %>%
-  mutate(mean = round(mean, 3))
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
+  select(-c(count))
 
-write_csv(opapp_month, here::here("output", "os_reports", "eol_service", "opapp_month.csv"))
 
-op_month_plot <- ggplot(opapp_month, aes(x = study_month, y = mean
-                                         , group = pod_ons_new
-                                         , colour = pod_ons_new
-                                         , fill = pod_ons_new)) +
-  geom_line(size = 1) +
-  geom_point(fill = "#F4F4F4", shape = 21, size = 1.5, stroke = 1.3) +
-  guides(colour = guide_legend(nrow = 1)) +
-  labs(x = "Month", y = "Average events per person") +
-  scale_colour_NT() +
-  scale_fill_NT() +
-  scale_x_date(expand = c(0,0), date_breaks = "3 months", date_labels = "%b-%y") +
-  scale_y_continuous(expand = c(0,0)
-                     , limits = c(0, plyr::round_any(max(opapp_month$mean)
-                                                     , 1, f = ceiling))
-                     , breaks = seq(0
-                                    , plyr::round_any(max(opapp_month$mean)
-                                                      , 1, f = ceiling)
-                                    , 1)
-                     , labels = scales::comma) +
-  NT_style() +
-  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+#Save data file
+fwrite(opapp_month, here::here("output", "os_reports", "eol_service", "opapp_month.csv"))
 
-ggsave(op_month_plot, dpi = 600, width = 20, height = 10, unit = "cm"
-       , filename = "opapp_month_plot.png"
-       , path = here::here("output", "os_reports", "eol_service"))
+# op_month_plot <- ggplot(opapp_month, aes(x = study_month, y = mean
+#                                          , group = pod_ons_new
+#                                          , colour = pod_ons_new
+#                                          , fill = pod_ons_new)) +
+#   geom_line(size = 1) +
+#   geom_point(fill = "#F4F4F4", shape = 21, size = 1.5, stroke = 1.3) +
+#   guides(colour = guide_legend(nrow = 1)) +
+#   labs(x = "Month", y = "Average events per person") +
+#   scale_colour_NT() +
+#   scale_fill_NT() +
+#   scale_x_date(expand = c(0,0), date_breaks = "3 months", date_labels = "%b-%y") +
+#   scale_y_continuous(expand = c(0,0)
+#                      , limits = c(0, plyr::round_any(max(opapp_month$mean)
+#                                                      , 1, f = ceiling))
+#                      , breaks = seq(0
+#                                     , plyr::round_any(max(opapp_month$mean)
+#                                                       , 1, f = ceiling)
+#                                     , 1)
+#                      , labels = scales::comma) +
+#   NT_style() +
+#   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+# 
+# ggsave(op_month_plot, dpi = 600, width = 20, height = 10, unit = "cm"
+#        , filename = "opapp_month_plot.png"
+#        , path = here::here("output", "os_reports", "eol_service"))
 
-# Mean outpatient appointments by month and cause of death - including all deaths
+
+# Mean outpatient appointments by month and cause of death - including all deaths (version including and excluding counts. Version including counts not for release)
+
+opapp_month_cod_raw <- df %>%
+  group_by(study_month, codgrp) %>%
+  summarise(count = n(),
+            mean = mean(opapp_1m, na.rm = TRUE)
+            , sd = sd(opapp_1m, na.rm = TRUE)) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = n(),
+                        mean = mean(opapp_1m, na.rm = TRUE)) %>%
+              mutate(codgrp = "All")) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ )))
+
+
+#Save data file
+fwrite(opapp_month_cod_raw, here::here("output", "os_reports", "eol_service", "opapp_month_cod_raw.csv"))
+
+
 opapp_month_cod <- df %>%
   group_by(study_month, codgrp) %>%
-  summarise(mean = mean(opapp_1m, na.rm = TRUE)) %>%
+  summarise(count = n(),
+            mean = mean(opapp_1m, na.rm = TRUE)
+            , sd = sd(opapp_1m, na.rm = TRUE)) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
   bind_rows(df %>%
               group_by(study_month) %>%
-              summarise(mean = mean(opapp_1m, na.rm = TRUE)) %>%
+              summarise(count = n(),
+                mean = mean(opapp_1m, na.rm = TRUE)) %>%
               mutate(codgrp = "All")) %>%
-  mutate(mean = round(mean, 3))
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
+  select(-c(count))
 
-write_csv(opapp_month_cod, here::here("output", "os_reports", "eol_service", "opapp_month_cod.csv"))
 
-op_month_cod_plot <- ggplot(opapp_month_cod, aes(x = study_month, y = mean
-                                         , group = codgrp
-                                         , colour = codgrp
-                                         , fill = codgrp)) +
-  geom_line(size = 1) +
-  geom_point(fill = "#F4F4F4", shape = 21, size = 1.5, stroke = 1.3) +
-  guides(colour = guide_legend(nrow = 1)) +
-  labs(x = "Month", y = "Average events per person") +
-  scale_colour_NT() +
-  scale_fill_NT() +
-  scale_x_date(expand = c(0,0), date_breaks = "3 months", date_labels = "%b-%y") +
-  scale_y_continuous(expand = c(0,0)
-                     , limits = c(0, plyr::round_any(max(opapp_month_cod$mean)
-                                                     , 1, f = ceiling))
-                     , breaks = seq(0
-                                    , plyr::round_any(max(opapp_month_cod$mean)
-                                                      , 1, f = ceiling)
-                                    , 1)
-                     , labels = scales::comma) +
-  NT_style() +
-  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+#Save data file
+fwrite(opapp_month_cod, here::here("output", "os_reports", "eol_service", "opapp_month_cod.csv"))
 
-ggsave(op_month_cod_plot, dpi = 600, width = 20, height = 10, unit = "cm"
-       , filename = "opapp_month_cod_plot.png"
-       , path = here::here("output", "os_reports", "eol_service"))
+# op_month_cod_plot <- ggplot(opapp_month_cod, aes(x = study_month, y = mean
+#                                          , group = codgrp
+#                                          , colour = codgrp
+#                                          , fill = codgrp)) +
+#   geom_line(size = 1) +
+#   geom_point(fill = "#F4F4F4", shape = 21, size = 1.5, stroke = 1.3) +
+#   guides(colour = guide_legend(nrow = 1)) +
+#   labs(x = "Month", y = "Average events per person") +
+#   scale_colour_NT() +
+#   scale_fill_NT() +
+#   scale_x_date(expand = c(0,0), date_breaks = "3 months", date_labels = "%b-%y") +
+#   scale_y_continuous(expand = c(0,0)
+#                      , limits = c(0, plyr::round_any(max(opapp_month_cod$mean)
+#                                                      , 1, f = ceiling))
+#                      , breaks = seq(0
+#                                     , plyr::round_any(max(opapp_month_cod$mean)
+#                                                       , 1, f = ceiling)
+#                                     , 1)
+#                      , labels = scales::comma) +
+#   NT_style() +
+#   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+# 
+# ggsave(op_month_cod_plot, dpi = 600, width = 20, height = 10, unit = "cm"
+#        , filename = "opapp_month_cod_plot.png"
+#        , path = here::here("output", "os_reports", "eol_service"))
 
 
 # Elective admissions---------------------------------------------
 
-# Mean elective admissions by month and place of death - including all deaths
+# Number of people with at least one elective admission in the last month of life by month and place of death - all deaths
+
+eladm_count_place_RAW <- df %>%
+  group_by(study_month, pod_ons_new) %>%
+  summarise(count = sum(eladm_1m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = sum(eladm_1m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(pod_ons_new = "All") %>%
+              mutate(proportion = round(count / total*100,1)))
+
+fwrite(eladm_count_place_RAW, here::here("output", "os_reports", "eol_service", "eladm_count_place_RAW.csv"))
+
+eladm_count_place_ROUND <- df %>%
+  group_by(study_month, pod_ons_new) %>%
+  summarise(count = sum(eladm_1m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = sum(eladm_1m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(pod_ons_new = "All")) %>%
+              dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+              dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
+              mutate(proportion = round(count / total*100,1))
+
+fwrite(eladm_count_place_ROUND, here::here("output", "os_reports", "eol_service", "eladm_count_place_ROUND.csv"))
+
+# Number of people with at least one elective admission in the last month of life by month and cause of death
+
+eladm_count_cause_RAW <- df %>%
+  group_by(study_month, codgrp) %>%
+  summarise(count = sum(eladm_1m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = sum(eladm_1m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(codgrp = "All") %>%
+              mutate(proportion = round(count / total*100,1)))
+
+fwrite(eladm_count_cause_RAW, here::here("output", "os_reports", "eol_service", "eladm_count_cause_RAW.csv"))
+
+eladm_count_cause_ROUND <- df %>%
+  group_by(study_month, codgrp) %>%
+  summarise(count = sum(eladm_1m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = sum(eladm_1m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(codgrp = "All")) %>%
+              dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+              dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
+              mutate(proportion = round(count / total*100,1))
+
+fwrite(eladm_count_cause_ROUND, here::here("output", "os_reports", "eol_service", "eladm_count_cause_ROUND.csv"))
+
+# Mean elective admissions by month and place of death - including all deaths (version including and excluding counts. Version including count not for release)
+
+eladm_month_raw <- df %>%
+  group_by(study_month, pod_ons_new) %>%
+  summarise(count = n(),
+            mean = mean(eladm_1m, na.rm = TRUE)
+            , sd = sd(eladm_1m, na.rm = TRUE)) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = n(),
+                        mean = mean(eladm_1m, na.rm = TRUE),
+                        sd = sd(gp_1m, na.rm = TRUE)) %>%
+              mutate(pod_ons_new = "All")) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) 
+
+
+#Save data file
+fwrite(eladm_month_raw, here::here("output", "os_reports", "eol_service", "eladm_month_raw.csv"))
+
+
 eladm_month <- df %>%
   group_by(study_month, pod_ons_new) %>%
-  summarise(mean = mean(eladm_1m, na.rm = TRUE)) %>%
+  summarise(count = n(),
+            mean = mean(eladm_1m, na.rm = TRUE)
+            , sd = sd(eladm_1m, na.rm = TRUE)) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
   bind_rows(df %>%
               group_by(study_month) %>%
-              summarise(mean = mean(eladm_1m, na.rm = TRUE)) %>%
+              summarise(count = n(),
+                      mean = mean(eladm_1m, na.rm = TRUE),
+                      sd = sd(gp_1m, na.rm = TRUE)) %>%
               mutate(pod_ons_new = "All")) %>%
-  mutate(mean = round(mean, 3))
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
+  select(-c(count))
 
-write_csv(eladm_month, here::here("output", "os_reports", "eol_service", "eladm_month.csv"))
 
-eladm_month_plot <- ggplot(eladm_month, aes(x = study_month, y = mean
-                                      , group = pod_ons_new
-                                      , colour = pod_ons_new
-                                      , fill = pod_ons_new)) +
-  geom_line(size = 1) +
-  geom_point(fill = "#F4F4F4", shape = 21, size = 1.5, stroke = 1.3) +
-  guides(colour = guide_legend(nrow = 1)) +
-  labs(x = "Month", y = "Average events per person") +
-  scale_colour_NT() +
-  scale_fill_NT() +
-  scale_x_date(expand = c(0,0), date_breaks = "3 months", date_labels = "%b-%y") +
-  scale_y_continuous(expand = c(0,0)
-                     , limits = c(0, plyr::round_any(max(eladm_month$mean)
-                                                     , 1, f = ceiling))
-                     , breaks = seq(0
-                                    , plyr::round_any(max(eladm_month$mean)
-                                                      , 1, f = ceiling)
-                                    , 1)
-                     , labels = scales::comma) +
-  NT_style() +
-  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+#Save data file
+fwrite(eladm_month, here::here("output", "os_reports", "eol_service", "eladm_month.csv"))
 
-ggsave(eladm_month_plot, dpi = 600, width = 20, height = 10, unit = "cm"
-       , filename = "eladm_month_plot.png"
-       , path = here::here("output", "os_reports", "eol_service"))
 
-# Mean elective admissions by month and cause of death
+# eladm_month_plot <- ggplot(eladm_month, aes(x = study_month, y = mean
+#                                       , group = pod_ons_new
+#                                       , colour = pod_ons_new
+#                                       , fill = pod_ons_new)) +
+#   geom_line(size = 1) +
+#   geom_point(fill = "#F4F4F4", shape = 21, size = 1.5, stroke = 1.3) +
+#   guides(colour = guide_legend(nrow = 1)) +
+#   labs(x = "Month", y = "Average events per person") +
+#   scale_colour_NT() +
+#   scale_fill_NT() +
+#   scale_x_date(expand = c(0,0), date_breaks = "3 months", date_labels = "%b-%y") +
+#   scale_y_continuous(expand = c(0,0)
+#                      , limits = c(0, plyr::round_any(max(eladm_month$mean)
+#                                                      , 1, f = ceiling))
+#                      , breaks = seq(0
+#                                     , plyr::round_any(max(eladm_month$mean)
+#                                                       , 1, f = ceiling)
+#                                     , 1)
+#                      , labels = scales::comma) +
+#   NT_style() +
+#   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+# 
+# ggsave(eladm_month_plot, dpi = 600, width = 20, height = 10, unit = "cm"
+#        , filename = "eladm_month_plot.png"
+#        , path = here::here("output", "os_reports", "eol_service"))
+
+
+# Mean elective admissions by month and cause of death (versions including and excluding counts. Version including count not for release)
+
+eladm_month_cod_raw <- df %>%
+  group_by(study_month, codgrp) %>%
+  summarise(count = n(),
+            mean = mean(eladm_1m, na.rm = TRUE)
+            , sd = sd(eladm_1m, na.rm = TRUE)) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = n(),
+                        mean = mean(eladm_1m, na.rm = TRUE),
+                        sd = sd(gp_1m, na.rm = TRUE)) %>%
+              mutate(codgrp = "All")) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) 
+
+
+#Save data file
+fwrite(eladm_month_cod_raw, here::here("output", "os_reports", "eol_service", "eladm_month_cod_raw.csv"))
+
+
 eladm_month_cod <- df %>%
   group_by(study_month, codgrp) %>%
-  summarise(mean = mean(eladm_1m, na.rm = TRUE)) %>%
+  summarise(count = n(),
+            mean = mean(eladm_1m, na.rm = TRUE)
+            , sd = sd(eladm_1m, na.rm = TRUE)) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
   bind_rows(df %>%
               group_by(study_month) %>%
-              summarise(mean = mean(eladm_1m, na.rm = TRUE)) %>%
+              summarise(count = n(),
+                        mean = mean(eladm_1m, na.rm = TRUE),
+                        sd = sd(gp_1m, na.rm = TRUE)) %>%
               mutate(codgrp = "All")) %>%
-  mutate(mean = round(mean, 3))
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
+  select(-c(count))
 
-write_csv(eladm_month_cod, here::here("output", "os_reports", "eol_service", "eladm_month_cod.csv"))
 
-eladm_month_cod_plot <- ggplot(eladm_month_cod, aes(x = study_month, y = mean
-                                              , group = codgrp
-                                              , colour = codgrp
-                                              , fill = codgrp)) +
-  geom_line(size = 1) +
-  geom_point(fill = "#F4F4F4", shape = 21, size = 1.5, stroke = 1.3) +
-  guides(colour = guide_legend(nrow = 1)) +
-  labs(x = "Month", y = "Average events per person") +
-  scale_colour_NT() +
-  scale_fill_NT() +
-  scale_x_date(expand = c(0,0), date_breaks = "3 months", date_labels = "%b-%y") +
-  scale_y_continuous(expand = c(0,0)
-                     , limits = c(0, plyr::round_any(max(eladm_month_cod$mean)
-                                                     , 1, f = ceiling))
-                     , breaks = seq(0
-                                    , plyr::round_any(max(eladm_month_cod$mean)
-                                                      , 1, f = ceiling)
-                                    , 1)
-                     , labels = scales::comma) +
-  NT_style() +
-  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+#Save data file
+fwrite(eladm_month_cod, here::here("output", "os_reports", "eol_service", "eladm_month_cod.csv"))
 
-ggsave(eladm_month_cod_plot, dpi = 600, width = 20, height = 10, unit = "cm"
-       , filename = "eladm_month_cod_plot.png"
-       , path = here::here("output", "os_reports", "eol_service"))
+# eladm_month_cod_plot <- ggplot(eladm_month_cod, aes(x = study_month, y = mean
+#                                               , group = codgrp
+#                                               , colour = codgrp
+#                                               , fill = codgrp)) +
+#   geom_line(size = 1) +
+#   geom_point(fill = "#F4F4F4", shape = 21, size = 1.5, stroke = 1.3) +
+#   guides(colour = guide_legend(nrow = 1)) +
+#   labs(x = "Month", y = "Average events per person") +
+#   scale_colour_NT() +
+#   scale_fill_NT() +
+#   scale_x_date(expand = c(0,0), date_breaks = "3 months", date_labels = "%b-%y") +
+#   scale_y_continuous(expand = c(0,0)
+#                      , limits = c(0, plyr::round_any(max(eladm_month_cod$mean)
+#                                                      , 1, f = ceiling))
+#                      , breaks = seq(0
+#                                     , plyr::round_any(max(eladm_month_cod$mean)
+#                                                       , 1, f = ceiling)
+#                                     , 1)
+#                      , labels = scales::comma) +
+#   NT_style() +
+#   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+# 
+# ggsave(eladm_month_cod_plot, dpi = 600, width = 20, height = 10, unit = "cm"
+#        , filename = "eladm_month_cod_plot.png"
+#        , path = here::here("output", "os_reports", "eol_service"))
 
 
 # Emergency admissions---------------------------------------------
 
-# Mean emergency admissions by month and place of death - including all deaths
+# Number of people with at least one emergency admission in the last month of life by month and place of death - all deaths
+
+emadm_count_place_RAW <- df %>%
+  group_by(study_month, pod_ons_new) %>%
+  summarise(count = sum(emadm_1m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+           group_by(study_month) %>%
+           summarise(count = sum(emadm_1m >= 1, na.rm = TRUE), total = n()) %>% 
+           mutate(pod_ons_new = "All") %>% 
+           mutate(proportion = round(count / total*100,1)))
+         
+fwrite(emadm_count_place_RAW, here::here("output", "os_reports", "eol_service", "emadm_count_place_RAW.csv"))
+
+emadm_count_place_ROUND <- df %>%
+  group_by(study_month, pod_ons_new) %>%
+  summarise(count = sum(emadm_1m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = sum(emadm_1m >= 1, na.rm = TRUE), total = n()) %>% 
+              mutate(pod_ons_new = "All")) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
+  mutate(proportion = round(count / total*100,1))
+
+fwrite(emadm_count_place_ROUND, here::here("output", "os_reports", "eol_service", "emadm_count_place_ROUND.csv"))
+
+
+# Number of people with at least one emergency admission in the last month of life by month and cause of death
+emadm_count_cause_RAW <- df %>%
+  group_by(study_month, codgrp) %>%
+  summarise(count = sum(emadm_1m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = sum(emadm_1m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(codgrp = "All") %>%
+              mutate(proportion = round(count / total*100,1)))
+  
+fwrite(emadm_count_cause_RAW, here::here("output", "os_reports", "eol_service", "emadm_count_cause_RAW.csv"))
+
+emadm_count_cause_ROUND <- df %>%
+  group_by(study_month, codgrp) %>%
+  summarise(count = sum(emadm_1m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = sum(emadm_1m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(codgrp = "All")) %>%
+              dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+              dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
+              mutate(proportion = round(count / total*100,1))
+
+fwrite(emadm_count_cause_ROUND, here::here("output", "os_reports", "eol_service", "emadm_count_cause_ROUND.csv"))
+
+# Mean emergency admissions by month and place of death - including all deaths (Versions including and excluding counts. Version including count not for release)
+
+emadm_month_raw <- df %>%
+  group_by(study_month, pod_ons_new) %>%
+  summarise(count = n(),
+            mean = mean(emadm_1m, na.rm = TRUE)
+            , sd = sd(emadm_1m, na.rm = TRUE)) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = n(),
+                        mean = mean(emadm_1m, na.rm = TRUE),
+                        sd = sd(gp_1m, na.rm = TRUE)) %>%
+              mutate(pod_ons_new = "All")) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
+  select(-c(count))
+
+
+#Save data file
+fwrite(emadm_month_raw, here::here("output", "os_reports", "eol_service", "emadm_month_raw.csv"))
+
+
 emadm_month <- df %>%
   group_by(study_month, pod_ons_new) %>%
-  summarise(mean = mean(emadm_1m, na.rm = TRUE)) %>%
+  summarise(count = n(),
+            mean = mean(emadm_1m, na.rm = TRUE)
+            , sd = sd(emadm_1m, na.rm = TRUE)) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
   bind_rows(df %>%
               group_by(study_month) %>%
-              summarise(mean = mean(emadm_1m, na.rm = TRUE)) %>%
-              mutate(pod_ons_new = "All"))
+              summarise(count = n(),
+              mean = mean(emadm_1m, na.rm = TRUE),
+              sd = sd(gp_1m, na.rm = TRUE)) %>%
+              mutate(pod_ons_new = "All")) %>%
+mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
+  select(-c(count))
 
-write_csv(emadm_month, here::here("output", "os_reports", "eol_service", "emadm_month.csv"))
 
-emadm_month_plot <- ggplot(emadm_month, aes(x = study_month, y = mean
-                                            , group = pod_ons_new
-                                            , colour = pod_ons_new
-                                            , fill = pod_ons_new)) +
-  geom_line(size = 1) +
-  geom_point(fill = "#F4F4F4", shape = 21, size = 1.5, stroke = 1.3) +
-  guides(colour = guide_legend(nrow = 1)) +
-  labs(x = "Month", y = "Average events per person") +
-  scale_colour_NT() +
-  scale_fill_NT() +
-  scale_x_date(expand = c(0,0), date_breaks = "3 months", date_labels = "%b-%y") +
-  scale_y_continuous(expand = c(0,0)
-                     , limits = c(0, plyr::round_any(max(emadm_month$mean)
-                                                     , 1, f = ceiling))
-                     , breaks = seq(0
-                                    , plyr::round_any(max(emadm_month$mean)
-                                                      , 1, f = ceiling)
-                                    , 1)
-                     , labels = scales::comma) +
-  NT_style() +
-  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+#Save data file
+fwrite(emadm_month, here::here("output", "os_reports", "eol_service", "emadm_month.csv"))
 
-ggsave(emadm_month_plot, dpi = 600, width = 20, height = 10, unit = "cm"
-       , filename = "emadm_month_plot.png"
-       , path = here::here("output", "os_reports", "eol_service"))
+# emadm_month_plot <- ggplot(emadm_month, aes(x = study_month, y = mean
+#                                             , group = pod_ons_new
+#                                             , colour = pod_ons_new
+#                                             , fill = pod_ons_new)) +
+#   geom_line(size = 1) +
+#   geom_point(fill = "#F4F4F4", shape = 21, size = 1.5, stroke = 1.3) +
+#   guides(colour = guide_legend(nrow = 1)) +
+#   labs(x = "Month", y = "Average events per person") +
+#   scale_colour_NT() +
+#   scale_fill_NT() +
+#   scale_x_date(expand = c(0,0), date_breaks = "3 months", date_labels = "%b-%y") +
+#   scale_y_continuous(expand = c(0,0)
+#                      , limits = c(0, plyr::round_any(max(emadm_month$mean)
+#                                                      , 1, f = ceiling))
+#                      , breaks = seq(0
+#                                     , plyr::round_any(max(emadm_month$mean)
+#                                                       , 1, f = ceiling)
+#                                     , 1)
+#                      , labels = scales::comma) +
+#   NT_style() +
+#   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+# 
+# ggsave(emadm_month_plot, dpi = 600, width = 20, height = 10, unit = "cm"
+#        , filename = "emadm_month_plot.png"
+#        , path = here::here("output", "os_reports", "eol_service"))
+
 
 # Mean emergency admissions by month and cause of death
-emadm_month_cod <- df %>%
+
+emadm_month_cod_raw <- df %>%
   group_by(study_month, codgrp) %>%
-  summarise(mean = mean(emadm_1m, na.rm = TRUE)) %>%
+  summarise(count = n(),
+            mean = mean(emadm_1m, na.rm = TRUE)
+            , sd = sd(emadm_1m, na.rm = TRUE)) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
   bind_rows(df %>%
               group_by(study_month) %>%
-              summarise(mean = mean(emadm_1m, na.rm = TRUE)) %>%
+              summarise(count = n(),
+                        mean = mean(emadm_1m, na.rm = TRUE),
+                        sd = sd(emadm_1m, na.rm = TRUE)) %>%
               mutate(codgrp = "All")) %>%
-  mutate(mean = round(mean, 3))
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ )))
 
-write_csv(eladm_month_cod, here::here("output", "os_reports", "eol_service", "emadm_month_cod.csv"))
 
-emadm_month_cod_plot <- ggplot(emadm_month_cod, aes(x = study_month, y = mean
-                                                    , group = codgrp
-                                                    , colour = codgrp
-                                                    , fill = codgrp)) +
-  geom_line(size = 1) +
-  geom_point(fill = "#F4F4F4", shape = 21, size = 1.5, stroke = 1.3) +
-  guides(colour = guide_legend(nrow = 1)) +
-  labs(x = "Month", y = "Average events per person") +
-  scale_colour_NT() +
-  scale_fill_NT() +
-  scale_x_date(expand = c(0,0), date_breaks = "3 months", date_labels = "%b-%y") +
-  scale_y_continuous(expand = c(0,0)
-                     , limits = c(0, plyr::round_any(max(emadm_month_cod$mean)
-                                                     , 1, f = ceiling))
-                     , breaks = seq(0
-                                    , plyr::round_any(max(emadm_month_cod$mean)
-                                                      , 1, f = ceiling)
-                                    , 1)
-                     , labels = scales::comma) +
-  NT_style() +
-  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+#Save data file
+fwrite(emadm_month_cod_raw, here::here("output", "os_reports", "eol_service", "emadm_month_cod_raw.csv"))
 
-ggsave(emadm_month_cod_plot, dpi = 600, width = 20, height = 10, unit = "cm"
-       , filename = "emadm_month_cod_plot.png"
-       , path = here::here("output", "os_reports", "eol_service"))
+
+emadm_month_cod <- df %>%
+  group_by(study_month, codgrp) %>%
+  summarise(count = n(),
+            mean = mean(emadm_1m, na.rm = TRUE)
+            , sd = sd(emadm_1m, na.rm = TRUE)) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = n(),
+              mean = mean(emadm_1m, na.rm = TRUE),
+              sd = sd(emadm_1m, na.rm = TRUE)) %>%
+              mutate(codgrp = "All")) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
+  select(-c(count))
+
+
+#Save data file
+fwrite(emadm_month_cod, here::here("output", "os_reports", "eol_service", "emadm_month_cod.csv"))
+
+
+# emadm_month_cod_plot <- ggplot(emadm_month_cod, aes(x = study_month, y = mean
+#                                                     , group = codgrp
+#                                                     , colour = codgrp
+#                                                     , fill = codgrp)) +
+#   geom_line(size = 1) +
+#   geom_point(fill = "#F4F4F4", shape = 21, size = 1.5, stroke = 1.3) +
+#   guides(colour = guide_legend(nrow = 1)) +
+#   labs(x = "Month", y = "Average events per person") +
+#   scale_colour_NT() +
+#   scale_fill_NT() +
+#   scale_x_date(expand = c(0,0), date_breaks = "3 months", date_labels = "%b-%y") +
+#   scale_y_continuous(expand = c(0,0)
+#                      , limits = c(0, plyr::round_any(max(emadm_month_cod$mean)
+#                                                      , 1, f = ceiling))
+#                      , breaks = seq(0
+#                                     , plyr::round_any(max(emadm_month_cod$mean)
+#                                                       , 1, f = ceiling)
+#                                     , 1)
+#                      , labels = scales::comma) +
+#   NT_style() +
+#   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+# 
+# ggsave(emadm_month_cod_plot, dpi = 600, width = 20, height = 10, unit = "cm"
+#        , filename = "emadm_month_cod_plot.png"
+#        , path = here::here("output", "os_reports", "eol_service"))
 
 # Community nurse contacts---------------------------------------------
 
-# Mean number of community nurse contacts by month and place of death - including all deaths
+# Number of people with at least one community nursing contact in the last month of life by month and place of death - all deaths
+
+nursing_count_place_RAW <- df %>%
+  group_by(study_month, pod_ons_new) %>%
+  summarise(count = sum(nursing_1m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = sum(nursing_1m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(pod_ons_new = "All") %>%
+              mutate(proportion = round(count / total*100,1)))
+
+fwrite(nursing_count_place_RAW, here::here("output", "os_reports", "eol_service", "nursing_count_place_RAW.csv"))
+
+nursing_count_place_ROUND <- df %>%
+  group_by(study_month, pod_ons_new) %>%
+  summarise(count = sum(nursing_1m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = sum(nursing_1m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(pod_ons_new = "All")) %>%
+              dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+              dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
+              mutate(proportion = round(count / total*100,1))
+
+fwrite(nursing_count_place_ROUND, here::here("output", "os_reports", "eol_service", "nursing_count_place_ROUND.csv"))
+
+
+# Number of people with at least one community nursing contact in the last month of life by month and cause of death
+
+nursing_count_cause_RAW <- df %>%
+  group_by(study_month, codgrp) %>%
+  summarise(count = sum(nursing_1m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df%>%
+              group_by(study_month) %>%
+              summarise(count = sum(nursing_1m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(codgrp = "All") %>%
+              mutate(proportion = round(count / total*100,1)))
+
+fwrite(nursing_count_cause_RAW, here::here("output", "os_reports", "eol_service", "nursing_count_cause_RAW.csv"))
+
+nursing_count_cause_ROUND <- df %>%
+  group_by(study_month, codgrp) %>%
+  summarise(count = sum(nursing_1m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = sum(nursing_1m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(codgrp = "All")) %>%
+              dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+              dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
+              mutate(proportion = round(count / total*100,1))
+
+fwrite(nursing_count_cause_ROUND, here::here("output", "os_reports", "eol_service", "nursing_count_cause_ROUND.csv"))
+
+
+# Mean number of community nurse contacts by month and place of death - including all deaths (versions including and excluding counts. Version including counts not for release)
+
+nursing_month_raw <- df %>%
+  group_by(study_month, pod_ons_new) %>%
+  summarise(count = n(),
+            mean = mean(nursing_1m, na.rm = TRUE)
+            , sd = sd(nursing_1m, na.rm = TRUE)) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = n(),
+                        mean = mean(nursing_1m, na.rm = TRUE),
+                        sd = sd(gp_1m, na.rm = TRUE)) %>%
+              mutate(pod_ons_new = "All")) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) 
+
+
+#Save data file 
+fwrite(nursing_month_raw, here::here("output", "os_reports", "eol_service", "nursing_month_raw.csv"))
+
+
 nursing_month <- df %>%
   group_by(study_month, pod_ons_new) %>%
-  summarise(mean = mean(nursing_1m, na.rm = TRUE)) %>%
+  summarise(count = n(),
+            mean = mean(nursing_1m, na.rm = TRUE)
+              , sd = sd(nursing_1m, na.rm = TRUE)) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
   bind_rows(df %>%
               group_by(study_month) %>%
-              summarise(mean = mean(nursing_1m, na.rm = TRUE)) %>%
-              mutate(pod_ons_new = "All"))
+              summarise(count = n(),
+                        mean = mean(nursing_1m, na.rm = TRUE),
+                        sd = sd(gp_1m, na.rm = TRUE)) %>%
+              mutate(pod_ons_new = "All")) %>%
+mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
+  select(-c(count))
 
-write_csv(nursing_month, here::here("output", "os_reports", "eol_service", "nursing_month.csv"))
 
-nursing_month_plot <- ggplot(nursing_month, aes(x = study_month, y = mean
-                                            , group = pod_ons_new
-                                            , colour = pod_ons_new
-                                            , fill = pod_ons_new)) +
-  geom_line(size = 1) +
-  geom_point(fill = "#F4F4F4", shape = 21, size = 1.5, stroke = 1.3) +
-  guides(colour = guide_legend(nrow = 1)) +
-  labs(x = "Month", y = "Average events per person") +
-  scale_colour_NT() +
-  scale_fill_NT() +
-  scale_x_date(expand = c(0,0), date_breaks = "3 months", date_labels = "%b-%y") +
-  scale_y_continuous(expand = c(0,0)
-                     , limits = c(0, plyr::round_any(max(nursing_month$mean)
-                                                     , 1, f = ceiling))
-                     , breaks = seq(0
-                                    , plyr::round_any(max(nursing_month$mean)
-                                                      , 1, f = ceiling)
-                                    , 1)
-                     , labels = scales::comma) +
-  NT_style() +
-  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+#Save data file 
+fwrite(nursing_month, here::here("output", "os_reports", "eol_service", "nursing_month.csv"))
 
-ggsave(nursing_month_plot, dpi = 600, width = 20, height = 10, unit = "cm"
-       , filename = "nursing_month_plot.png"
-       , path = here::here("output", "os_reports", "eol_service"))
+# nursing_month_plot <- ggplot(nursing_month, aes(x = study_month, y = mean
+#                                             , group = pod_ons_new
+#                                             , colour = pod_ons_new
+#                                             , fill = pod_ons_new)) +
+#   geom_line(size = 1) +
+#   geom_point(fill = "#F4F4F4", shape = 21, size = 1.5, stroke = 1.3) +
+#   guides(colour = guide_legend(nrow = 1)) +
+#   labs(x = "Month", y = "Average events per person") +
+#   scale_colour_NT() +
+#   scale_fill_NT() +
+#   scale_x_date(expand = c(0,0), date_breaks = "3 months", date_labels = "%b-%y") +
+#   scale_y_continuous(expand = c(0,0)
+#                      , limits = c(0, plyr::round_any(max(nursing_month$mean)
+#                                                      , 1, f = ceiling))
+#                      , breaks = seq(0
+#                                     , plyr::round_any(max(nursing_month$mean)
+#                                                       , 1, f = ceiling)
+#                                     , 1)
+#                      , labels = scales::comma) +
+#   NT_style() +
+#   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+# 
+# ggsave(nursing_month_plot, dpi = 600, width = 20, height = 10, unit = "cm"
+#        , filename = "nursing_month_plot.png"
+#        , path = here::here("output", "os_reports", "eol_service"))
 
-# Mean community nursing interactions by month and cause of death
+
+# Mean community nursing interactions by month and cause of death (versions including and excluding counts. Version including counts not for release)
+
+nursing_month_cod_raw <- df %>%
+  group_by(study_month, codgrp) %>%
+  summarise(count = n(),
+            mean = mean(nursing_1m, na.rm = TRUE)
+            , sd = sd(nursing_1m, na.rm = TRUE)) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = n(),
+                        mean = mean(nursing_1m, na.rm = TRUE),
+                        sd = sd(gp_1m, na.rm = TRUE)) %>%
+              mutate(codgrp = "All")) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) 
+
+
+#Save data file 
+fwrite(nursing_month_cod_raw, here::here("output", "os_reports", "eol_service", "nursing_month_cod_raw.csv"))
+
 nursing_month_cod <- df %>%
   group_by(study_month, codgrp) %>%
-  summarise(mean = mean(nursing_1m, na.rm = TRUE)) %>%
+  summarise(count = n(),
+            mean = mean(nursing_1m, na.rm = TRUE)
+            , sd = sd(nursing_1m, na.rm = TRUE)) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
   bind_rows(df %>%
               group_by(study_month) %>%
-              summarise(mean = mean(gp_1m, na.rm = TRUE)) %>%
+              summarise(count = n(),
+                        mean = mean(nursing_1m, na.rm = TRUE),
+                        sd = sd(gp_1m, na.rm = TRUE)) %>%
               mutate(codgrp = "All")) %>%
-  mutate(mean = round(mean, 3))
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
+  select(-c(count))
 
-write_csv(nursing_month_cod, here::here("output", "os_reports", "eol_service", "nursing_month_cod.csv"))
 
-nursing_month_cod_plot <- ggplot(nursing_month_cod, aes(x = study_month, y = mean
-                                              , group = codgrp
-                                              , colour = codgrp
-                                              , fill = codgrp)) +
-  geom_line(size = 1) +
-  geom_point(fill = "#F4F4F4", shape = 21, size = 1.5, stroke = 1.3) +
-  guides(colour = guide_legend(nrow = 1)) +
-  labs(x = "Month", y = "Average events per person") +
-  scale_colour_NT() +
-  scale_fill_NT() +
-  scale_x_date(expand = c(0,0), date_breaks = "3 months", date_labels = "%b-%y") +
-  scale_y_continuous(expand = c(0,0)
-                     , limits = c(0, plyr::round_any(max(nursing_month_cod$mean)
-                                                     , 1, f = ceiling))
-                     , breaks = seq(0
-                                    , plyr::round_any(max(nursing_month_cod$mean)
-                                                      , 1, f = ceiling)
-                                    , 1)
-                     , labels = scales::comma) +
-  NT_style() +
-  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+#Save data file 
+fwrite(nursing_month_cod, here::here("output", "os_reports", "eol_service", "nursing_month_cod.csv"))
 
-ggsave(nursing_month_cod_plot, dpi = 600, width = 20, height = 10, unit = "cm"
-       , filename = "nursing_month_cod_plot.png"
-       , path = here::here("output", "os_reports", "eol_service"))
+# nursing_month_cod_plot <- ggplot(nursing_month_cod, aes(x = study_month, y = mean
+#                                               , group = codgrp
+#                                               , colour = codgrp
+#                                               , fill = codgrp)) +
+#   geom_line(size = 1) +
+#   geom_point(fill = "#F4F4F4", shape = 21, size = 1.5, stroke = 1.3) +
+#   guides(colour = guide_legend(nrow = 1)) +
+#   labs(x = "Month", y = "Average events per person") +
+#   scale_colour_NT() +
+#   scale_fill_NT() +
+#   scale_x_date(expand = c(0,0), date_breaks = "3 months", date_labels = "%b-%y") +
+#   scale_y_continuous(expand = c(0,0)
+#                      , limits = c(0, plyr::round_any(max(nursing_month_cod$mean)
+#                                                      , 1, f = ceiling))
+#                      , breaks = seq(0
+#                                     , plyr::round_any(max(nursing_month_cod$mean)
+#                                                       , 1, f = ceiling)
+#                                     , 1)
+#                      , labels = scales::comma) +
+#   NT_style() +
+#   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+# 
+# ggsave(nursing_month_cod_plot, dpi = 600, width = 20, height = 10, unit = "cm"
+#        , filename = "nursing_month_cod_plot.png"
+#        , path = here::here("output", "os_reports", "eol_service"))
