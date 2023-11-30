@@ -10,13 +10,13 @@ actions:
     outputs:
       highly_sensitive:
         cohort: output/os_reports/input_os_reports.csv.gz
-         
-os_report_charts:
-    run: r:latest analysis/os_reports/01_eol_service_report_charts.R
+           
+  os_report_csvs:
+    run: r:latest analysis/os_reports/01_eol_service_Descriptives_csvs.R
     needs: [generate_study_population_os_reports]
     outputs:
       moderately_sensitive:
-        monthly_deaths_place: output/os_reports/eol_service/deaths_month*.csv
+        monthly_deaths_Number: output/os_reports/eol_service/deaths_month*.csv
         monthly_gp_CSV: output/os_reports/eol_service/gp_month*.csv
         monthly_gp_Count: output/os_reports/eol_service/gp_count*.csv
         monthly_med_CSV: output/os_reports/eol_service/eol_med*.csv
@@ -31,8 +31,30 @@ os_report_charts:
         monthly_emadm_Count: output/os_reports/eol_service/emadm_count*.csv
         monthly_nursing_CSV: output/os_reports/eol_service/nursing_month*.csv 
         montly_nursing_Count: output/os_reports/eol_service/nursing_count*.csv
- 
-WP2_outputs:
+
+  os_report_charts:
+    run: r:latest analysis/os_reports/02_eol_service_Descriptive_outputs.R
+    needs: [os_report_csvs]
+    outputs:
+      moderately_sensitive:
+        monthly_deaths_cod: output/os_reports/eol_service/charts/deaths_cod*.png
+        monthly_deaths_place: output/os_reports/eol_service/charts/deaths_place*.png
+        monthly_gp_cod: output/os_reports/eol_service/charts/gp_cod*.png
+        monthly_gp_place: output/os_reports/eol_service/charts/gp_place*.png
+        monthly_med_cod: output/os_reports/eol_service/charts/eol_med_cod*.png
+        monthly_med_place: output/os_reports/eol_service/charts/eol_med_place*.png
+        monthly_aevis_cod: output/os_reports/eol_service/charts/aevis_cod*.png 
+        monthly_aevis_place: output/os_reports/eol_service/charts/aevis_place*.png 
+        monthly_op_cod: output/os_reports/eol_service/charts/opapp_cod*.png
+        monthly_op_place: output/os_reports/eol_service/charts/opapp_place*.png
+        monthly_eladm_cod: output/os_reports/eol_service/charts/eladm_cod*.png
+        monthly_eladm_place: output/os_reports/eol_service/charts/eladm_place*.png      
+        monthly_emadm_cod: output/os_reports/eol_service/charts/emadm_cod*.png
+        monthly_emadm_place: output/os_reports/eol_service/charts/emadm_place*.png
+        monthly_nursing_cod: output/os_reports/eol_service/charts/nursing_cod*.png 
+        monthly_nursing_place: output/os_reports/eol_service/charts/nursing_place*.png
+        
+ WP2_outputs:
     run: r:latest analysis/os_reports/04_eol_WP2_quality_indicators.R
     needs: [generate_study_population_os_reports]
     outputs:
