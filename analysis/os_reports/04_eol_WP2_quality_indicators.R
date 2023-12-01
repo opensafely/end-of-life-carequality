@@ -64,9 +64,7 @@ df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.g
          ,palcare_code = case_when(palliative_3m >= 1 ~ "Palcare_code" 
                                    , palliative_3m == 0 ~ "No_palcare_code")
          ,aevis_atleast1 = case_when(aevis_3m >= 1  ~ "aevis_atleast1")
-         ,aevis_atleast3 = case_when(aevis_3m >= 3 ~ "aevis_atleast3")
-         ,eol_meds_code = case_when(eol_med_3m >=1 ~ "eol_meds_code"
-                                  ,eol_med_3m == 0 ~ "No_eol_meds_code")) %>%
+         ,aevis_atleast3 = case_when(aevis_3m >= 3 ~ "aevis_atleast3")) %>%
   filter(study_month >= startdate & study_month <= enddate) 
 
 #Col of interest for redaction------------------------------ 
