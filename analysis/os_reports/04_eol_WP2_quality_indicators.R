@@ -281,7 +281,9 @@ df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.g
          ,palcare_code = case_when(palliative_3m >= 1 ~ "Palcare_code" 
                                    , palliative_3m == 0 ~ "No_palcare_code")
          ,aevis_atleast1 = case_when(aevis_3m >= 1  ~ "aevis_atleast1")
-         ,aevis_atleast3 = case_when( aevis_3m >= 3 ~ "aevis_atleast3")) %>%
+         ,aevis_atleast3 = case_when(aevis_3m >= 3 ~ "aevis_atleast3")
+         ,eol_meds_code = case_when(eol_med_3m >=1 ~ "eol_meds_code"
+                                  ,eol_med_3m == 0 ~ "No_eol_meds_code")) %>%
   filter(study_month >= startdate & study_month <= enddate) 
 
 #Col of interest for redaction------------------------------ 
@@ -480,8 +482,84 @@ fwrite(proportion_aevis3_3m_cod, here::here("output", "os_reports", "WP2_quality
 
 knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_cod.csv")))
 
-# Quarterly- in case of small numbers---------------------------------------
+### Medications ###
+
+#The proportion of people with medications prescribed for symptom management in the last three months of life
+
+#With rounding 
+
+#By place of death 
+
+proportion_eolmed_pod_rounding <- df %>%
+  group_by(study_month, pod_ons_new) %>%
+  summarise(count = sum(eol_med_3m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = sum(eol_med_3m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(pod_ons_new = "All")) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
+  mutate(proportion = round(count / total*100,1))
+
+
+fwrite(proportion_eolmed_pod_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_eolmed_pod_rounding.csv"))
+
+knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_eolmed_pod_rounding.csv")))
+
+#By cause of death 
+proportion_eolmed_cod_rounding <- df %>%
+  group_by(study_month, codgrp) %>%
+  summarise(count = sum(eol_med_3m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = sum(eol_med_3m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(codgrp = "All")) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
+  mutate(proportion = round(count / total*100,1))
+
+
+fwrite(proportion_eolmed_cod_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_eolmed_cod_rounding.csv"))
+
+knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_eolmed_cod_rounding.csv")))
+
+#Without rounding - not for release
+
+#By place of death - new code-----------------
+proportion_eolmed_pod <- df %>%
+  group_by(study_month, pod_ons_new) %>%
+  summarise(count = sum(eol_med_3m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = sum(eol_med_3m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(pod_ons_new = "All")) %>%
+  mutate(proportion = round(count / total*100,1))
+
+
+fwrite(proportion_eolmed_pod, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_eolmed_pod.csv"))
+
+knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_eolmed_pod.csv")))
+
+#By cause of death 
+proportion_eolmed_cod <- df %>%
+  group_by(study_month, codgrp) %>%
+  summarise(count = sum(eol_med_3m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = sum(eol_med_3m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(codgrp = "All")) %>%
+  mutate(proportion = round(count / total*100,1))
+
+
+fwrite(proportion_eolmed_cod, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_eolmed_cod.csv"))
+
+knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_eolmed_cod.csv")))
+
+
+##### Quarterly- in case of small numbers #####
+
 #Quarterly Palliative care recorded, with rounding ----------------------------------------------------
+
 #By place of death
 proportion_palcare_pod_rounding_quarter <- df %>%
   group_by(study_quarter, pod_ons_new) %>%
@@ -668,3 +746,76 @@ proportion_aevis3_3m_cod_quarter <- df %>%
 fwrite(proportion_aevis3_3m_cod_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_cod_quarter.csv"))
 
 knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_cod_quarter.csv")))
+
+###### Quarterly medications prescribed for symptom management in the last three months of life
+
+#Quarterly medications for symptom management recorded, with rounding ----------------------------------------------------
+#By place of death
+proportion_eolmed_pod_rounding_quarter <- df %>%
+  group_by(study_quarter, pod_ons_new) %>%
+  summarise(count = sum(eol_med_3m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_quarter) %>%
+              summarise(count = sum(eol_med_3m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(pod_ons_new = "All")) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
+  mutate(proportion = round(count / total*100,1))
+
+fwrite(proportion_eolmed_pod_rounding_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_eolmed_pod_rounding_quarter.csv"))
+
+knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_eolmed_pod_rounding_quarter.csv")))
+
+#By cause of death 
+proportion_eolmed_cod_rounding_quarter <- df %>%
+  group_by(study_quarter, codgrp) %>%
+  summarise(count = sum(eol_med_3m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_quarter) %>%
+              summarise(count = sum(eol_med_3m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(codgrp = "All")) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
+  mutate(proportion = round(count / total*100,1))
+
+fwrite(proportion_eolmed_cod_rounding_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_eolmed_cod_rounding_quarter.csv"))
+
+knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_eolmed_cod_rounding_quarter.csv")))
+
+#Quarterly medications prescribed for symptom management recorded, not for release--------------------------
+#By place of death 
+proportion_eolmed_pod_quarter <- df %>%
+  group_by(study_quarter, pod_ons_new) %>%
+  summarise(count = sum(eol_med_3m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_quarter) %>%
+              summarise(count = sum(eol_med_3m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(pod_ons_new = "All")) %>%
+  mutate(proportion = round(count / total*100,1))
+
+fwrite(proportion_eolmed_pod_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_eolmed_pod_quarter.csv"))
+
+knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_eolmed_pod_quarter.csv")))
+
+#By cause of death 
+proportion_eolmed_cod_quarter <- df %>%
+  group_by(study_quarter, codgrp) %>%
+  summarise(count = sum(eol_med_3m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>% 
+              group_by(study_quarter) %>%
+              summarise(count = sum(eol_med_3m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(codgrp = "All")) %>%
+  mutate(proportion = round(count / total*100,1))
+
+fwrite(proportion_eolmed_cod_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_eolmed_cod_quarter.csv"))
+
+knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_eolmed_cod_quarter.csv")))
+
+
+
+
+
+
+
+
+
