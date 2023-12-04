@@ -282,6 +282,8 @@ fwrite(gp_month_cod_TOTAL, here::here("output", "os_reports", "eol_service", "gp
 
 # Number of people with at least one general practice interaction in the last month of life by month and place of death - all deaths
 
+cols_of_interest <- c("count", "total");
+
 gp_count_place_RAW <- df %>%
   group_by(study_month, pod_ons_new) %>%
   summarise(count = sum(gp_1m >= 1, na.rm = TRUE), total = n()) %>%
@@ -409,7 +411,41 @@ fwrite(gp_month_cod, here::here("output", "os_reports", "eol_service", "gp_month
 
 # A&E visits 
 
+cols_of_interest <- c("sum");
+
+# Total number of A&E visits by month and place of death - including all deaths
+
+aevis_month_place_TOTAL <- df %>%
+  group_by(study_month, pod_ons_new) %>%
+  summarise(sum = sum(aevis_1m, na.rm=TRUE)) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(sum = sum(aevis_1m, na.rm=TRUE)) %>%
+              mutate(pod_ons_new = "All")) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)); 
+
+fwrite(aevis_month_place_TOTAL, here::here("output", "os_reports", "eol_service", "aevis_month_place_TOTAL.csv"))
+
+
+# Total number of A&E visits by month and cause of death
+
+aevis_month_cod_TOTAL <- df %>%
+  group_by(study_month, codgrp) %>%
+  summarise(sum = sum(aevis_1m, na.rm = TRUE)) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(sum = sum(aevis_1m, na.rm=TRUE)) %>%
+              mutate(codgrp = "All")) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+
+fwrite(aevis_month_cod_TOTAL, here::here("output", "os_reports", "eol_service", "aevis_month_cod_TOTAL.csv"))
+
+
 # Number of people with at least one A&E visit in the last month of life by month and place of death - all deaths
+
+cols_of_interest <- c("count", "total");
 
 aevis_count_place_RAW <- df %>%
   group_by(study_month, pod_ons_new) %>%
