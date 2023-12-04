@@ -1066,7 +1066,50 @@ fwrite(emadm_month_cod, here::here("output", "os_reports", "eol_service", "emadm
 
 # Community nurse contacts
 
+cols_of_interest <- c("sum");
+
+# Total number of community nursing contacts by month and place of death - including all deaths
+
+nursing_month_place_TOTAL <- df %>%
+  group_by(study_month, pod_ons_new) %>%
+  summarise(sum = sum(nursing_1m, na.rm=TRUE)) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(sum = sum(nursing_1m, na.rm=TRUE)) %>%
+              mutate(pod_ons_new = "All")) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)); 
+
+fwrite(nursing_month_place_TOTAL, here::here("output", "os_reports", "eol_service", "nursing_month_place_TOTAL.csv"))
+
+# Total number of community nursing contacts by month and cause of death
+
+nursing_month_cod_TOTAL <- df %>%
+  group_by(study_month, codgrp) %>%
+  summarise(sum = sum(nursing_1m, na.rm = TRUE)) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(sum = sum(nursing_1m, na.rm=TRUE)) %>%
+              mutate(codgrp = "All")) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+
+fwrite(nursing_month_cod_TOTAL, here::here("output", "os_reports", "eol_service", "nursing_month_cod_TOTAL.csv"))
+
+nursing_month_cod_TOTAL2 <- df %>%
+  group_by(study_month, codgrp) %>%
+  summarise(sum = sum(nursing_1m, na.rm = TRUE)) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(sum = sum(nursing_1m, na.rm=TRUE)) %>%
+              mutate(codgrp = "All"));
+
+fwrite(nursing_month_cod_TOTAL2, here::here("output", "os_reports", "eol_service", "nursing_month_cod_TOTAL2.csv"))
+
+
 # Number of people with at least one community nursing contact in the last month of life by month and place of death - all deaths
+
+cols_of_interest <- c("count", "total");
 
 nursing_count_place_RAW <- df %>%
   group_by(study_month, pod_ons_new) %>%
