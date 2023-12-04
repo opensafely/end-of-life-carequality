@@ -103,7 +103,7 @@ eol_med_month_place_TOTAL <- df %>%
 
 fwrite(eol_med_month_place_TOTAL, here::here("output", "os_reports", "eol_service", "eol_med_month_place_TOTAL.csv"))
 
-# Number of medications prescribed for symptom management by month and cause of death
+# Total number of medications prescribed for symptom management by month and cause of death
 
 eol_med_month_cod_TOTAL <- df %>%
   group_by(study_month, codgrp) %>%
@@ -247,6 +247,38 @@ eol_med_month_cod <- df %>%
 fwrite(eol_med_month_cod, here::here("output", "os_reports", "eol_service", "eol_med_month_cod.csv"))
 
 # General practice interactions 
+
+cols_of_interest <- c("sum");
+
+# Total number of general practice interactions by month and place of death - including all deaths
+
+gp_month_place_TOTAL <- df %>%
+  group_by(study_month, pod_ons_new) %>%
+  summarise(sum = sum(gp_1m, na.rm=TRUE)) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(sum = sum(gp_1m, na.rm=TRUE)) %>%
+              mutate(pod_ons_new = "All")) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)); 
+
+fwrite(gp_month_place_TOTAL, here::here("output", "os_reports", "eol_service", "gp_month_place_TOTAL.csv"))
+
+
+# Total number of general practice interactions by month and cause of death
+
+gp_month_cod_TOTAL <- df %>%
+  group_by(study_month, codgrp) %>%
+  summarise(sum = sum(gp_1m, na.rm = TRUE)) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(sum = sum(gp_1m, na.rm=TRUE)) %>%
+              mutate(codgrp = "All")) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+
+fwrite(gp_month_cod_TOTAL, here::here("output", "os_reports", "eol_service", "gp_month_cod_TOTAL.csv"))
+
 
 # Number of people with at least one general practice interaction in the last month of life by month and place of death - all deaths
 
