@@ -2,7 +2,7 @@
 # CSV files for end of life care descriptive analysis
 # Date: 26.07.2023
 # Author: Eilís & Miranda 
-# Aim: Create CSV files to show measures by proportion of patients as well as group level means
+# Aim: Create CSV files to show measures by total volume, proportion of patients as well as group level means
 # Note: Files are created with and without rounding / redaction. Non-rounded/redacted files are not for release
 # PNG/Tables are created using these CSVs in file 02_eol_service_Descriptive_outputs
 # Measures include: 
@@ -29,8 +29,8 @@ fs::dir_create("output", "os_reports", "eol_service")
 
 # Code settings
 
-startdate <- dmy("01-06-2019")
-enddate <- dmy("30-06-2023")
+startdate <- dmy("01-12-2018")
+enddate <- dmy("31-08-2023")
 
 # Prepare data
 
@@ -87,9 +87,40 @@ fwrite(deaths_month_cod, here::here("output", "os_reports", "eol_service", "deat
 
 # Use of medications for symptom management 
 
-cols_of_interest <- c("count", "total");
+cols_of_interest <- c("sum");
+
+# Total number of medications prescribed for symptom management by month and place of death - including all deaths
+
+eol_med_month_place_TOTAL <- df %>%
+  group_by(study_month, pod_ons_new) %>%
+  summarise(sum = sum(eol_med_1m, na.rm=TRUE)) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(sum = sum(eol_med_1m, na.rm=TRUE)) %>%
+              mutate(pod_ons_new = "All")) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)); 
+
+fwrite(eol_med_month_place_TOTAL, here::here("output", "os_reports", "eol_service", "eol_med_month_place_TOTAL.csv"))
+
+# Total number of medications prescribed for symptom management by month and cause of death
+
+eol_med_month_cod_TOTAL <- df %>%
+  group_by(study_month, codgrp) %>%
+  summarise(sum = sum(eol_med_1m, na.rm = TRUE)) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(sum = sum(eol_med_1m, na.rm=TRUE)) %>%
+              mutate(codgrp = "All")) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+
+fwrite(eol_med_month_cod_TOTAL, here::here("output", "os_reports", "eol_service", "eol_med_month_cod_TOTAL.csv"))
+
 
 # Number of people with at least one medication prescribed for symptom management in the last month of life by month and place of death - all deaths
+
+cols_of_interest <- c("count", "total");
 
 eol_med_count_place_RAW <- df %>%
   group_by(study_month, pod_ons_new) %>%
@@ -217,7 +248,41 @@ fwrite(eol_med_month_cod, here::here("output", "os_reports", "eol_service", "eol
 
 # General practice interactions 
 
+cols_of_interest <- c("sum");
+
+# Total number of general practice interactions by month and place of death - including all deaths
+
+gp_month_place_TOTAL <- df %>%
+  group_by(study_month, pod_ons_new) %>%
+  summarise(sum = sum(gp_1m, na.rm=TRUE)) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(sum = sum(gp_1m, na.rm=TRUE)) %>%
+              mutate(pod_ons_new = "All")) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)); 
+
+fwrite(gp_month_place_TOTAL, here::here("output", "os_reports", "eol_service", "gp_month_place_TOTAL.csv"))
+
+
+# Total number of general practice interactions by month and cause of death
+
+gp_month_cod_TOTAL <- df %>%
+  group_by(study_month, codgrp) %>%
+  summarise(sum = sum(gp_1m, na.rm = TRUE)) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(sum = sum(gp_1m, na.rm=TRUE)) %>%
+              mutate(codgrp = "All")) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+
+fwrite(gp_month_cod_TOTAL, here::here("output", "os_reports", "eol_service", "gp_month_cod_TOTAL.csv"))
+
+
 # Number of people with at least one general practice interaction in the last month of life by month and place of death - all deaths
+
+cols_of_interest <- c("count", "total");
 
 gp_count_place_RAW <- df %>%
   group_by(study_month, pod_ons_new) %>%
@@ -346,7 +411,41 @@ fwrite(gp_month_cod, here::here("output", "os_reports", "eol_service", "gp_month
 
 # A&E visits 
 
+cols_of_interest <- c("sum");
+
+# Total number of A&E visits by month and place of death - including all deaths
+
+aevis_month_place_TOTAL <- df %>%
+  group_by(study_month, pod_ons_new) %>%
+  summarise(sum = sum(aevis_1m, na.rm=TRUE)) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(sum = sum(aevis_1m, na.rm=TRUE)) %>%
+              mutate(pod_ons_new = "All")) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)); 
+
+fwrite(aevis_month_place_TOTAL, here::here("output", "os_reports", "eol_service", "aevis_month_place_TOTAL.csv"))
+
+
+# Total number of A&E visits by month and cause of death
+
+aevis_month_cod_TOTAL <- df %>%
+  group_by(study_month, codgrp) %>%
+  summarise(sum = sum(aevis_1m, na.rm = TRUE)) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(sum = sum(aevis_1m, na.rm=TRUE)) %>%
+              mutate(codgrp = "All")) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+
+fwrite(aevis_month_cod_TOTAL, here::here("output", "os_reports", "eol_service", "aevis_month_cod_TOTAL.csv"))
+
+
 # Number of people with at least one A&E visit in the last month of life by month and place of death - all deaths
+
+cols_of_interest <- c("count", "total");
 
 aevis_count_place_RAW <- df %>%
   group_by(study_month, pod_ons_new) %>%
@@ -476,7 +575,41 @@ fwrite(aevis_month_cod, here::here("output", "os_reports", "eol_service", "aevis
 
 # Outpatient appointments 
 
+cols_of_interest <- c("sum");
+
+# Total number of outpatient appointments by month and place of death - including all deaths
+
+opapp_month_place_TOTAL <- df %>%
+  group_by(study_month, pod_ons_new) %>%
+  summarise(sum = sum(opapp_1m, na.rm=TRUE)) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(sum = sum(opapp_1m, na.rm=TRUE)) %>%
+              mutate(pod_ons_new = "All")) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)); 
+
+fwrite(opapp_month_place_TOTAL, here::here("output", "os_reports", "eol_service", "opapp_month_place_TOTAL.csv"))
+
+
+# Total number of outpatient appointments by month and cause of death
+
+opapp_month_cod_TOTAL <- df %>%
+  group_by(study_month, codgrp) %>%
+  summarise(sum = sum(opapp_1m, na.rm = TRUE)) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(sum = sum(opapp_1m, na.rm=TRUE)) %>%
+              mutate(codgrp = "All")) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+
+fwrite(opapp_month_cod_TOTAL, here::here("output", "os_reports", "eol_service", "opapp_month_cod_TOTAL.csv"))
+
+
 # Number of people with at least one outpatient appointment in the last month of life by month and place of death - all deaths
+
+cols_of_interest <- c("count", "total");
 
 opapp_count_place_RAW <- df %>%
   group_by(study_month, pod_ons_new) %>%
@@ -604,7 +737,40 @@ fwrite(opapp_month_cod, here::here("output", "os_reports", "eol_service", "opapp
 
 # Elective admissions
 
+cols_of_interest <- c("sum");
+
+# Total number of elective admissions by month and place of death - including all deaths
+
+eladm_month_place_TOTAL <- df %>%
+  group_by(study_month, pod_ons_new) %>%
+  summarise(sum = sum(eladm_1m, na.rm=TRUE)) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(sum = sum(eladm_1m, na.rm=TRUE)) %>%
+              mutate(pod_ons_new = "All")) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)); 
+
+fwrite(eladm_month_place_TOTAL, here::here("output", "os_reports", "eol_service", "eladm_month_place_TOTAL.csv"))
+
+# Total number of elective admissions by month and cause of death
+
+eladm_month_cod_TOTAL <- df %>%
+  group_by(study_month, codgrp) %>%
+  summarise(sum = sum(eladm_1m, na.rm = TRUE)) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(sum = sum(eladm_1m, na.rm=TRUE)) %>%
+              mutate(codgrp = "All")) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+
+fwrite(eladm_month_cod_TOTAL, here::here("output", "os_reports", "eol_service", "eladm_month_cod_TOTAL.csv"))
+
+
 # Number of people with at least one elective admission in the last month of life by month and place of death - all deaths
+
+cols_of_interest <- c("count", "total");
 
 eladm_count_place_RAW <- df %>%
   group_by(study_month, pod_ons_new) %>%
@@ -735,7 +901,40 @@ fwrite(eladm_month_cod, here::here("output", "os_reports", "eol_service", "eladm
 
 # Emergency admissions
 
+cols_of_interest <- c("sum");
+
+# Total number of emergency admissions by month and place of death - including all deaths
+
+emadm_month_place_TOTAL <- df %>%
+  group_by(study_month, pod_ons_new) %>%
+  summarise(sum = sum(emadm_1m, na.rm=TRUE)) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(sum = sum(emadm_1m, na.rm=TRUE)) %>%
+              mutate(pod_ons_new = "All")) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)); 
+
+fwrite(emadm_month_place_TOTAL, here::here("output", "os_reports", "eol_service", "emadm_month_place_TOTAL.csv"))
+
+# Total number of emergency admissions by month and cause of death
+
+emadm_month_cod_TOTAL <- df %>%
+  group_by(study_month, codgrp) %>%
+  summarise(sum = sum(emadm_1m, na.rm = TRUE)) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(sum = sum(emadm_1m, na.rm=TRUE)) %>%
+              mutate(codgrp = "All")) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+
+fwrite(emadm_month_cod_TOTAL, here::here("output", "os_reports", "eol_service", "emadm_month_cod_TOTAL.csv"))
+
+
 # Number of people with at least one emergency admission in the last month of life by month and place of death - all deaths
+
+cols_of_interest <- c("count", "total");
 
 emadm_count_place_RAW <- df %>%
   group_by(study_month, pod_ons_new) %>%
@@ -867,7 +1066,50 @@ fwrite(emadm_month_cod, here::here("output", "os_reports", "eol_service", "emadm
 
 # Community nurse contacts
 
+cols_of_interest <- c("sum");
+
+# Total number of community nursing contacts by month and place of death - including all deaths
+
+nursing_month_place_TOTAL <- df %>%
+  group_by(study_month, pod_ons_new) %>%
+  summarise(sum = sum(nursing_1m, na.rm=TRUE)) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(sum = sum(nursing_1m, na.rm=TRUE)) %>%
+              mutate(pod_ons_new = "All")) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)); 
+
+fwrite(nursing_month_place_TOTAL, here::here("output", "os_reports", "eol_service", "nursing_month_place_TOTAL.csv"))
+
+# Total number of community nursing contacts by month and cause of death
+
+nursing_month_cod_TOTAL <- df %>%
+  group_by(study_month, codgrp) %>%
+  summarise(sum = sum(nursing_1m, na.rm = TRUE)) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(sum = sum(nursing_1m, na.rm=TRUE)) %>%
+              mutate(codgrp = "All")) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+
+fwrite(nursing_month_cod_TOTAL, here::here("output", "os_reports", "eol_service", "nursing_month_cod_TOTAL.csv"))
+
+nursing_month_cod_TOTAL2 <- df %>%
+  group_by(study_month, codgrp) %>%
+  summarise(sum = sum(nursing_1m, na.rm = TRUE)) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(sum = sum(nursing_1m, na.rm=TRUE)) %>%
+              mutate(codgrp = "All"));
+
+fwrite(nursing_month_cod_TOTAL2, here::here("output", "os_reports", "eol_service", "nursing_month_cod_TOTAL2.csv"))
+
+
 # Number of people with at least one community nursing contact in the last month of life by month and place of death - all deaths
+
+cols_of_interest <- c("count", "total");
 
 nursing_count_place_RAW <- df %>%
   group_by(study_month, pod_ons_new) %>%
