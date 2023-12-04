@@ -2,7 +2,7 @@
 # CSV files for end of life care descriptive analysis
 # Date: 26.07.2023
 # Author: Eilís & Miranda 
-# Aim: Create CSV files to show measures by proportion of patients as well as group level means
+# Aim: Create CSV files to show measures by total volume, proportion of patients as well as group level means
 # Note: Files are created with and without rounding / redaction. Non-rounded/redacted files are not for release
 # PNG/Tables are created using these CSVs in file 02_eol_service_Descriptive_outputs
 # Measures include: 
@@ -29,8 +29,8 @@ fs::dir_create("output", "os_reports", "eol_service")
 
 # Code settings
 
-startdate <- dmy("01-06-2019")
-enddate <- dmy("30-06-2023")
+startdate <- dmy("01-12-2018")
+enddate <- dmy("31-08-2023")
 
 # Prepare data
 
@@ -87,9 +87,40 @@ fwrite(deaths_month_cod, here::here("output", "os_reports", "eol_service", "deat
 
 # Use of medications for symptom management 
 
-cols_of_interest <- c("count", "total");
+cols_of_interest <- c("sum");
+
+# Total number of medications prescribed for symptom management by month and place of death - including all deaths
+
+eol_med_month_place_TOTAL <- df %>%
+  group_by(study_month, pod_ons_new) %>%
+  summarise(sum = sum(eol_med_1m, na.rm=TRUE)) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(sum = sum(eol_med_1m, na.rm=TRUE)) %>%
+              mutate(pod_ons_new = "All")) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)); 
+
+fwrite(eol_med_month_place_TOTAL, here::here("output", "os_reports", "eol_service", "eol_med_month_place_TOTAL.csv"))
+
+# Number of medications prescribed for symptom management by month and cause of death
+
+eol_med_month_cod_TOTAL <- df %>%
+  group_by(study_month, codgrp) %>%
+  summarise(sum = sum(eol_med_1m, na.rm = TRUE)) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(sum = sum(eol_med_1m, na.rm=TRUE)) %>%
+              mutate(codgrp = "All")) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+
+fwrite(eol_med_month_cod_TOTAL, here::here("output", "os_reports", "eol_service", "eol_med_month_cod_TOTAL.csv"))
+
 
 # Number of people with at least one medication prescribed for symptom management in the last month of life by month and place of death - all deaths
+
+cols_of_interest <- c("count", "total");
 
 eol_med_count_place_RAW <- df %>%
   group_by(study_month, pod_ons_new) %>%
