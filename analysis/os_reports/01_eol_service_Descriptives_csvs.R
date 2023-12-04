@@ -737,7 +737,40 @@ fwrite(opapp_month_cod, here::here("output", "os_reports", "eol_service", "opapp
 
 # Elective admissions
 
+cols_of_interest <- c("sum");
+
+# Total number of elective admissions by month and place of death - including all deaths
+
+eladm_month_place_TOTAL <- df %>%
+  group_by(study_month, pod_ons_new) %>%
+  summarise(sum = sum(eladm_1m, na.rm=TRUE)) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(sum = sum(eladm_1m, na.rm=TRUE)) %>%
+              mutate(pod_ons_new = "All")) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)); 
+
+fwrite(eladm_month_place_TOTAL, here::here("output", "os_reports", "eol_service", "eladm_month_place_TOTAL.csv"))
+
+# Total number of elective admissions by month and cause of death
+
+eladm_month_cod_TOTAL <- df %>%
+  group_by(study_month, codgrp) %>%
+  summarise(sum = sum(eladm_1m, na.rm = TRUE)) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(sum = sum(eladm_1m, na.rm=TRUE)) %>%
+              mutate(codgrp = "All")) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+
+fwrite(eladm_month_cod_TOTAL, here::here("output", "os_reports", "eol_service", "eladm_month_cod_TOTAL.csv"))
+
+
 # Number of people with at least one elective admission in the last month of life by month and place of death - all deaths
+
+cols_of_interest <- c("count", "total");
 
 eladm_count_place_RAW <- df %>%
   group_by(study_month, pod_ons_new) %>%
