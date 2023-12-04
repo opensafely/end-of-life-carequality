@@ -60,11 +60,7 @@ df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.g
                               , cod_ons_3 %in% c("F01", "F03", "G30") ~ "Dementia and Alzheimer's disease"
                               , cod_ons_3 >= "I00" & cod_ons_3 <= "I99" ~ "Circulatory diseases"
                               , cod_ons_3 >= "C00" & cod_ons_3 <= "C99" ~ "Cancer"
-                              , TRUE ~ "All other causes")
-         ,palcare_code = case_when(palliative_3m >= 1 ~ "Palcare_code" 
-                                   , palliative_3m == 0 ~ "No_palcare_code")
-         ,aevis_atleast1 = case_when(aevis_3m >= 1  ~ "aevis_atleast1")
-         ,aevis_atleast3 = case_when(aevis_3m >= 3 ~ "aevis_atleast3")) %>%
+                              , TRUE ~ "All other causes")) %>%
   filter(study_month >= startdate & study_month <= enddate) 
 
 #Col of interest for redaction------------------------------ 
