@@ -54,8 +54,8 @@ actions:
         monthly_nursing_cod: output/os_reports/eol_service/charts/nursing_cod*.png 
         monthly_nursing_place: output/os_reports/eol_service/charts/nursing_place*.png
         
-WP2_outputs:
-    run: r:latest analysis/os_reports/04_eol_WP2_quality_indicators.R
+  WP2_outputs:
+    run: r:latest analysis/os_reports/03_eol_WP2_quality_indicators.R
     needs: [generate_study_population_os_reports]
     outputs:
       moderately_sensitive:
