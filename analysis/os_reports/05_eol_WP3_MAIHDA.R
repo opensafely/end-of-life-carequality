@@ -26,7 +26,7 @@ enddate <- dmy("31-08-2023")
 df <- read_csv(file = here::here("output", "os_reports", "input_os_wp3.csv.gz")) %>%
   mutate(dod_ons = as_date(dod_ons)
          , sex = (sex)
-         , 
+         , Age = (Age)
          , study_month = floor_date(dod_ons, unit = "month")
          , pod_ons_new = case_when(pod_ons == "Elsewhere" 
                                    | pod_ons == "Other communal establishment" ~ "Elsewhere/other"

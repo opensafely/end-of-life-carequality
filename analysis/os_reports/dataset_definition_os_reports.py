@@ -46,6 +46,7 @@ dataset.define_population(
     has_died
     & was_registered_at_death
     & patients.sex.is_in(["female", "male"])
+    & patients.age_on(exists_for_patient)
 )
 
 ## CREATE VARIABLES ##
@@ -65,6 +66,29 @@ dataset.cod_ons = ons_deaths.underlying_cause_of_death
 
 ## Sex
 dataset.sex = patients.sex
+
+## Age 
+dataset.age = patients.age_on(dod_ons)
+
+## Deprivation
+imd_rounded = addresses.for_patient_on(
+    dod_ons
+).imd_rounded
+max_imd = 32844
+dataset.imd_quintile = case(
+    when(imd_rounded < int(max_imd * 1 / 5)).then(1),
+    when(imd_rounded < int(max_imd * 2 / 5)).then(2),
+    when(imd_rounded < int(max_imd * 3 / 5)).then(3),
+    when(imd_rounded < int(max_imd * 4 / 5)).then(4),
+    when(imd_rounded <= max_imd).then(5),
+)
+
+# Ethnicity
+ethnicity_codelist = codelist_from_csv(
+    "codelists/opensafely-ethnicity.csv",
+    column="Code",
+    category_column="Grouping_6",
+)
 
 ## Services ##
 
