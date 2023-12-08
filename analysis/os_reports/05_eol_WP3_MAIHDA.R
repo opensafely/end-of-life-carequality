@@ -1,8 +1,9 @@
 ##############################################################
 # MAIHDA analysis
 # Author: Miranda Davies
-# Date: 07/12/23
-# Initial aim: Running descriptive statistics for potential stratum variables to determine whether group sizes are sufficient
+# Date: 07/12/23 # nolint # nolint: commented_code_linter.
+# Initial aim: Running descriptive statistics
+# for potential stratum variables to determine whether group sizes are sufficient
 ##############################################################
 
 # Load packages
@@ -23,10 +24,11 @@ enddate <- dmy("31-08-2023")
 
 # Prepare data
 
-df <- read_csv(file = here::here("output", "os_reports", "input_os_wp3.csv.gz")) %>%
+df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.gz")) %>%
   mutate(dod_ons = as_date(dod_ons)
          , sex = (sex)
          , Age = (Age)
+         , imd_rounded = (imd_rounded)
          , study_month = floor_date(dod_ons, unit = "month")
          , pod_ons_new = case_when(pod_ons == "Elsewhere" 
                                    | pod_ons == "Other communal establishment" ~ "Elsewhere/other"

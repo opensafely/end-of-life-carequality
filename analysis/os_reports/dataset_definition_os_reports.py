@@ -1,11 +1,13 @@
-# Creates the population needed for the analysis to feed the OS report using ehrQL
+# Creates the population needed for the analysis using ehrQL
 
 # Functions from ehrQL
 
 from ehrql import (Dataset, days)
 
 from ehrql.tables.beta.tpp import (
+    addresses,
     appointments, 
+    clinical_events,
     emergency_care_attendances, 
     hospital_admissions,
     ons_deaths,
@@ -13,7 +15,6 @@ from ehrql.tables.beta.tpp import (
     patients,
     practice_registrations,
     medications,
-    clinical_events,
 )
 
 ## CODELISTS ##
@@ -70,27 +71,34 @@ dataset.sex = patients.sex
 ## Age 
 dataset.age = patients.age_on(dod_ons)
 
-## Deprivation
-imd_rounded = addresses.for_patient_on(
-    dod_ons
-).imd_rounded
-max_imd = 32844
+## Ethnicity
+dataset.ethnicity = (
+    clinical_events.where(
+        clinical_events.ctv3_code.is_in(codelists.ethnicity_codes_6)
+    ).where(
+        clinical_events.date.is_on_or_before(dod_ons)
+    ).sort_by(
+        clinical_events.date
+    ).last_for_patient().ctv3_code.to_category(
+        codelists_ehrql.ethnicity_codes_6)
+)
+# No ethnicity from SUS in ehrQL
+
+## Geography ##
+
+## Index of multiple deprivation based on patient address
+imd = addresses.for_patient_on(dod_ons).imd_rounded
+
 dataset.imd_quintile = case(
-    when(imd_rounded < int(max_imd * 1 / 5)).then(1),
-    when(imd_rounded < int(max_imd * 2 / 5)).then(2),
-    when(imd_rounded < int(max_imd * 3 / 5)).then(3),
-    when(imd_rounded < int(max_imd * 4 / 5)).then(4),
-    when(imd_rounded <= max_imd).then(5),
+    when((imd >= 0) & (imd < int(32844 * 1 / 5))).then("1"),
+    when(imd < int(32844 * 2 / 5)).then("2"),
+    when(imd < int(32844 * 3 / 5)).then("3"),
+    when(imd < int(32844 * 4 / 5)).then("4"),
+    when(imd < int(32844 * 5 / 5)).then("5"),
+    default="0"
 )
 
-# Ethnicity
-ethnicity_codelist = codelist_from_csv(
-    "codelists/opensafely-ethnicity.csv",
-    column="Code",
-    category_column="Grouping_6",
-)
-
-## Services ##
+## Services ## 
 
 ## GP consultations
 dataset.gp_1m = appointments.where(
@@ -120,7 +128,6 @@ dataset.aevis_1m = emergency_care_attendances.where(
 ).count_for_patient()
 
 ## Outpatient appointments
-# Need to check this is correct/how to do attended appointments?
 dataset.opapp_1m = opa_diag.where(
     opa_diag.appointment_date.is_on_or_between(dod_ons - days(30), dod_ons)
 ).count_for_patient()
@@ -150,6 +157,7 @@ dataset.nursing_1m = clinical_events.where(
 
 ## Palliative care
 dataset.palliative_3m = clinical_events.where(
+    
     clinical_events.snomedct_code.is_in(codelists.palcare_codes1)
 ).where(
     clinical_events.date.is_on_or_between(dod_ons - days(90), dod_ons)
