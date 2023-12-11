@@ -2,7 +2,7 @@
 
 # Functions from ehrQL
 
-from ehrql import (Dataset, days)
+from ehrql import (Dataset, days, case, when)
 
 from ehrql.tables.beta.tpp import (
     addresses,
@@ -47,7 +47,6 @@ dataset.define_population(
     has_died
     & was_registered_at_death
     & patients.sex.is_in(["female", "male"])
-    & patients.age_on(exists_for_patient)
 )
 
 ## CREATE VARIABLES ##
@@ -68,8 +67,21 @@ dataset.cod_ons = ons_deaths.underlying_cause_of_death
 ## Sex
 dataset.sex = patients.sex
 
-## Age 
+## Age band 
 dataset.age = patients.age_on(dod_ons)
+
+dataset.age_band = case(
+        when(age < 20).then("0-19"),
+        when(age < 30).then("20-29"),
+        when(age < 40).then("30-39"),
+        when(age < 50).then("40-49"),
+        when(age < 60).then("50-59"),
+        when(age < 70).then("60-69"),
+        when(age < 80).then("70-79"),
+        when(age < 90).then("80-89"),
+        when(age >= 90).then("90+"),
+        otherwise="missing",
+)
 
 ## Ethnicity
 dataset.ethnicity = (
@@ -80,7 +92,7 @@ dataset.ethnicity = (
     ).sort_by(
         clinical_events.date
     ).last_for_patient().ctv3_code.to_category(
-        codelists_ehrql.ethnicity_codes_6)
+        codelists.ethnicity_codes_6)
 )
 # No ethnicity from SUS in ehrQL
 
