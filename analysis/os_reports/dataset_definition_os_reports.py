@@ -68,7 +68,7 @@ dataset.cod_ons = ons_deaths.underlying_cause_of_death
 dataset.sex = patients.sex
 
 ## Age band 
-dataset.age = patients.age_on(dod_ons)
+age = patients.age_on(dod_ons)
 
 dataset.age_band = case(
         when(age < 20).then("0-19"),
