@@ -27,8 +27,9 @@ enddate <- dmy("31-08-2023")
 df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.gz")) %>%
   mutate(dod_ons = as_date(dod_ons)
          , sex = (sex)
-         , Age = (Age)
-         , imd_rounded = (imd_rounded)
+         , age_band = (age_band)
+         , ethnicity = (ethnicity)
+         , imd_rounded = (imd_quintile)
          , study_month = floor_date(dod_ons, unit = "month")
          , pod_ons_new = case_when(pod_ons == "Elsewhere" 
                                    | pod_ons == "Other communal establishment" ~ "Elsewhere/other"
@@ -43,3 +44,60 @@ df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.g
                              , cod_ons_3 >= "C00" & cod_ons_3 <= "C99" ~ "Cancer"
                              , TRUE ~ "All other causes")) %>%
   filter(study_month >= startdate & study_month <= enddate) 
+
+# Descriptive analysis to inform modelling - counts of age_band / sex / ethnicity and imd_rounded 
+
+cols_of_interest <- c("n");
+
+count_by_sex <- df %>%
+  count(sex) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+
+fwrite(count_by_sex, here::here("output", "os_reports", "eol_service", "count_by_sex.csv"))
+
+count_by_age_band <- df %>%
+  count(age_band) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+
+fwrite(count_by_age_band, here::here("output", "os_reports", "eol_service", "count_by_age_band.csv"))
+
+count_by_sex_age_band <- df %>%
+  count(sex, age_band) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+
+fwrite(count_by_sex_age_band, here::here("output", "os_reports", "eol_service", "count_by_age_band.csv"))
+
+count_by_ethnicity <- df %>%
+  count(ethnicity) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+
+fwrite(count_by_ethnicity, here::here("output", "os_reports", "eol_service", "count_by_ethnicity.csv"))
+
+count_by_imd_quintile <- df %>%
+  count(imd_quintile) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+
+fwrite(count_by_imd_quintile, here::here("output", "os_reports", "eol_service", "count_by_imd_quintile.csv"))
+
+count_by_group <- df %>%
+  count(sex, age_band, ethnicity, imd_quintile) %>%
+    dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+    dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+  
+fwrite(count_by_group, here::here("output", "os_reports", "eol_service", "count_by_group.csv"))
+
+
+
+
+
+
+
+
+
+
+
