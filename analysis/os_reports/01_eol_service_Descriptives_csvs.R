@@ -1236,16 +1236,6 @@ nursing_month_cod_TOTAL <- df %>%
 
 fwrite(nursing_month_cod_TOTAL, here::here("output", "os_reports", "eol_service", "nursing_month_cod_TOTAL.csv"))
 
-nursing_month_cod_TOTAL2 <- df %>%
-  group_by(study_month, codgrp) %>%
-  summarise(sum = sum(nursing_1m, na.rm = TRUE)) %>%
-  bind_rows(df %>%
-              group_by(study_month) %>%
-              summarise(sum = sum(nursing_1m, na.rm=TRUE)) %>%
-              mutate(codgrp = "All"));
-
-fwrite(nursing_month_cod_TOTAL2, here::here("output", "os_reports", "eol_service", "nursing_month_cod_TOTAL2.csv"))
-
 # Number of people with at least one community nursing contact in the last month of life by month and place of death - all deaths
 
 cols_of_interest <- c("count", "total");
