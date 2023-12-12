@@ -32,7 +32,7 @@ actions:
         monthly_emadm_Count: output/os_reports/eol_service/emadm_count*.csv
         monthly_nursing_CSV: output/os_reports/eol_service/nursing_month*.csv 
         montly_nursing_Count: output/os_reports/eol_service/nursing_count*.csv
-        quarterly_nursing_Count: output/os_reports/eol_serive/nursing_quarter*.csv
+        quarterly_nursing_Count: output/os_reports/eol_service/nursing_quarter*.csv
 
   os_report_charts:
     run: r:latest analysis/os_reports/02_eol_service_Descriptive_outputs.R
