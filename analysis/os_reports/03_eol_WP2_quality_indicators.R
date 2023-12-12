@@ -588,11 +588,134 @@ fwrite(proportion_eolmed_cod_quarter, here::here("output", "os_reports", "WP2_qu
 
 knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_eolmed_cod_quarter.csv")))
 
+### New quality measures-------------------------------
+#Specialist palliative care, with rounding---------------------
+#Place of death
+proportion_spec_pod_rounding <- df %>%
+  group_by(study_month, pod_ons_new) %>%
+  summarise(count = sum(specialist_3m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = sum(specialist_3m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(pod_ons_new = "All")) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
+  mutate(proportion = round(count / total*100,1))
 
 
+fwrite(proportion_spec_pod_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_spec_pod_rounding.csv"))
+
+knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_spec_pod_rounding.csv")))
+
+#cause of death 
+proportion_spec_cod_rounding <- df %>%
+  group_by(study_month, codgrp) %>%
+  summarise(count = sum(specialist_3m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = sum(specialist_3m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(codgrp = "All")) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
+  mutate(proportion = round(count / total*100,1))
+
+fwrite(proportion_spec_cod_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_spec_cod_rounding.csv"))
+
+knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_spec_cod_rounding.csv")))
+
+#Specialist palliative care- not for release--------------------
+#Place of death
+proportion_spec_pod <- df %>%
+  group_by(study_month, pod_ons_new) %>%
+  summarise(count = sum(specialist_3m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = sum(specialist_3m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(pod_ons_new = "All")) %>%
+  mutate(proportion = round(count / total*100,1))
 
 
+fwrite(proportion_spec_pod, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_spec_pod.csv"))
 
+knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_spec_pod.csv")))
+
+#cause of death 
+proportion_spec_cod <- df %>%
+  group_by(study_month, codgrp) %>%
+  summarise(count = sum(specialist_3m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = sum(specialist_3m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(codgrp = "All")) %>%
+  mutate(proportion = round(count / total*100,1))
+
+fwrite(proportion_spec_cod, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_spec_cod.csv"))
+
+knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_spec_cod.csv")))
+
+##quarterly specialist palliative care --------------
+#Place of death
+proportion_spec_pod_rounding_quarter <- df %>%
+  group_by(study_quarter, pod_ons_new) %>%
+  summarise(count = sum(specialist_3m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_quarter) %>%
+              summarise(count = sum(specialist_3m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(pod_ons_new = "All")) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
+  mutate(proportion = round(count / total*100,1))
+
+
+fwrite(proportion_spec_pod_rounding_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_spec_pod_rounding_quarter.csv"))
+
+knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_spec_pod_rounding_quarter.csv")))
+
+#cause of death 
+proportion_spec_cod_rounding_quarter <- df %>%
+  group_by(study_quarter, codgrp) %>%
+  summarise(count = sum(specialist_3m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_quarter) %>%
+              summarise(count = sum(specialist_3m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(codgrp = "All")) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
+  mutate(proportion = round(count / total*100,1))
+
+fwrite(proportion_spec_cod_rounding_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_spec_cod_rounding_quarter.csv"))
+
+knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_spec_cod_rounding_quarter.csv")))
+
+#Specialist palliative care- not for release--------------------
+#Place of death
+proportion_spec_pod_quarter <- df %>%
+  group_by(study_quarter, pod_ons_new) %>%
+  summarise(count = sum(specialist_3m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_quarter) %>%
+              summarise(count = sum(specialist_3m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(pod_ons_new = "All")) %>%
+  mutate(proportion = round(count / total*100,1))
+
+
+fwrite(proportion_spec_pod_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_spec_pod_quarter.csv"))
+
+knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_spec_pod_quarter.csv")))
+
+#cause of death 
+proportion_spec_cod_quarter <- df %>%
+  group_by(study_quarter, codgrp) %>%
+  summarise(count = sum(specialist_3m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_quarter) %>%
+              summarise(count = sum(specialist_3m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(codgrp = "All")) %>%
+  mutate(proportion = round(count / total*100,1))
+
+fwrite(proportion_spec_cod_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_spec_cod_quarter.csv"))
+
+knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_spec_cod_quarter.csv")))
 
 
 

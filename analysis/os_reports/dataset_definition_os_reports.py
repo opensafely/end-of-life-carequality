@@ -142,3 +142,10 @@ dataset.eol_med_3m = medications.where(
 ).where(
     medications.date.is_on_or_between(dod_ons - days(90), dod_ons)
 ).count_for_patient() 
+
+## Specialist palliative care last 3 months of life
+dataset.specialist_3m = clinical_events.where(
+    clinical_events.snomedct_code.is_in(codelists.specialist_codes)
+).where(
+    clinical_events.date.is_on_or_between(dod_ons - days(90), dod_ons)
+).count_for_patient()

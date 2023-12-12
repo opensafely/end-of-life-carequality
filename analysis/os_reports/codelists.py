@@ -265,3 +265,8 @@ all_mdt_codes = (
     mdt_codes +
     cancer_mdt_codes
 )
+
+specialist_codes = codelist_from_csv(
+    "codelists/user-sophie_julian-specialist-palliative-care.csv",
+    column = "code"
+)
