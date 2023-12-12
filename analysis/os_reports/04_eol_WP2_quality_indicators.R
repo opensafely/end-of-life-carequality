@@ -1,15 +1,17 @@
 #-------------------------------------------------------------------------------
 # Charts for WP2_quality_indicators
 # Date: 18.09.2023
-# Author: Sophie
+# Author: Sophie (and Stuti)
 # Aim: Create quality indicators for end of life care.
 #-------------------------------------------------------------------------------
 
 # Load packages -----------------------------------------------------------
-
+#install.packages(c("tidyverse", "lubridate", "here", "plyr"))
 library(tidyverse)
 library(lubridate)
-
+library(here)
+library(dplyr)
+library(data.table)
 
 # Create folder structure -------------------------------------------------
 
@@ -20,217 +22,217 @@ fs::dir_create("output", "os_reports", "WP2_quality_indicators")
 
 # Nuffield Trust colour list
 
-NT_colours <- c(
-  `NT ink` = "#271544",
-  `white` = "#FFFFFF",
-  `NT iris` = "#AC8ACF",
-  `cool black` = "#0E1B26",
-  `cool dark grey` = "#556370",
-  `cool mid grey` = "#9AA0AA",
-  `cool light grey` = "#F4F4F4",
-  `bright purple` = "#9F67FF",
-  `light purple 1` = "#D3C4FC",
-  `light purple 2` = "#B39DFF",
-  `dark purple 1` = "#7140EA",
-  `dark purple 2` = "#49148C",
-  `bright blue` = "#0066F4",
-  `light blue 1` = "#99DBFF",
-  `light blue 2` = "#63B2FF",
-  `dark blue 1` = "#005AC7",
-  `dark blue 2` = "#192889",
-  `bright red` = "#FF6B57",
-  `light red 1` = "#FFCFC9",
-  `light red 2` = "#FF997F",
-  `dark red 1` = "#B71C1C",
-  `dark red 2` = "#700C28",
-  `bright yellow` = "#EABE17",
-  `light yellow 1` = "#FDEA9D",
-  `light yellow 2` = "#F4D05A",
-  `dark yellow 1` = "#DD931C",
-  `dark yellow 2` = "#B26605",
-  `bright green` = "#00C27A",
-  `light green 1` = "#8BF8BD",
-  `light green 2` = "#39DA91",
-  `dark green 1` = "#00823F",
-  `dark green 2` = "#195442",
-  `bright cyan` = "#4DCFF5",
-  `light cyan 1` = "#9EF7FF",
-  `light cyan 2` = "#6AE8F9",
-  `dark cyan 1` = "#008CB3",
-  `dark cyan 2` = "#004C70"
-)
-
-NT_colour <- function(index = NULL, named = FALSE){
-  
-  if(is.null(index)){
-    index <- names(NT_colours)
-  }
-  
-  return_value <- NT_colours[index]
-  if (!named) {
-    names(return_value) <- NULL
-  }
-  
-  return(return_value)
-  
-}
-
-####################################
-
-# NT colour palette
-
-NT_palette <- function(NT_theme = NULL, reverse = FALSE, ...) {
-  
-  function(n) {
-    
-    stopifnot(n <= 5 | (n <= 12 & (is.null(NT_theme) | NT_theme == "bright")))
-    
-    colour_indices <-
-      if (n == 1 & is.null(NT_theme)) { "bright purple" }
-    else if (n == 2 & is.null(NT_theme)) { c("bright purple", "bright green") }
-    else if (n == 3 & is.null(NT_theme)) { c("bright purple", "bright green", "bright blue") }
-    else if (n == 4 & is.null(NT_theme)) { c("bright purple", "bright green", "bright blue", "bright yellow") }
-    else if (n == 5 & is.null(NT_theme)) { c("bright purple", "bright green", "bright blue", "bright yellow", "bright red") }
-    else if (n == 6 & is.null(NT_theme)) { c("bright purple", "bright green", "bright blue", "bright yellow", "bright red", "bright cyan") }
-    else if (n == 7 & is.null(NT_theme)) { c("bright purple", "bright green", "bright blue", "bright yellow", "bright red", "bright cyan", "light purple 1") }
-    else if (n == 8 & is.null(NT_theme)) { c("bright purple", "bright green", "bright blue", "bright yellow", "bright red", "bright cyan", "light purple 1", "light green 1") }
-    else if (n == 9 & is.null(NT_theme)) { c("bright purple", "bright green", "bright blue", "bright yellow", "bright red", "bright cyan", "light purple 1", "light green 1", "light blue 1") }
-    else if (n == 10 & is.null(NT_theme)) { c("bright purple", "bright green", "bright blue", "bright yellow", "bright red", "bright cyan", "light purple 1", "light green 1", "light blue 1", "light yellow 1") }
-    else if (n == 11 & is.null(NT_theme)) { c("bright purple", "bright green", "bright blue", "bright yellow", "bright red", "bright cyan", "light purple 1", "light green 1", "light blue 1", "light yellow 1", "light red 1") }
-    else if (n == 12 & is.null(NT_theme)) { c("bright purple", "bright green", "bright blue", "bright yellow", "bright red", "bright cyan", "light purple 1", "light green 1", "light blue 1", "light yellow 1", "light red 1", "light cyan 1") }
-    else if (n == 1 & NT_theme == "bright") { "bright purple" }
-    else if (n == 2 & NT_theme == "bright") { c("bright purple", "bright green") }
-    else if (n == 3 & NT_theme == "bright") { c("bright purple", "bright green", "bright blue") }
-    else if (n == 4 & NT_theme == "bright") { c("bright purple", "bright green", "bright blue", "bright yellow") }
-    else if (n == 5 & NT_theme == "bright") { c("bright purple", "bright green", "bright blue", "bright yellow", "bright red") }
-    else if (n == 6 & NT_theme == "bright") { c("bright purple", "bright green", "bright blue", "bright yellow", "bright red", "bright cyan") }
-    else if (n == 7 & NT_theme == "bright") { c("bright purple", "bright green", "bright blue", "bright yellow", "bright red", "bright cyan", "light purple 1") }
-    else if (n == 8 & NT_theme == "bright") { c("bright purple", "bright green", "bright blue", "bright yellow", "bright red", "bright cyan", "light purple 1", "light green 1") }
-    else if (n == 9 & NT_theme == "bright") { c("bright purple", "bright green", "bright blue", "bright yellow", "bright red", "bright cyan", "light purple 1", "light green 1", "light blue 1") }
-    else if (n == 10 & NT_theme == "bright") { c("bright purple", "bright green", "bright blue", "bright yellow", "bright red", "bright cyan", "light purple 1", "light green 1", "light blue 1", "light yellow 1") }
-    else if (n == 11 & NT_theme == "bright") { c("bright purple", "bright green", "bright blue", "bright yellow", "bright red", "bright cyan", "light purple 1", "light green 1", "light blue 1", "light yellow 1", "light red 1") }
-    else if (n == 12 & NT_theme == "bright") { c("bright purple", "bright green", "bright blue", "bright yellow", "bright red", "bright cyan", "light purple 1", "light green 1", "light blue 1", "light yellow 1", "light red 1", "light cyan 1") }
-    else if (n == 1 & NT_theme == "purple") { "bright purple" }
-    else if (n == 2 & NT_theme == "purple") { c("dark purple 2", "bright purple") }
-    else if (n == 3 & NT_theme == "purple") { c("dark purple 2", "bright purple", "light purple 2") }
-    else if (n == 4 & NT_theme == "purple") { c("dark purple 2", "dark purple 1", "bright purple", "light purple 2") }
-    else if (n == 5 & NT_theme == "purple") { c("dark purple 2", "dark purple 1", "bright purple", "light purple 2", "light purple 1") }
-    else if (n == 1 & NT_theme == "blue") { "bright blue" }
-    else if (n == 2 & NT_theme == "blue") { c("dark blue 2", "bright blue") }
-    else if (n == 3 & NT_theme == "blue") { c("dark blue 2", "bright blue", "light blue 2") }
-    else if (n == 4 & NT_theme == "blue") { c("dark blue 2", "dark blue 1", "bright blue", "light blue 2") }
-    else if (n == 5 & NT_theme == "blue") { c("dark blue 2", "dark blue 1", "bright blue", "light blue 2", "light blue 1") }
-    else if (n == 1 & NT_theme == "red") { "bright red" }
-    else if (n == 2 & NT_theme == "red") { c("dark red 2", "bright red") }
-    else if (n == 3 & NT_theme == "red") { c("dark red 2", "bright red", "light red 2") }
-    else if (n == 4 & NT_theme == "red") { c("dark red 2", "dark red 1", "bright red", "light red 2") }
-    else if (n == 5 & NT_theme == "red") { c("dark red 2", "dark red 1", "bright red", "light red 2", "light red 1") }
-    else if (n == 1 & NT_theme == "yellow") { "bright yellow" }
-    else if (n == 2 & NT_theme == "yellow") { c("dark yellow 2", "bright yellow") }
-    else if (n == 3 & NT_theme == "yellow") { c("dark yellow 2", "bright yellow", "light yellow 2") }
-    else if (n == 4 & NT_theme == "yellow") { c("dark yellow 2", "dark yellow 1", "bright yellow", "light yellow 2") }
-    else if (n == 5 & NT_theme == "yellow") { c("dark yellow 2", "dark yellow 1", "bright yellow", "light yellow 2", "light yellow 1") }
-    else if (n == 1 & NT_theme == "green") { "bright green" }
-    else if (n == 2 & NT_theme == "green") { c("dark green 2", "bright green") }
-    else if (n == 3 & NT_theme == "green") { c("dark green 2", "bright green", "light green 2") }
-    else if (n == 4 & NT_theme == "green") { c("dark green 2", "dark green 1", "bright green", "light green 2") }
-    else if (n == 5 & NT_theme == "green") { c("dark green 2", "dark green 1", "bright green", "light green 2", "light green 1") }
-    else if (n == 1 & NT_theme == "cyan") { "bright cyan" }
-    else if (n == 2 & NT_theme == "cyan") { c("dark cyan 2", "bright cyan") }
-    else if (n == 3 & NT_theme == "cyan") { c("dark cyan 2", "bright cyan", "light cyan 2") }
-    else if (n == 4 & NT_theme == "cyan") { c("dark cyan 2", "dark cyan 1", "bright cyan", "light cyan 2") }
-    else if (n == 5 & NT_theme == "cyan") { c("dark cyan 2", "dark cyan 1", "bright cyan", "light cyan 2", "light cyan 1") }
-    
-    return_colours <- NT_colour(colour_indices)
-    
-    if (reverse) {
-      
-      return_colours <- rev(NT_colour(colour_indices))
-      
-    }
-    
-    return(return_colours)
-    
-  }
-}
-
-####################################
-
-# NT colour scale
-
-scale_colour_NT <- function(palette = NT_palette(NT_theme = NULL, reverse = FALSE, ...), ...) {
-  
-  ggplot2::discrete_scale(
-    aesthetics = "colour",
-    scale_name = "NT1",
-    palette = palette,
-    na.value = "#9AA0AA",
-    ...
-  )
-  
-}
-
-####################################
-
-# NT fill scale
-
-scale_fill_NT <- function(palette = NT_palette(NT_theme = NULL, reverse = FALSE, ...), ...) {
-  
-  ggplot2::discrete_scale(
-    aesthetics = "fill",
-    scale_name = "NT2",
-    palette = palette,
-    na.value = "#9AA0AA",
-    ...
-  )
-  
-}
-
-####################################
-
-# NT ggplot theme
-
-NT_style <- function(){
-  
-  font <- "TT Arial"
-  family <- "sans"
-  
-  theme_minimal() %+replace%
-    theme(
-      # Background elements
-      panel.background = element_rect(fill = "#F4F4F4", colour = "#F4F4F4"),
-      panel.border = element_blank(),
-      plot.background = element_rect(fill = "#F4F4F4", colour = "#F4F4F4"),
-      plot.margin = margin(t = 0.5, r = 0.5, b = 0.5, l = 0.5, unit ="cm"),
-      # Grid elements
-      axis.ticks = element_blank(),      
-      panel.grid.major.x = element_blank(),
-      panel.grid.major.y = element_line(colour = "#9AA0AA", size = 0.3),
-      panel.grid.minor = element_blank(),
-      panel.spacing = unit(0.5, "cm"),
-      # Text elements
-      axis.text.x = element_text(colour = "#9AA0AA", size = 8, family = "sans", vjust = 0),
-      axis.text.y = element_text(colour = "#9AA0AA", size = 8, family = "sans"),
-      axis.title.x = element_text(margin = margin(t = 0.3, r = 0, b = 0, l = 0, unit ="cm"), colour = "#271544", size = 8, face = "bold"),
-      axis.title.y = element_text(margin = margin(t = 0, r = 0.3, b = 0, l = 0, unit ="cm"), colour = "#271544", size = 8, face = "bold", angle = 90),
-      legend.text = element_text(colour = "#271544", size = 8, face = "bold", family = "sans"),
-      legend.title = element_blank(),
-      plot.caption = element_text(margin = margin(t = 0.3, r = 0, b = 0, l = 0, unit ="cm"), colour = "#271544", size = 8, hjust = 1, vjust = 1),
-      plot.title = element_text(margin = margin(t = 0, r = 0, b = 0.3, l = 0, unit ="cm"), colour = "#271544", size = 10, face = "bold", hjust = 0),
-      plot.title.position = "plot",
-      strip.text = element_text(margin = margin(t = 0, r = 0, b = 0.3, l = 0, unit ="cm"), colour = "#271544", size = 8, face = "bold"),
-      # Legend elements
-      legend.background = element_blank(),
-      legend.box.background = element_blank(),
-      legend.box.margin = margin(t = 0, r = 0, b = 0, l = 0, unit ="cm"),
-      legend.key = element_blank(),
-      legend.key.size = unit(0.4, "cm"),
-      legend.margin = margin(t = 0, r = 0, b = 0, l = 0, unit ="cm"),
-      legend.position = "bottom",
-      legend.spacing.x = unit(0.1, "cm"),
-      legend.spacing.y = unit(0.1, "cm")
-    )
-}
+# NT_colours <- c(
+#   `NT ink` = "#271544",
+#   `white` = "#FFFFFF",
+#   `NT iris` = "#AC8ACF",
+#   `cool black` = "#0E1B26",
+#   `cool dark grey` = "#556370",
+#   `cool mid grey` = "#9AA0AA",
+#   `cool light grey` = "#F4F4F4",
+#   `bright purple` = "#9F67FF",
+#   `light purple 1` = "#D3C4FC",
+#   `light purple 2` = "#B39DFF",
+#   `dark purple 1` = "#7140EA",
+#   `dark purple 2` = "#49148C",
+#   `bright blue` = "#0066F4",
+#   `light blue 1` = "#99DBFF",
+#   `light blue 2` = "#63B2FF",
+#   `dark blue 1` = "#005AC7",
+#   `dark blue 2` = "#192889",
+#   `bright red` = "#FF6B57",
+#   `light red 1` = "#FFCFC9",
+#   `light red 2` = "#FF997F",
+#   `dark red 1` = "#B71C1C",
+#   `dark red 2` = "#700C28",
+#   `bright yellow` = "#EABE17",
+#   `light yellow 1` = "#FDEA9D",
+#   `light yellow 2` = "#F4D05A",
+#   `dark yellow 1` = "#DD931C",
+#   `dark yellow 2` = "#B26605",
+#   `bright green` = "#00C27A",
+#   `light green 1` = "#8BF8BD",
+#   `light green 2` = "#39DA91",
+#   `dark green 1` = "#00823F",
+#   `dark green 2` = "#195442",
+#   `bright cyan` = "#4DCFF5",
+#   `light cyan 1` = "#9EF7FF",
+#   `light cyan 2` = "#6AE8F9",
+#   `dark cyan 1` = "#008CB3",
+#   `dark cyan 2` = "#004C70"
+# )
+# 
+# NT_colour <- function(index = NULL, named = FALSE){
+#   
+#   if(is.null(index)){
+#     index <- names(NT_colours)
+#   }
+#   
+#   return_value <- NT_colours[index]
+#   if (!named) {
+#     names(return_value) <- NULL
+#   }
+#   
+#   return(return_value)
+#   
+# }
+# 
+# ####################################
+# 
+# # NT colour palette
+# 
+# NT_palette <- function(NT_theme = NULL, reverse = FALSE, ...) {
+#   
+#   function(n) {
+#     
+#     stopifnot(n <= 5 | (n <= 12 & (is.null(NT_theme) | NT_theme == "bright")))
+#     
+#     colour_indices <-
+#       if (n == 1 & is.null(NT_theme)) { "bright purple" }
+#     else if (n == 2 & is.null(NT_theme)) { c("bright purple", "bright green") }
+#     else if (n == 3 & is.null(NT_theme)) { c("bright purple", "bright green", "bright blue") }
+#     else if (n == 4 & is.null(NT_theme)) { c("bright purple", "bright green", "bright blue", "bright yellow") }
+#     else if (n == 5 & is.null(NT_theme)) { c("bright purple", "bright green", "bright blue", "bright yellow", "bright red") }
+#     else if (n == 6 & is.null(NT_theme)) { c("bright purple", "bright green", "bright blue", "bright yellow", "bright red", "bright cyan") }
+#     else if (n == 7 & is.null(NT_theme)) { c("bright purple", "bright green", "bright blue", "bright yellow", "bright red", "bright cyan", "light purple 1") }
+#     else if (n == 8 & is.null(NT_theme)) { c("bright purple", "bright green", "bright blue", "bright yellow", "bright red", "bright cyan", "light purple 1", "light green 1") }
+#     else if (n == 9 & is.null(NT_theme)) { c("bright purple", "bright green", "bright blue", "bright yellow", "bright red", "bright cyan", "light purple 1", "light green 1", "light blue 1") }
+#     else if (n == 10 & is.null(NT_theme)) { c("bright purple", "bright green", "bright blue", "bright yellow", "bright red", "bright cyan", "light purple 1", "light green 1", "light blue 1", "light yellow 1") }
+#     else if (n == 11 & is.null(NT_theme)) { c("bright purple", "bright green", "bright blue", "bright yellow", "bright red", "bright cyan", "light purple 1", "light green 1", "light blue 1", "light yellow 1", "light red 1") }
+#     else if (n == 12 & is.null(NT_theme)) { c("bright purple", "bright green", "bright blue", "bright yellow", "bright red", "bright cyan", "light purple 1", "light green 1", "light blue 1", "light yellow 1", "light red 1", "light cyan 1") }
+#     else if (n == 1 & NT_theme == "bright") { "bright purple" }
+#     else if (n == 2 & NT_theme == "bright") { c("bright purple", "bright green") }
+#     else if (n == 3 & NT_theme == "bright") { c("bright purple", "bright green", "bright blue") }
+#     else if (n == 4 & NT_theme == "bright") { c("bright purple", "bright green", "bright blue", "bright yellow") }
+#     else if (n == 5 & NT_theme == "bright") { c("bright purple", "bright green", "bright blue", "bright yellow", "bright red") }
+#     else if (n == 6 & NT_theme == "bright") { c("bright purple", "bright green", "bright blue", "bright yellow", "bright red", "bright cyan") }
+#     else if (n == 7 & NT_theme == "bright") { c("bright purple", "bright green", "bright blue", "bright yellow", "bright red", "bright cyan", "light purple 1") }
+#     else if (n == 8 & NT_theme == "bright") { c("bright purple", "bright green", "bright blue", "bright yellow", "bright red", "bright cyan", "light purple 1", "light green 1") }
+#     else if (n == 9 & NT_theme == "bright") { c("bright purple", "bright green", "bright blue", "bright yellow", "bright red", "bright cyan", "light purple 1", "light green 1", "light blue 1") }
+#     else if (n == 10 & NT_theme == "bright") { c("bright purple", "bright green", "bright blue", "bright yellow", "bright red", "bright cyan", "light purple 1", "light green 1", "light blue 1", "light yellow 1") }
+#     else if (n == 11 & NT_theme == "bright") { c("bright purple", "bright green", "bright blue", "bright yellow", "bright red", "bright cyan", "light purple 1", "light green 1", "light blue 1", "light yellow 1", "light red 1") }
+#     else if (n == 12 & NT_theme == "bright") { c("bright purple", "bright green", "bright blue", "bright yellow", "bright red", "bright cyan", "light purple 1", "light green 1", "light blue 1", "light yellow 1", "light red 1", "light cyan 1") }
+#     else if (n == 1 & NT_theme == "purple") { "bright purple" }
+#     else if (n == 2 & NT_theme == "purple") { c("dark purple 2", "bright purple") }
+#     else if (n == 3 & NT_theme == "purple") { c("dark purple 2", "bright purple", "light purple 2") }
+#     else if (n == 4 & NT_theme == "purple") { c("dark purple 2", "dark purple 1", "bright purple", "light purple 2") }
+#     else if (n == 5 & NT_theme == "purple") { c("dark purple 2", "dark purple 1", "bright purple", "light purple 2", "light purple 1") }
+#     else if (n == 1 & NT_theme == "blue") { "bright blue" }
+#     else if (n == 2 & NT_theme == "blue") { c("dark blue 2", "bright blue") }
+#     else if (n == 3 & NT_theme == "blue") { c("dark blue 2", "bright blue", "light blue 2") }
+#     else if (n == 4 & NT_theme == "blue") { c("dark blue 2", "dark blue 1", "bright blue", "light blue 2") }
+#     else if (n == 5 & NT_theme == "blue") { c("dark blue 2", "dark blue 1", "bright blue", "light blue 2", "light blue 1") }
+#     else if (n == 1 & NT_theme == "red") { "bright red" }
+#     else if (n == 2 & NT_theme == "red") { c("dark red 2", "bright red") }
+#     else if (n == 3 & NT_theme == "red") { c("dark red 2", "bright red", "light red 2") }
+#     else if (n == 4 & NT_theme == "red") { c("dark red 2", "dark red 1", "bright red", "light red 2") }
+#     else if (n == 5 & NT_theme == "red") { c("dark red 2", "dark red 1", "bright red", "light red 2", "light red 1") }
+#     else if (n == 1 & NT_theme == "yellow") { "bright yellow" }
+#     else if (n == 2 & NT_theme == "yellow") { c("dark yellow 2", "bright yellow") }
+#     else if (n == 3 & NT_theme == "yellow") { c("dark yellow 2", "bright yellow", "light yellow 2") }
+#     else if (n == 4 & NT_theme == "yellow") { c("dark yellow 2", "dark yellow 1", "bright yellow", "light yellow 2") }
+#     else if (n == 5 & NT_theme == "yellow") { c("dark yellow 2", "dark yellow 1", "bright yellow", "light yellow 2", "light yellow 1") }
+#     else if (n == 1 & NT_theme == "green") { "bright green" }
+#     else if (n == 2 & NT_theme == "green") { c("dark green 2", "bright green") }
+#     else if (n == 3 & NT_theme == "green") { c("dark green 2", "bright green", "light green 2") }
+#     else if (n == 4 & NT_theme == "green") { c("dark green 2", "dark green 1", "bright green", "light green 2") }
+#     else if (n == 5 & NT_theme == "green") { c("dark green 2", "dark green 1", "bright green", "light green 2", "light green 1") }
+#     else if (n == 1 & NT_theme == "cyan") { "bright cyan" }
+#     else if (n == 2 & NT_theme == "cyan") { c("dark cyan 2", "bright cyan") }
+#     else if (n == 3 & NT_theme == "cyan") { c("dark cyan 2", "bright cyan", "light cyan 2") }
+#     else if (n == 4 & NT_theme == "cyan") { c("dark cyan 2", "dark cyan 1", "bright cyan", "light cyan 2") }
+#     else if (n == 5 & NT_theme == "cyan") { c("dark cyan 2", "dark cyan 1", "bright cyan", "light cyan 2", "light cyan 1") }
+#     
+#     return_colours <- NT_colour(colour_indices)
+#     
+#     if (reverse) {
+#       
+#       return_colours <- rev(NT_colour(colour_indices))
+#       
+#     }
+#     
+#     return(return_colours)
+#     
+#   }
+# }
+# 
+# ####################################
+# 
+# # NT colour scale
+# 
+# scale_colour_NT <- function(palette = NT_palette(NT_theme = NULL, reverse = FALSE, ...), ...) {
+#   
+#   ggplot2::discrete_scale(
+#     aesthetics = "colour",
+#     scale_name = "NT1",
+#     palette = palette,
+#     na.value = "#9AA0AA",
+#     ...
+#   )
+#   
+# }
+# 
+# ####################################
+# 
+# # NT fill scale
+# 
+# scale_fill_NT <- function(palette = NT_palette(NT_theme = NULL, reverse = FALSE, ...), ...) {
+#   
+#   ggplot2::discrete_scale(
+#     aesthetics = "fill",
+#     scale_name = "NT2",
+#     palette = palette,
+#     na.value = "#9AA0AA",
+#     ...
+#   )
+#   
+# }
+# 
+# ####################################
+# 
+# # NT ggplot theme
+# 
+# NT_style <- function(){
+#   
+#   font <- "TT Arial"
+#   family <- "sans"
+#   
+#   theme_minimal() %+replace%
+#     theme(
+#       # Background elements
+#       panel.background = element_rect(fill = "#F4F4F4", colour = "#F4F4F4"),
+#       panel.border = element_blank(),
+#       plot.background = element_rect(fill = "#F4F4F4", colour = "#F4F4F4"),
+#       plot.margin = margin(t = 0.5, r = 0.5, b = 0.5, l = 0.5, unit ="cm"),
+#       # Grid elements
+#       axis.ticks = element_blank(),      
+#       panel.grid.major.x = element_blank(),
+#       panel.grid.major.y = element_line(colour = "#9AA0AA", size = 0.3),
+#       panel.grid.minor = element_blank(),
+#       panel.spacing = unit(0.5, "cm"),
+#       # Text elements
+#       axis.text.x = element_text(colour = "#9AA0AA", size = 8, family = "sans", vjust = 0),
+#       axis.text.y = element_text(colour = "#9AA0AA", size = 8, family = "sans"),
+#       axis.title.x = element_text(margin = margin(t = 0.3, r = 0, b = 0, l = 0, unit ="cm"), colour = "#271544", size = 8, face = "bold"),
+#       axis.title.y = element_text(margin = margin(t = 0, r = 0.3, b = 0, l = 0, unit ="cm"), colour = "#271544", size = 8, face = "bold", angle = 90),
+#       legend.text = element_text(colour = "#271544", size = 8, face = "bold", family = "sans"),
+#       legend.title = element_blank(),
+#       plot.caption = element_text(margin = margin(t = 0.3, r = 0, b = 0, l = 0, unit ="cm"), colour = "#271544", size = 8, hjust = 1, vjust = 1),
+#       plot.title = element_text(margin = margin(t = 0, r = 0, b = 0.3, l = 0, unit ="cm"), colour = "#271544", size = 10, face = "bold", hjust = 0),
+#       plot.title.position = "plot",
+#       strip.text = element_text(margin = margin(t = 0, r = 0, b = 0.3, l = 0, unit ="cm"), colour = "#271544", size = 8, face = "bold"),
+#       # Legend elements
+#       legend.background = element_blank(),
+#       legend.box.background = element_blank(),
+#       legend.box.margin = margin(t = 0, r = 0, b = 0, l = 0, unit ="cm"),
+#       legend.key = element_blank(),
+#       legend.key.size = unit(0.4, "cm"),
+#       legend.margin = margin(t = 0, r = 0, b = 0, l = 0, unit ="cm"),
+#       legend.position = "bottom",
+#       legend.spacing.x = unit(0.1, "cm"),
+#       legend.spacing.y = unit(0.1, "cm")
+#     )
+# }
 
 
 # Code settings -----------------------------------------------------------
@@ -244,6 +246,23 @@ enddate <- dmy("30-06-2023")
 df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.gz")) %>%
   mutate(dod_ons = as_date(dod_ons)
          , study_month = floor_date(dod_ons, unit = "month")
+         , study_quarter = case_when(month(dod_ons) %in% c(6, 7, 8) & year(dod_ons) == 2019 ~ 1
+                                     , month(dod_ons) %in% c(9, 10, 11) & year(dod_ons) == 2019 ~ 2
+                                     , (month(dod_ons) == 12 & year(dod_ons) == 2019) | (month(dod_ons) %in% c(1, 2) & year(dod_ons) == 2020) ~ 3
+                                     , month(dod_ons) %in% c(3, 4, 5) & year(dod_ons) == 2020 ~ 4
+                                     , month(dod_ons) %in% c(6, 7, 8) & year(dod_ons) == 2020 ~ 5
+                                     , month(dod_ons) %in% c(9, 10, 11) & year(dod_ons) == 2020 ~ 6
+                                     , (month(dod_ons) == 12 & year(dod_ons) == 2020) | (month(dod_ons) %in% c(1, 2) & year(dod_ons) == 2021) ~ 7
+                                     , month(dod_ons) %in% c(3, 4, 5) & year(dod_ons) == 2021 ~ 8
+                                     , month(dod_ons) %in% c(6, 7, 8) & year(dod_ons) == 2021 ~ 9
+                                     , month(dod_ons) %in% c(9, 10, 11) & year(dod_ons) == 2021 ~10
+                                     , (month(dod_ons) == 12 & year(dod_ons) == 2021) | (month(dod_ons) %in% c(1, 2) & year(dod_ons) == 2022) ~ 11
+                                     , month(dod_ons) %in% c(3, 4, 5) & year(dod_ons) == 2022 ~ 12
+                                     , month(dod_ons) %in% c(6, 7, 8) & year(dod_ons) == 2022 ~ 13
+                                     , month(dod_ons) %in% c(9, 10, 11) & year(dod_ons) == 2022 ~ 14
+                                     , (month(dod_ons) == 12 & year(dod_ons) == 2022) | (month(dod_ons) %in% c(1, 2) & year(dod_ons) == 2023) ~ 15
+                                     , month(dod_ons) %in% c(3, 4, 5) & year(dod_ons) == 2023 ~ 16
+                                     , month(dod_ons) %in% c(6, 7, 8) & year(dod_ons) == 2023 ~ 17) #month 7 and 8 to come?#
          , pod_ons_new = case_when(pod_ons == "Elsewhere" 
                                    | pod_ons == "Other communal establishment" ~ "Elsewhere/other"
                                    , TRUE ~ as.character(pod_ons))
@@ -260,257 +279,542 @@ df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.g
          ,palcare_code = case_when(palliative_3m >= 1 ~ "Palcare_code" 
                                    , palliative_3m == 0 ~ "No_palcare_code")
          ,aevis_atleast1 = case_when(aevis_3m >= 1  ~ "aevis_atleast1")
-         ,aevis_atleast3 = case_when( aevis_3m >= 3 ~ "aevis_atleast3")) %>%
+         ,aevis_atleast3 = case_when( aevis_3m >= 3 ~ "aevis_atleast3")
+         ) %>%
   filter(study_month >= startdate & study_month <= enddate) 
 
-#Palliative care recorded, with rounding ----------------------------------------------------
-proportion_palcare_rounding <- df %>%
-  group_by(study_month, palcare_code) %>%
-  summarise(count = n()) %>%
-  mutate(count = plyr::round_any(count, 10)
-         , total = sum(count)
-         , proportion = round(count / total*100,1)) %>%
-  filter(palcare_code == "Palcare_code") %>%
-  select(-c(total, palcare_code))
-
-write.csv(proportion_palcare_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_rounding.csv"))
-
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_rounding.csv")))
-
+#Col of interest for redaction------------------------------ 
+# cols_of_interest <- c("count", "total")
+# 
+# #Palliative care recorded, with rounding ----------------------------------------------------
+# proportion_palcare_rounding <- df %>%
+#   group_by(study_month, palcare_code) %>%
+#   summarise(count = n()) %>%
+#   mutate(total = sum(count)) %>%
+#   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+#   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
+#   mutate(proportion = round(count / total*100,1)) %>%
+#   filter(palcare_code == "Palcare_code") %>%
+#   select(-c(total, palcare_code))
+# 
+# write.csv(proportion_palcare_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_rounding.csv"))
+# 
+# knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_rounding.csv")))
+# 
 
 #By place of death 
-proportion_palcare_pod_rounding <- df %>%
-  group_by(study_month, pod_ons_new, palcare_code) %>%
-  summarise(count = n()) %>%
-  mutate(count = plyr::round_any(count, 10)
-         , total = sum(count)
-         , proportion = round(count / total*100,1)) %>%
-  filter(palcare_code == "Palcare_code") %>%
-  select(-c(total, palcare_code))
-
-
-write.csv(proportion_palcare_pod_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_pod_rounding.csv"))
-
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_pod_rounding.csv")))
-
-#By cause of death 
-proportion_palcare_cod_rounding <- df %>%
-  group_by(study_month, codgrp, palcare_code) %>%
-  summarise(count = n()) %>%
-  mutate(count = plyr::round_any(count, 10)
-         , total = sum(count)
-         , proportion = round(count / total*100,1)) %>%
-  filter(palcare_code == "Palcare_code") %>%
-  select(-c(total, palcare_code))
-
-
-write.csv(proportion_palcare_cod_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_cod_rounding.csv"))
-
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_cod_rounding.csv")))
+# proportion_palcare_pod_rounding <- df %>%
+#   group_by(study_month, pod_ons_new, palcare_code) %>%
+#   summarise(count = n()) %>%
+#   mutate(total = sum(count)) %>%
+#   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+#   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
+#   mutate( proportion = round(count / total*100,1)) %>%
+#   filter(palcare_code == "Palcare_code") %>%
+#   select(-c(total, palcare_code))
+# 
+# 
+# write.csv(proportion_palcare_pod_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_pod_rounding.csv"))
+# 
+# knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_pod_rounding.csv")))
+# 
+# #By cause of death 
+# proportion_palcare_cod_rounding <- df %>%
+#   group_by(study_month, codgrp, palcare_code) %>%
+#   summarise(count = n()) %>%
+#   mutate(count = plyr::round_any(count, 10)
+#          , total = sum(count)
+#          , proportion = round(count / total*100,1)) %>%
+#   filter(palcare_code == "Palcare_code") %>%
+#   select(-c(total, palcare_code))
+# 
+# 
+# write.csv(proportion_palcare_cod_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_cod_rounding.csv"))
+# 
+# knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_cod_rounding.csv")))
 
 #Palliative care recorded, without rounding--------------------------
-proportion_palcare <- df %>%
-  group_by(study_month, palcare_code) %>%
-  summarise(count = n()) %>%
-  mutate(total = sum(count)
-         , proportion = round(count / total*100,1)) %>%
-  filter(palcare_code == "Palcare_code") %>%
-  select(-c(total, palcare_code))
-
-write.csv(proportion_palcare, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare.csv"))
-
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare.csv")))
-
-#By place of death 
-proportion_palcare_pod <- df %>%
-  group_by(study_month, pod_ons_new, palcare_code) %>%
-  summarise(count = n()) %>%
-  mutate(total = sum(count)
-         , proportion = round(count / total*100,1)) %>%
-  filter(palcare_code == "Palcare_code") %>%
-  select(-c(total, palcare_code))
-
-write.csv(proportion_palcare_pod, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_pod.csv"))
-
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_pod.csv")))
-
-#By cause of death 
-proportion_palcare_cod <- df %>%
-  group_by(study_month, codgrp, palcare_code) %>%
-  summarise(count = n()) %>%
-  mutate(total = sum(count)
-         , proportion = round(count / total*100,1)) %>%
-  filter(palcare_code == "Palcare_code") %>%
-  select(-c(total, palcare_code))
-
-
-write.csv(proportion_palcare_cod, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_cod.csv"))
-
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_cod.csv")))
-
+# proportion_palcare <- df %>%
+#   group_by(study_month, palcare_code) %>%
+#   summarise(count = n()) %>%
+#   mutate(total = sum(count)
+#          , proportion = round(count / total*100,1)) %>%
+#   filter(palcare_code == "Palcare_code") %>%
+#   select(-c(total, palcare_code))
+# 
+# write.csv(proportion_palcare, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare.csv"))
+# 
+# knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare.csv")))
+# 
+# #By place of death 
+# proportion_palcare_pod <- df %>%
+#   group_by(study_month, pod_ons_new, palcare_code) %>%
+#   summarise(count = n()) %>%
+#   mutate(total = sum(count)
+#          , proportion = round(count / total*100,1)) %>%
+#   filter(palcare_code == "Palcare_code") %>%
+#   select(-c(total, palcare_code))
+# 
+# write.csv(proportion_palcare_pod, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_pod.csv"))
+# 
+# knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_pod.csv")))
+# 
+# #By cause of death 
+# proportion_palcare_cod <- df %>%
+#   group_by(study_month, codgrp, palcare_code) %>%
+#   summarise(count = n()) %>%
+#   mutate(total = sum(count)
+#          , proportion = round(count / total*100,1)) %>%
+#   filter(palcare_code == "Palcare_code") %>%
+#   select(-c(total, palcare_code))
+# 
+# 
+# write.csv(proportion_palcare_cod, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_cod.csv"))
+# 
+# knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_cod.csv")))
+# 
 
 #At least one A&E visits last 3 months of life, with rounding --------------------------
-proportion_aevis1_3m_rounding <- df %>% 
-  group_by(study_month, aevis_atleast1) %>%
-  summarise(count = n()) %>% 
-  mutate(count = plyr::round_any(count, 10)
-         , total = sum(count)
-         , proportion = round(count / total*100,1)) %>%
-  filter(aevis_atleast1 == "aevis_atleast1") %>%
-  select(-c(total, aevis_atleast1))
-
-write.csv(proportion_aevis1_3m_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_rounding.csv"))
-
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_rounding.csv")))
-
-#By place of death 
-proportion_aevis1_3m_pod_rounding <- df %>% 
-  group_by(study_month, pod_ons_new, aevis_atleast1) %>%
-  summarise(count = n()) %>% 
-  mutate(count = plyr::round_any(count, 10)
-         , total = sum(count)
-         , proportion = round(count / total*100,1)) %>%
-  filter(aevis_atleast1 == "aevis_atleast1") %>%
-  select(-c(total, aevis_atleast1))
-
-write.csv(proportion_aevis1_3m_pod_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_pod_rounding.csv"))
-
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_pod_rounding.csv")))
-
-
-#By cause of death 
-proportion_aevis1_3m_cod_rounding <- df %>% 
-  group_by(study_month, codgrp, aevis_atleast1) %>%
-  summarise(count = n()) %>% 
-  mutate(count = plyr::round_any(count, 10)
-         , total = sum(count)
-         , proportion = round(count / total*100,1)) %>%
-  filter(aevis_atleast1 == "aevis_atleast1") %>%
-  select(-c(total, aevis_atleast1))
-
-write.csv(proportion_aevis1_3m_cod_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_cod_rounding.csv"))
-
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_cod_rounding.csv")))
-
-
-#At least one A&E visits last 3 months of life, without rounding --------------------------
-proportion_aevis1_3m <- df %>% 
-  group_by(study_month, aevis_atleast1) %>%
-  summarise(count = n()) %>% 
-  mutate(total = sum(count)
-         , proportion = round(count / total*100,1)) %>%
-  filter(aevis_atleast1 == "aevis_atleast1") %>%
-  select(-c(total, aevis_atleast1))
-
-write.csv(proportion_aevis1_3m, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1.csv"))
-
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1.csv")))
-
-#By place of death 
-proportion_aevis1_3m_pod <- df %>% 
-  group_by(study_month, pod_ons_new, aevis_atleast1) %>%
-  summarise(count = n()) %>% 
-  mutate(total = sum(count)
-         , proportion = round(count / total*100,1)) %>%
-  filter(aevis_atleast1 == "aevis_atleast1") %>%
-  select(-c(total, aevis_atleast1))
-
-write.csv(proportion_aevis1_3m_pod, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_pod.csv"))
-
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_pod.csv")))
-
-#By cause of death 
-proportion_aevis1_3m_cod <- df %>% 
-  group_by(study_month, codgrp, aevis_atleast1) %>%
-  summarise(count = n()) %>% 
-  mutate(total = sum(count)
-         , proportion = round(count / total*100,1)) %>%
-  filter(aevis_atleast1 == "aevis_atleast1") %>%
-  select(-c(total, aevis_atleast1))
-
-write.csv(proportion_aevis1_3m_cod, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_cod.csv"))
-
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_cod.csv")))
-
-#At least 3 A&E visits last 3 months of life, with rounding --------------------------
-proportion_aevis3_3m_rounding <- df %>% 
-  group_by(study_month, aevis_atleast3) %>%
-  summarise(count = n()) %>% 
-  mutate(count = plyr::round_any(count, 10)
-         , total = sum(count)
-         , proportion = round(count / total*100,1)) %>%
-  filter(aevis_atleast3 == "aevis_atleast3") %>%
-  select(-c(total, aevis_atleast3))
-
-write.csv(proportion_aevis3_3m_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_rounding.csv"))
-
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_rounding.csv")))
-
-#By place of death 
-proportion_aevis3_3m_pod_rounding <- df %>% 
-  group_by(study_month, pod_ons_new, aevis_atleast3) %>%
-  summarise(count = n()) %>% 
-  mutate(count = plyr::round_any(count, 10)
-         , total = sum(count)
-         , proportion = round(count / total*100,1)) %>%
-  filter(aevis_atleast3 == "aevis_atleast3") %>%
-  select(-c(total, aevis_atleast3))
-
-write.csv(proportion_aevis3_3m_pod_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_pod_rounding.csv"))
-
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_pod_rounding.csv")))
+# proportion_aevis1_3m_rounding <- df %>% 
+#   group_by(study_month, aevis_atleast1) %>%
+#   summarise(count = n()) %>% 
+#   mutate(count = plyr::round_any(count, 10)
+#          , total = sum(count)
+#          , proportion = round(count / total*100,1)) %>%
+#   filter(aevis_atleast1 == "aevis_atleast1") %>%
+#   select(-c(total, aevis_atleast1))
+# 
+# write.csv(proportion_aevis1_3m_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_rounding.csv"))
+# 
+# knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_rounding.csv")))
+# 
+# #By place of death 
+# proportion_aevis1_3m_pod_rounding <- df %>% 
+#   group_by(study_month, pod_ons_new, aevis_atleast1) %>%
+#   summarise(count = n()) %>% 
+#   mutate(count = plyr::round_any(count, 10)
+#          , total = sum(count)
+#          , proportion = round(count / total*100,1)) %>%
+#   filter(aevis_atleast1 == "aevis_atleast1") %>%
+#   select(-c(total, aevis_atleast1))
+# 
+# write.csv(proportion_aevis1_3m_pod_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_pod_rounding.csv"))
+# 
+# knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_pod_rounding.csv")))
 
 
 #By cause of death 
-proportion_aevis3_3m_cod_rounding <- df %>% 
-  group_by(study_month, codgrp, aevis_atleast3) %>%
-  summarise(count = n()) %>% 
-  mutate(count = plyr::round_any(count, 10)
-         , total = sum(count)
-         , proportion = round(count / total*100,1)) %>%
-  filter(aevis_atleast3 == "aevis_atleast3") %>%
-  select(-c(total, aevis_atleast3))
+# proportion_aevis1_3m_cod_rounding <- df %>% 
+#   group_by(study_month, codgrp, aevis_atleast1) %>%
+#   summarise(count = n()) %>% 
+#   mutate(count = plyr::round_any(count, 10)
+#          , total = sum(count)
+#          , proportion = round(count / total*100,1)) %>%
+#   filter(aevis_atleast1 == "aevis_atleast1") %>%
+#   select(-c(total, aevis_atleast1))
+# 
+# write.csv(proportion_aevis1_3m_cod_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_cod_rounding.csv"))
+# 
+# knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_cod_rounding.csv")))
+# 
+# 
+# #At least one A&E visits last 3 months of life, without rounding --------------------------
+# proportion_aevis1_3m <- df %>% 
+#   group_by(study_month, aevis_atleast1) %>%
+#   summarise(count = n()) %>% 
+#   mutate(total = sum(count)
+#          , proportion = round(count / total*100,1)) %>%
+#   filter(aevis_atleast1 == "aevis_atleast1") %>%
+#   select(-c(total, aevis_atleast1))
 
-write.csv(proportion_aevis3_3m_cod_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_cod_rounding.csv"))
+# write.csv(proportion_aevis1_3m, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1.csv"))
+# 
+# knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1.csv")))
+# 
+# #By place of death 
+# proportion_aevis1_3m_pod <- df %>% 
+#   group_by(study_month, pod_ons_new, aevis_atleast1) %>%
+#   summarise(count = n()) %>% 
+#   mutate(total = sum(count)
+#          , proportion = round(count / total*100,1)) %>%
+#   filter(aevis_atleast1 == "aevis_atleast1") %>%
+#   select(-c(total, aevis_atleast1))
+# 
+# write.csv(proportion_aevis1_3m_pod, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_pod.csv"))
+# 
+# knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_pod.csv")))
+# 
+# #By cause of death 
+# proportion_aevis1_3m_cod <- df %>% 
+#   group_by(study_month, codgrp, aevis_atleast1) %>%
+#   summarise(count = n()) %>% 
+#   mutate(total = sum(count)
+#          , proportion = round(count / total*100,1)) %>%
+#   filter(aevis_atleast1 == "aevis_atleast1") %>%
+#   select(-c(total, aevis_atleast1))
+# 
+# write.csv(proportion_aevis1_3m_cod, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_cod.csv"))
+# 
+# knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_cod.csv")))
+# 
+# #At least 3 A&E visits last 3 months of life, with rounding --------------------------
+# proportion_aevis3_3m_rounding <- df %>% 
+#   group_by(study_month, aevis_atleast3) %>%
+#   summarise(count = n()) %>% 
+#   mutate(count = plyr::round_any(count, 10)
+#          , total = sum(count)
+#          , proportion = round(count / total*100,1)) %>%
+#   filter(aevis_atleast3 == "aevis_atleast3") %>%
+#   select(-c(total, aevis_atleast3))
 
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_cod_rounding.csv")))
+# write.csv(proportion_aevis3_3m_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_rounding.csv"))
+# 
+# knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_rounding.csv")))
+# 
+# #By place of death 
+# proportion_aevis3_3m_pod_rounding <- df %>% 
+#   group_by(study_month, pod_ons_new, aevis_atleast3) %>%
+#   summarise(count = n()) %>% 
+#   mutate(count = plyr::round_any(count, 10)
+#          , total = sum(count)
+#          , proportion = round(count / total*100,1)) %>%
+#   filter(aevis_atleast3 == "aevis_atleast3") %>%
+#   select(-c(total, aevis_atleast3))
+# 
+# write.csv(proportion_aevis3_3m_pod_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_pod_rounding.csv"))
+# 
+# knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_pod_rounding.csv")))
+# 
+# 
+# #By cause of death 
+# proportion_aevis3_3m_cod_rounding <- df %>% 
+#   group_by(study_month, codgrp, aevis_atleast3) %>%
+#   summarise(count = n()) %>% 
+#   mutate(count = plyr::round_any(count, 10)
+#          , total = sum(count)
+#          , proportion = round(count / total*100,1)) %>%
+#   filter(aevis_atleast3 == "aevis_atleast3") %>%
+#   select(-c(total, aevis_atleast3))
+# 
+# write.csv(proportion_aevis3_3m_cod_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_cod_rounding.csv"))
+# 
+# knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_cod_rounding.csv")))
 
 
 #At least 3 A&E visits last 3 months of life, without rounding --------------------------
-proportion_aevis3_3m <- df %>% 
-  group_by(study_month, aevis_atleast3) %>%
-  summarise(count = n()) %>% 
-  mutate(total = sum(count)
-         , proportion = round(count / total*100,1)) %>%
-  filter(aevis_atleast3 == "aevis_atleast3") %>%
-  select(-c(total, aevis_atleast3))
+# proportion_aevis3_3m <- df %>% 
+#   group_by(study_month, aevis_atleast3) %>%
+#   summarise(count = n()) %>% 
+#   mutate(total = sum(count)
+#          , proportion = round(count / total*100,1)) %>%
+#   filter(aevis_atleast3 == "aevis_atleast3") %>%
+#   select(-c(total, aevis_atleast3))
+# 
+# write.csv(proportion_aevis3_3m, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3.csv"))
+# 
+# knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3.csv")))
+# 
+# #By place of death 
+# proportion_aevis3_3m_pod <- df %>% 
+#   group_by(study_month, pod_ons_new, aevis_atleast3) %>%
+#   summarise(count = n()) %>% 
+#   mutate(total = sum(count)
+#          , proportion = round(count / total*100,1)) %>%
+#   filter(aevis_atleast3 == "aevis_atleast3") %>%
+#   select(-c(total, aevis_atleast3))
+# 
+# write.csv(proportion_aevis3_3m_pod, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_pod.csv"))
+# 
+# knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_pod.csv")))
+# 
+# #By cause of death 
+# proportion_aevis3_3m_cod <- df %>% 
+#   group_by(study_month, codgrp, aevis_atleast3) %>%
+#   summarise(count = n()) %>% 
+#   mutate(total = sum(count)
+#          , proportion = round(count / total*100,1)) %>%
+#   filter(aevis_atleast3 == "aevis_atleast3") %>%
+#   select(-c(total, aevis_atleast3))
+# 
+# write.csv(proportion_aevis3_3m_cod, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_cod.csv"))
+# 
+# knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_cod.csv")))
 
-write.csv(proportion_aevis3_3m, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3.csv"))
+#----------------------------------------------------#
+cols_of_interest <- c("count", "total");
 
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3.csv")))
+#Advance care planning ----------------------------
 
-#By place of death 
-proportion_aevis3_3m_pod <- df %>% 
-  group_by(study_month, pod_ons_new, aevis_atleast3) %>%
-  summarise(count = n()) %>% 
-  mutate(total = sum(count)
-         , proportion = round(count / total*100,1)) %>%
-  filter(aevis_atleast3 == "aevis_atleast3") %>%
-  select(-c(total, aevis_atleast3))
+# #Number and proportion of patients with a care plan in the last 90 days (3 months) of life by quarter
+# 
+# #Rounded estimates
+# 
+# has_careplan_rounded <- df %>%
+#   group_by(study_quarter, has_careplan) %>%
+#   summarise(count = n()) %>%
+#   mutate(total = sum(count)) %>%
+#   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+#   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
+#   mutate(proportion = round(count / total*100,1)) %>%
+#   filter(has_careplan == "TRUE") %>%
+#   select(-c(total))
+# 
+# fwrite(has_careplan_rounded, here::here("output", "os_reports", "WP2_quality_indicators", "has_careplan_rounded.csv"))
+# 
+# #Raw estimates
+# 
+# has_careplan_raw <- df %>%
+#   group_by(study_quarter, has_careplan) %>%
+#   summarise(count = n()) %>%
+#   mutate(total = sum(count)) %>%
+#   mutate(proportion = round(count / total*100,1)) %>%
+#   filter(has_careplan == "TRUE") %>%
+#   select(-c(total))
+# 
+# fwrite(has_careplan_raw, here::here("output", "os_reports", "WP2_quality_indicators", "has_careplan_raw.csv"))
 
-write.csv(proportion_aevis3_3m_pod, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_pod.csv"))
+#Number and proportion of patients with a care plan in the last 90 days (3 months) of life by place of death
 
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_pod.csv")))
+#Quarterly breakdown
 
-#By cause of death 
-proportion_aevis3_3m_cod <- df %>% 
-  group_by(study_month, codgrp, aevis_atleast3) %>%
-  summarise(count = n()) %>% 
-  mutate(total = sum(count)
-         , proportion = round(count / total*100,1)) %>%
-  filter(aevis_atleast3 == "aevis_atleast3") %>%
-  select(-c(total, aevis_atleast3))
+#Rounded estimates
 
-write.csv(proportion_aevis3_3m_cod, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_cod.csv"))
+acp_quarters_pod_rounded <- df %>%
+  group_by(study_quarter, pod_ons_new, has_careplan) %>%
+  summarise(count = n()) %>%
+  mutate(total = sum(count)) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
+  mutate(proportion = round(count / total*100,1)) %>%
+  filter(has_careplan == "TRUE") %>%
+  select(-c(total))
 
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_cod.csv")))
+fwrite(acp_quarters_pod_rounded, here::here("output", "os_reports", "WP2_quality_indicators", "acp_quarters_pod_rounded.csv"))
+
+#Raw estimates
+
+acp_quarters_pod_raw <- df %>%
+  group_by(study_quarter, pod_ons_new, has_careplan) %>%
+  summarise(count = n()) %>%
+  mutate(total = sum(count)) %>%
+  mutate(proportion = round(count / total*100,1)) %>%
+  filter(has_careplan == "TRUE") %>%
+  select(-c(total))
+
+fwrite(acp_quarters_pod_raw, here::here("output", "os_reports", "WP2_quality_indicators", "acp_quarters_pod_raw.csv"))
+
+#Monthly breakdown
+
+#Rounded estimates
+
+acp_months_pod_rounded <- df %>%
+  group_by(study_month, pod_ons_new, has_careplan) %>%
+  summarise(count = n()) %>%
+  mutate(total = sum(count)) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
+  mutate(proportion = round(count / total*100,1)) %>%
+  filter(has_careplan == "TRUE") %>%
+  select(-c(total))
+
+fwrite(acp_months_pod_rounded, here::here("output", "os_reports", "WP2_quality_indicators", "acp_months_pod_rounded.csv"))
+
+#Raw estimates
+
+acp_months_pod_raw <- df %>%
+  group_by(study_month, pod_ons_new, has_careplan) %>%
+  summarise(count = n()) %>%
+  mutate(total = sum(count)) %>%
+  mutate(proportion = round(count / total*100,1)) %>%
+  filter(has_careplan == "TRUE") %>%
+  select(-c(total))
+
+fwrite(acp_months_pod_raw, here::here("output", "os_reports", "WP2_quality_indicators", "acp_months_pod_raw.csv"))
+
+#Number and proportion of patients with a care plan in the last 90 days (3 months) of life by cause of death
+
+#Quarterly breakdown
+
+#Rounded estimates
+
+acp_quarters_cod_rounded <- df %>%
+  group_by(study_quarter, codgrp, has_careplan) %>%
+  summarise(count = n()) %>%
+  mutate(total = sum(count)) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
+  mutate(proportion = round(count / total*100,1)) %>%
+  filter(has_careplan == "TRUE") %>%
+  select(-c(total))
+
+fwrite(acp_quarters_cod_rounded, here::here("output", "os_reports", "WP2_quality_indicators", "acp_quarters_cod_rounded.csv"))
+
+#Raw estimates
+
+acp_quarters_cod_raw <- df %>%
+  group_by(study_quarter, codgrp, has_careplan) %>%
+  summarise(count = n()) %>%
+  mutate(total = sum(count)) %>%
+  mutate(proportion = round(count / total*100,1)) %>%
+  filter(has_careplan == "TRUE") %>%
+  select(-c(total))
+
+fwrite(acp_quarters_cod_raw, here::here("output", "os_reports", "WP2_quality_indicators", "acp_quarters_cod_raw.csv"))
+
+#Monthly breakdown
+
+acp_months_cod_rounded <- df %>%
+  group_by(study_month, codgrp, has_careplan) %>%
+  summarise(count = n()) %>%
+  mutate(total = sum(count)) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
+  mutate(proportion = round(count / total*100,1)) %>%
+  filter(has_careplan == "TRUE") %>%
+  select(-c(total))
+
+fwrite(acp_months_cod_rounded, here::here("output", "os_reports", "WP2_quality_indicators", "acp_months_cod_rounded.csv"))
+
+#Raw estimates
+
+acp_months_cod_raw <- df %>%
+  group_by(study_month, codgrp, has_careplan) %>%
+  summarise(count = n()) %>%
+  mutate(total = sum(count)) %>%
+  mutate(proportion = round(count / total*100,1)) %>%
+  filter(has_careplan == "TRUE") %>%
+  select(-c(total))
+
+fwrite(acp_months_cod_raw, here::here("output", "os_reports", "WP2_quality_indicators", "acp_months_cod_raw.csv"))
+
+#Average number of care plan codes recorded per person during the last 90 days (3 months) of life by quarter and place of death
+
+#Rounded estimates
+
+careplan_3m_pod_rounded <- df %>%
+  filter(has_careplan == "TRUE") %>%
+  group_by(study_quarter, pod_ons_new) %>%
+  summarise(count = n(),
+            mean = mean(careplan_3m, na.rm=TRUE),
+            sd = sd(careplan_3m, na.rm=TRUE)) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = n(),
+                        mean = mean(eol_med_1m, na.rm=TRUE),
+                        sd = sd(eol_med_1m, na.rm=TRUE)) %>%
+              mutate(pod_ons_new = "All") %>% 
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))))
+
+fwrite(careplan_3m_pod_rounded, here::here("output", "os_reports", "WP2_quality_indicators", "careplan_3m_pod_rounded.csv"))
+
+#Raw estimates
+
+careplan_3m_pod_raw <- df %>%
+  filter(has_careplan == "TRUE") %>%
+  group_by(study_quarter, pod_ons_new) %>%
+  summarise(count = n(),
+            mean = mean(careplan_3m, na.rm=TRUE),
+            sd = sd(careplan_3m, na.rm=TRUE)) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = n(),
+                        mean = mean(eol_med_1m, na.rm=TRUE),
+                        sd = sd(eol_med_1m, na.rm=TRUE)) %>%
+              mutate(pod_ons_new = "All"))
+
+fwrite(careplan_3m_pod_raw, here::here("output", "os_reports", "WP2_quality_indicators", "careplan_3m_pod_raw.csv"))
+
+#Average number of care plan codes recorded per person during the last 90 days (3 months) of life by quarter and cause of death
+
+#Rounded estimates
+
+careplan_3m_cod_rounded <- df %>%
+  filter(has_careplan == "TRUE") %>%
+  group_by(study_quarter, codgrp) %>%
+  summarise(count = n(),
+            mean = mean(careplan_3m, na.rm=TRUE),
+            sd = sd(careplan_3m, na.rm=TRUE)) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = n(),
+                        mean = mean(eol_med_1m, na.rm=TRUE),
+                        sd = sd(eol_med_1m, na.rm=TRUE)) %>%
+              mutate(codgrp = "All") %>% 
+              mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))))
+
+fwrite(careplan_3m_cod_rounded, here::here("output", "os_reports", "WP2_quality_indicators", "careplan_3m_cod_rounded.csv"))
+
+#Raw estimates
+
+careplan_3m_cod_raw <- df %>%
+  filter(has_careplan == "TRUE") %>%
+  group_by(study_quarter, codgrp) %>%
+  summarise(count = n(),
+            mean = mean(careplan_3m, na.rm=TRUE),
+            sd = sd(careplan_3m, na.rm=TRUE)) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = n(),
+                        mean = mean(eol_med_1m, na.rm=TRUE),
+                        sd = sd(eol_med_1m, na.rm=TRUE)) %>%
+              mutate(codgrp = "All"))
+
+fwrite(careplan_3m_cod_raw, here::here("output", "os_reports", "WP2_quality_indicators", "careplan_3m_cod_raw.csv"))
+
+#Duration of time for which care plan has been active by quarter and place of death
+
+#Rounded estimates
+
+active_careplan_pod_rounded <- df %>% 
+  filter(length_careplan >= 0) %>% 
+  group_by(study_quarter, pod_ons_new) %>% 
+  summarise(count = n(),
+            mean = mean(length_careplan, na.rm=TRUE),
+            median = median(length_careplan, na.rm=TRUE),
+            sd = sd(length_careplan, na.rm=TRUE)) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>% 
+  mutate(across(c(median, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ )))
+
+fwrite(active_careplan_pod_rounded, here::here("output", "os_reports", "WP2_quality_indicators", "active_careplan_pod_rounded.csv"))
+
+#Raw estimates
+
+active_careplan_pod_raw <- df %>% 
+  filter(has_careplan == "TRUE") %>% 
+  group_by(study_quarter, pod_ons_new, duration_careplan) %>% 
+  summarise(count = n()) %>%
+  mutate(total = sum(count)) %>%
+  mutate(proportion = round(count / total*100,1)) %>%
+  select(-c(total))
+
+fwrite(active_careplan_pod_raw, here::here("output", "os_reports", "WP2_quality_indicators", "active_careplan_pod_raw.csv"))
+
+#Duration of time for which care plan has been active by quarter and cause of death
+
+#Rounded estimates
+
+active_careplan_cod_rounded <- df %>% 
+  filter(has_careplan == "TRUE") %>% 
+  group_by(study_quarter, codgrp, duration_careplan) %>% 
+  summarise(count = n()) %>%
+  mutate(total = sum(count)) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
+  mutate(proportion = round(count / total*100,1)) %>%
+  select(-c(total))
+
+fwrite(active_careplan_cod_rounded, here::here("output", "os_reports", "WP2_quality_indicators", "active_careplan_cod_rounded.csv"))
+
+#Raw estimates
+
+active_careplan_cod_raw <- df %>% 
+  filter(has_careplan == "TRUE") %>% 
+  group_by(study_quarter, codgrp, duration_careplan) %>% 
+  summarise(count = n()) %>%
+  mutate(total = sum(count)) %>%
+  mutate(proportion = round(count / total*100,1)) %>%
+  select(-c(total))
+
+fwrite(active_careplan_cod_raw, here::here("output", "os_reports", "WP2_quality_indicators", "active_careplan_cod_raw.csv"))
