@@ -26,11 +26,13 @@ actions:
         monthly_op_CSV: output/os_reports/eol_service/opapp_month*.csv
         monthly_op_Count: output/os_reports/eol_service/opapp_count*.csv  
         monthly_eladm_CSV: output/os_reports/eol_service/eladm_month*.csv
-        monthly_eladm_Count: output/os_reports/eol_service/eladm_count*.csv  
+        monthly_eladm_Count: output/os_reports/eol_service/eladm_count*.csv
+        quarterly_eladm_Count: output/os_reports/eol_service/eladm_quarter*.csv  
         monthly_emadm_CSV: output/os_reports/eol_service/emadm_month*.csv
         monthly_emadm_Count: output/os_reports/eol_service/emadm_count*.csv
         monthly_nursing_CSV: output/os_reports/eol_service/nursing_month*.csv 
         montly_nursing_Count: output/os_reports/eol_service/nursing_count*.csv
+        quarterly_nursing_Count: output/os_reports/eol_service/nursing_quarter*.csv
 
   os_report_charts:
     run: r:latest analysis/os_reports/02_eol_service_Descriptive_outputs.R
