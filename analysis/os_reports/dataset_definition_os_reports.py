@@ -47,6 +47,7 @@ dataset.define_population(
     has_died
     & was_registered_at_death
     & patients.sex.is_in(["female", "male"])
+    & (patients.exists_for_patient())
 )
 
 ## CREATE VARIABLES ##
@@ -84,16 +85,33 @@ dataset.age_band = case(
 )
 
 ## Ethnicity
-dataset.ethnicity = (
-    clinical_events.where(
-        clinical_events.ctv3_code.is_in(codelists.ethnicity_codes_6)
-    ).where(
-        clinical_events.date.is_on_or_before(dod_ons)
-    ).sort_by(
-        clinical_events.date
-    ).last_for_patient().ctv3_code.to_category(
-        codelists.ethnicity_codes_6)
+
+ethnicity_codelist = codelist_from_csv(
+    "ethnicity_codelist_with_categories",
+    column="snomedcode",
+    category_column="Grouping_6",
 )
+
+dataset.latest_ethnicity_code = (
+    clinical_events.where(clinical_events.snomedct_code.is_in(ethnicity_codelist))
+    .where(clinical_events.date.is_on_or_before(dod_ons))
+    .sort_by(clinical_events.date)
+    .last_for_patient()
+    .snomedct_code
+)
+dataset.latest_ethnicity_group = dataset.latest_ethnicity_code.to_category(
+    ethnicity_codelist
+)
+
+dataset.ethnity_new = case(
+  when(latest_ethnicity_group = 1). then("White"),
+  when(latest_ethnicity_group = 2). then("Mixed"),
+  when(latest_ethnicity_group = 3). then("Asian or Asian British"),
+  when(latest_ethnicity_group = 4). then("Black or Black British"),
+  when(latest_ethnicity_group = 5). then("Chinese or Other Ethnic Groups"),
+  otherwise="Not stated",
+)
+
 # No ethnicity from SUS in ehrQL
 
 ## Geography ##
