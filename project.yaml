@@ -59,4 +59,8 @@ actions:
     needs: [generate_study_population_os_reports]
     outputs:
       moderately_sensitive:
-        proportion_palcare_code: output/os_reports/WP2_quality_indicators/proportion*.csv
+        proportion_palcare_code: output/os_reports/WP2_quality_indicators/palcare*.csv
+        proportion_aeviv1: output/os_reports/WP2_quality_indicators/aevis1*.csv
+        proportion_aevis3: output/os_reports/WP2_quality_indicators/aevis3*.csv
+        proportion_eolmed: output/os_reports/WP2_quality_indicators/eolmed*.csv
+        proportion_specpal_code: output/os_reports/WP2_quality_indicators/specpal*.csv  

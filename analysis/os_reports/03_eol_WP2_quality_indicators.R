@@ -80,9 +80,9 @@ proportion_palcare_pod_rounding <- df %>%
   mutate(proportion = round(count / total*100,1))
 
 
-fwrite(proportion_palcare_pod_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_pod_rounding.csv"))
+fwrite(proportion_palcare_pod_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "palcare_pod_ROUND.csv"))
 
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_pod_rounding.csv")))
+knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "palcare_pod_ROUND.csv")))
 
 #By cause of death 
 proportion_palcare_cod_rounding <- df %>%
@@ -97,9 +97,9 @@ proportion_palcare_cod_rounding <- df %>%
   mutate(proportion = round(count / total*100,1))
 
 
-fwrite(proportion_palcare_cod_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_cod_rounding.csv"))
+fwrite(proportion_palcare_cod_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "palcare_cod_ROUND.csv"))
 
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_cod_rounding.csv")))
+knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "palcare_cod_ROUND.csv")))
 
 #Palliative care recorded not for release--------------------------
 #By place of death
@@ -113,9 +113,9 @@ proportion_palcare_pod <- df %>%
   mutate(proportion = round(count / total*100,1))
   
 
-fwrite(proportion_palcare_pod, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_pod.csv"))
+fwrite(proportion_palcare_pod, here::here("output", "os_reports", "WP2_quality_indicators", "palcare_pod_RAW.csv"))
 
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_pod.csv")))
+knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "palcare_pod_RAW.csv")))
 
 #By cause of death 
 proportion_palcare_cod <- df %>%
@@ -128,9 +128,9 @@ proportion_palcare_cod <- df %>%
   mutate(proportion = round(count / total*100,1))
 
 
-fwrite(proportion_palcare_cod, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_cod.csv"))
+fwrite(proportion_palcare_cod, here::here("output", "os_reports", "WP2_quality_indicators", "palcare_cod_RAW.csv"))
 
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_cod.csv")))
+knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "palcare_cod_RAW.csv")))
 
 #At least one A&E visits last 3 months of life, with rounding --------------------------
 #By place of death 
@@ -145,9 +145,9 @@ proportion_aevis1_3m_pod_rounding <- df %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
   mutate(proportion = round(count / total*100,1))
 
-fwrite(proportion_aevis1_3m_pod_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_pod_rounding.csv"))
+fwrite(proportion_aevis1_3m_pod_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "aevis1_pod_ROUND.csv"))
 
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_pod_rounding.csv")))
+knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "aevis1_pod_ROUND.csv")))
 
 #By cause of death 
 proportion_aevis1_3m_cod_rounding <- df %>% 
@@ -161,9 +161,9 @@ proportion_aevis1_3m_cod_rounding <- df %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
   mutate(proportion = round(count / total*100,1)) 
 
-fwrite(proportion_aevis1_3m_cod_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_cod_rounding.csv"))
+fwrite(proportion_aevis1_3m_cod_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "aevis1_cod_ROUND.csv"))
 
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_cod_rounding.csv")))
+knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "aevis1_cod_ROUND.csv")))
 
 
 #At least one A&E visits last 3 months of life, not for release --------------------------
@@ -178,9 +178,9 @@ proportion_aevis1_3m_pod <- df %>%
   mutate(proportion = round(count / total*100,1))
 
 
-fwrite(proportion_aevis1_3m_pod, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_pod.csv"))
+fwrite(proportion_aevis1_3m_pod, here::here("output", "os_reports", "WP2_quality_indicators", "aevis1_pod_RAW.csv"))
 
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_pod.csv")))
+knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "aevis1_pod_RAW.csv")))
 
 #By cause of death 
 proportion_aevis1_3m_cod <- df %>% 
@@ -192,9 +192,9 @@ proportion_aevis1_3m_cod <- df %>%
               mutate(codgrp = "All")) %>%
   mutate(proportion = round(count / total*100,1))
 
-fwrite(proportion_aevis1_3m_cod, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_cod.csv"))
+fwrite(proportion_aevis1_3m_cod, here::here("output", "os_reports", "WP2_quality_indicators", "aevis1_cod_RAW.csv"))
 
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_cod.csv")))
+knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "aevis1_cod_RAW.csv")))
 
 #At least 3 A&E visits last 3 months of life, with rounding --------------------------
 #By place of death 
@@ -209,9 +209,9 @@ proportion_aevis3_3m_pod_rounding <- df %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
   mutate(proportion = round(count / total*100,1))
 
-fwrite(proportion_aevis3_3m_pod_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_pod_rounding.csv"))
+fwrite(proportion_aevis3_3m_pod_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "aevis3_pod_ROUND.csv"))
 
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_pod_rounding.csv")))
+knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "aevis3_pod_ROUND.csv")))
 
 #By cause of death 
 proportion_aevis3_3m_cod_rounding <- df %>% 
@@ -225,9 +225,9 @@ proportion_aevis3_3m_cod_rounding <- df %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
   mutate(proportion = round(count / total*100,1)) 
 
-fwrite(proportion_aevis3_3m_cod_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_cod_rounding.csv"))
+fwrite(proportion_aevis3_3m_cod_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "aevis3_cod_ROUND.csv"))
 
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_cod_rounding.csv")))
+knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "aevis3_cod_ROUND.csv")))
 
 
 #At least 3 A&E visits last 3 months of life, not for release --------------------------
@@ -241,9 +241,9 @@ proportion_aevis3_3m_pod <- df %>%
               mutate(pod_ons_new = "All")) %>%
   mutate(proportion = round(count / total*100,1)) 
 
-fwrite(proportion_aevis3_3m_pod, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_pod.csv"))
+fwrite(proportion_aevis3_3m_pod, here::here("output", "os_reports", "WP2_quality_indicators", "aevis3_pod_RAW.csv"))
 
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_pod.csv")))
+knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "aevis3_pod_RAW.csv")))
 
 #By cause of death 
 proportion_aevis3_3m_cod <- df %>% 
@@ -255,9 +255,9 @@ proportion_aevis3_3m_cod <- df %>%
               mutate(codgrp = "All")) %>%
   mutate(proportion = round(count / total*100,1))
 
-fwrite(proportion_aevis3_3m_cod, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_cod.csv"))
+fwrite(proportion_aevis3_3m_cod, here::here("output", "os_reports", "WP2_quality_indicators", "aevis3_cod_RAW.csv"))
 
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_cod.csv")))
+knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "aevis3_cod_RAW.csv")))
 
 ### Medications ###
 
@@ -279,9 +279,9 @@ proportion_eolmed_pod_rounding <- df %>%
   mutate(proportion = round(count / total*100,1))
 
 
-fwrite(proportion_eolmed_pod_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_eolmed_pod_rounding.csv"))
+fwrite(proportion_eolmed_pod_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "eolmed_pod_ROUND.csv"))
 
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_eolmed_pod_rounding.csv")))
+knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "eolmed_pod_ROUND.csv")))
 
 #By cause of death 
 proportion_eolmed_cod_rounding <- df %>%
@@ -296,9 +296,9 @@ proportion_eolmed_cod_rounding <- df %>%
   mutate(proportion = round(count / total*100,1))
 
 
-fwrite(proportion_eolmed_cod_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_eolmed_cod_rounding.csv"))
+fwrite(proportion_eolmed_cod_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "eolmed_cod_ROUND.csv"))
 
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_eolmed_cod_rounding.csv")))
+knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "eolmed_cod_ROUND.csv")))
 
 #Without rounding - not for release
 
@@ -313,9 +313,9 @@ proportion_eolmed_pod <- df %>%
   mutate(proportion = round(count / total*100,1))
 
 
-fwrite(proportion_eolmed_pod, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_eolmed_pod.csv"))
+fwrite(proportion_eolmed_pod, here::here("output", "os_reports", "WP2_quality_indicators", "eolmed_pod_RAW.csv"))
 
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_eolmed_pod.csv")))
+knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "eolmed_pod_RAW.csv")))
 
 #By cause of death 
 proportion_eolmed_cod <- df %>%
@@ -328,9 +328,9 @@ proportion_eolmed_cod <- df %>%
   mutate(proportion = round(count / total*100,1))
 
 
-fwrite(proportion_eolmed_cod, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_eolmed_cod.csv"))
+fwrite(proportion_eolmed_cod, here::here("output", "os_reports", "WP2_quality_indicators", "eolmed_cod_RAW.csv"))
 
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_eolmed_cod.csv")))
+knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "eolmed_cod_RAW.csv")))
 
 
 ##### Quarterly- in case of small numbers #####
@@ -349,9 +349,9 @@ proportion_palcare_pod_rounding_quarter <- df %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
   mutate(proportion = round(count / total*100,1))
 
-fwrite(proportion_palcare_pod_rounding_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_pod_rounding_quarter.csv"))
+fwrite(proportion_palcare_pod_rounding_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "palcare_pod_quarter_ROUND.csv"))
 
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_pod_rounding_quarter.csv")))
+knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "palcare_pod_quarter_ROUND.csv")))
 
 #By cause of death 
 proportion_palcare_cod_rounding_quarter <- df %>%
@@ -365,9 +365,9 @@ proportion_palcare_cod_rounding_quarter <- df %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
   mutate(proportion = round(count / total*100,1))
 
-fwrite(proportion_palcare_cod_rounding_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_cod_rounding_quarter.csv"))
+fwrite(proportion_palcare_cod_rounding_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "palcare_cod_quarter_ROUND.csv"))
 
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_cod_rounding_quarter.csv")))
+knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "palcare_cod_quarter_ROUND.csv")))
 
 #Quarterly Palliative care recorded, not for release--------------------------
 #By place of death 
@@ -380,9 +380,9 @@ proportion_palcare_pod_quarter <- df %>%
               mutate(pod_ons_new = "All")) %>%
   mutate(proportion = round(count / total*100,1))
 
-fwrite(proportion_palcare_pod_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_pod_quarter.csv"))
+fwrite(proportion_palcare_pod_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "palcare_pod_quarter_RAW.csv"))
 
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_pod_quarter.csv")))
+knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "palcare_pod_quarter_RAW.csv")))
 
 #By cause of death 
 proportion_palcare_cod_quarter <- df %>%
@@ -394,9 +394,9 @@ proportion_palcare_cod_quarter <- df %>%
               mutate(codgrp = "All")) %>%
   mutate(proportion = round(count / total*100,1))
 
-fwrite(proportion_palcare_cod_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_cod_quarter.csv"))
+fwrite(proportion_palcare_cod_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "palcare_cod_quarter_RAW.csv"))
 
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_palcare_cod_quarter.csv")))
+knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "palcare_cod_quarter_RAW.csv")))
 
 
 #Quarterly At least one A&E visits last 3 months of life, with rounding --------------------------
@@ -412,9 +412,9 @@ proportion_aevis1_3m_pod_rounding_quarter <- df %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
   mutate(proportion = round(count / total*100,1))
 
-fwrite(proportion_aevis1_3m_pod_rounding_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_pod_rounding_quarter.csv"))
+fwrite(proportion_aevis1_3m_pod_rounding_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "aevis1_pod_quarter_ROUND.csv"))
 
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_pod_rounding_quarter.csv")))
+knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "aevis1_pod_quarter_ROUND.csv")))
 
 #By cause of death 
 proportion_aevis1_3m_cod_rounding_quarter <- df %>% 
@@ -428,9 +428,9 @@ proportion_aevis1_3m_cod_rounding_quarter <- df %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
   mutate(proportion = round(count / total*100,1))
 
-fwrite(proportion_aevis1_3m_cod_rounding_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_cod_rounding_quarter.csv"))
+fwrite(proportion_aevis1_3m_cod_rounding_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "aevis1_cod_quarter_ROUND.csv"))
 
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_cod_rounding_quarter.csv")))
+knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "aevis1_cod_quarter_ROUND.csv")))
 
 #Quarterly At least one A&E visits last 3 months of life, not for release --------------------------
 #By place of death 
@@ -443,9 +443,9 @@ proportion_aevis1_3m_pod_quarter <- df %>%
               mutate(pod_ons_new = "All")) %>%
   mutate(proportion = round(count / total*100,1))
 
-fwrite(proportion_aevis1_3m_pod_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_pod_quarter.csv"))
+fwrite(proportion_aevis1_3m_pod_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "aevis1_pod_quarter_RAW.csv"))
 
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_pod_quarter.csv")))
+knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "aevis1_pod_quarter_RAW.csv")))
 
 #By cause of death 
 proportion_aevis1_3m_cod_quarter <- df %>% 
@@ -457,9 +457,9 @@ proportion_aevis1_3m_cod_quarter <- df %>%
               mutate(codgrp = "All")) %>%
   mutate(proportion = round(count / total*100,1))
 
-fwrite(proportion_aevis1_3m_cod_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_cod_quarter.csv"))
+fwrite(proportion_aevis1_3m_cod_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "aevis1_cod_quarter_RAW.csv"))
 
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast1_cod_quarter.csv")))
+knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "aevis1_cod_quarter_RAW.csv")))
 
 #Quarterly At least 3 A&E visits last 3 months of life, with rounding --------------------------
 #By place of death 
@@ -474,9 +474,9 @@ proportion_aevis3_3m_pod_rounding_quarter <- df %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
   mutate(proportion = round(count / total*100,1))
 
-fwrite(proportion_aevis3_3m_pod_rounding_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_pod_rounding_quarter.csv"))
+fwrite(proportion_aevis3_3m_pod_rounding_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "aevis3_pod_quarter_ROUND.csv"))
 
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_pod_rounding_quarter.csv")))
+knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "aevis3_pod_quarter_ROUND.csv")))
 
 #By cause of death 
 proportion_aevis3_3m_cod_rounding_quarter <- df %>% 
@@ -490,9 +490,9 @@ proportion_aevis3_3m_cod_rounding_quarter <- df %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
   mutate(proportion = round(count / total*100,1))
 
-fwrite(proportion_aevis3_3m_cod_rounding_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_cod_rounding_quarter.csv"))
+fwrite(proportion_aevis3_3m_cod_rounding_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "aevis3_cod_quarter_ROUND.csv"))
 
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_cod_rounding_quarter.csv")))
+knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "aevis3_cod_quarter_ROUND.csv")))
 
 
 #Quarterly At least 3 A&E visits last 3 months of life, not for release --------------------------
@@ -506,9 +506,9 @@ proportion_aevis3_3m_pod_quarter <- df %>%
               mutate(pod_ons_new = "All")) %>%
   mutate(proportion = round(count / total*100,1))
 
-fwrite(proportion_aevis3_3m_pod_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_pod_quarter.csv"))
+fwrite(proportion_aevis3_3m_pod_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "aevis3_pod_quarter_RAW.csv"))
 
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_pod_quarter.csv")))
+knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "aevis3_pod_quarter_RAW.csv")))
 
 #By cause of death 
 proportion_aevis3_3m_cod_quarter <- df %>% 
@@ -520,9 +520,9 @@ proportion_aevis3_3m_cod_quarter <- df %>%
               mutate(codgrp = "All")) %>%
   mutate(proportion = round(count / total*100,1))
 
-fwrite(proportion_aevis3_3m_cod_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_cod_quarter.csv"))
+fwrite(proportion_aevis3_3m_cod_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "aevis3_cod_quarter_RAW.csv"))
 
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_aevis_atleast3_cod_quarter.csv")))
+knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "aevis3_cod_quarter_RAW.csv")))
 
 ###### Quarterly medications prescribed for symptom management in the last three months of life
 
@@ -539,9 +539,9 @@ proportion_eolmed_pod_rounding_quarter <- df %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
   mutate(proportion = round(count / total*100,1))
 
-fwrite(proportion_eolmed_pod_rounding_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_eolmed_pod_rounding_quarter.csv"))
+fwrite(proportion_eolmed_pod_rounding_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "eolmed_pod_quarter_ROUND.csv"))
 
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_eolmed_pod_rounding_quarter.csv")))
+knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "eolmed_pod_quarter_ROUND.csv")))
 
 #By cause of death 
 proportion_eolmed_cod_rounding_quarter <- df %>%
@@ -555,9 +555,9 @@ proportion_eolmed_cod_rounding_quarter <- df %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
   mutate(proportion = round(count / total*100,1))
 
-fwrite(proportion_eolmed_cod_rounding_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_eolmed_cod_rounding_quarter.csv"))
+fwrite(proportion_eolmed_cod_rounding_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "eolmed_cod_quarter_ROUND.csv"))
 
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_eolmed_cod_rounding_quarter.csv")))
+knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "eolmed_cod_quarter_ROUND.csv")))
 
 #Quarterly medications prescribed for symptom management recorded, not for release--------------------------
 #By place of death 
@@ -570,9 +570,9 @@ proportion_eolmed_pod_quarter <- df %>%
               mutate(pod_ons_new = "All")) %>%
   mutate(proportion = round(count / total*100,1))
 
-fwrite(proportion_eolmed_pod_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_eolmed_pod_quarter.csv"))
+fwrite(proportion_eolmed_pod_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "eolmed_pod_quarter_RAW.csv"))
 
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_eolmed_pod_quarter.csv")))
+knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "eolmed_pod_quarter_RAW.csv")))
 
 #By cause of death 
 proportion_eolmed_cod_quarter <- df %>%
@@ -584,9 +584,9 @@ proportion_eolmed_cod_quarter <- df %>%
               mutate(codgrp = "All")) %>%
   mutate(proportion = round(count / total*100,1))
 
-fwrite(proportion_eolmed_cod_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_eolmed_cod_quarter.csv"))
+fwrite(proportion_eolmed_cod_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "eolmed_cod_quarter_RAW.csv"))
 
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_eolmed_cod_quarter.csv")))
+knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "eolmed_cod_quarter_RAW.csv")))
 
 ### New quality measures-------------------------------
 #Specialist palliative care, with rounding---------------------
@@ -603,9 +603,9 @@ proportion_spec_pod_rounding <- df %>%
   mutate(proportion = round(count / total*100,1))
 
 
-fwrite(proportion_spec_pod_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_spec_pod_rounding.csv"))
+fwrite(proportion_spec_pod_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "specpal_pod_ROUND.csv"))
 
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_spec_pod_rounding.csv")))
+knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "specpal_pod_ROUND.csv")))
 
 #cause of death 
 proportion_spec_cod_rounding <- df %>%
@@ -619,9 +619,9 @@ proportion_spec_cod_rounding <- df %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
   mutate(proportion = round(count / total*100,1))
 
-fwrite(proportion_spec_cod_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_spec_cod_rounding.csv"))
+fwrite(proportion_spec_cod_rounding, here::here("output", "os_reports", "WP2_quality_indicators", "specpal_cod_ROUND.csv"))
 
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_spec_cod_rounding.csv")))
+knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "specpal_cod_ROUND.csv")))
 
 #Specialist palliative care- not for release--------------------
 #Place of death
@@ -635,9 +635,9 @@ proportion_spec_pod <- df %>%
   mutate(proportion = round(count / total*100,1))
 
 
-fwrite(proportion_spec_pod, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_spec_pod.csv"))
+fwrite(proportion_spec_pod, here::here("output", "os_reports", "WP2_quality_indicators", "specpal_pod_RAW.csv"))
 
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_spec_pod.csv")))
+knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "specpal_pod_RAW.csv")))
 
 #cause of death 
 proportion_spec_cod <- df %>%
@@ -649,9 +649,9 @@ proportion_spec_cod <- df %>%
               mutate(codgrp = "All")) %>%
   mutate(proportion = round(count / total*100,1))
 
-fwrite(proportion_spec_cod, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_spec_cod.csv"))
+fwrite(proportion_spec_cod, here::here("output", "os_reports", "WP2_quality_indicators", "specpal_cod_RAW.csv"))
 
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_spec_cod.csv")))
+knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "specpal_cod_RAW.csv")))
 
 ##quarterly specialist palliative care --------------
 #Place of death
@@ -667,9 +667,9 @@ proportion_spec_pod_rounding_quarter <- df %>%
   mutate(proportion = round(count / total*100,1))
 
 
-fwrite(proportion_spec_pod_rounding_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_spec_pod_rounding_quarter.csv"))
+fwrite(proportion_spec_pod_rounding_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "specpal_pod_quarter_ROUND.csv"))
 
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_spec_pod_rounding_quarter.csv")))
+knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "specpal_pod_quarter_ROUND.csv")))
 
 #cause of death 
 proportion_spec_cod_rounding_quarter <- df %>%
@@ -683,9 +683,9 @@ proportion_spec_cod_rounding_quarter <- df %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
   mutate(proportion = round(count / total*100,1))
 
-fwrite(proportion_spec_cod_rounding_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_spec_cod_rounding_quarter.csv"))
+fwrite(proportion_spec_cod_rounding_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "specpal_cod_quarter_ROUND.csv"))
 
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_spec_cod_rounding_quarter.csv")))
+knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "specpal_cod_quarter_ROUND.csv")))
 
 #Specialist palliative care- not for release--------------------
 #Place of death
@@ -699,9 +699,9 @@ proportion_spec_pod_quarter <- df %>%
   mutate(proportion = round(count / total*100,1))
 
 
-fwrite(proportion_spec_pod_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_spec_pod_quarter.csv"))
+fwrite(proportion_spec_pod_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "specpal_pod_quarter_RAW.csv"))
 
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_spec_pod_quarter.csv")))
+knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "specpal_pod_quarter_RAW.csv")))
 
 #cause of death 
 proportion_spec_cod_quarter <- df %>%
@@ -713,9 +713,9 @@ proportion_spec_cod_quarter <- df %>%
               mutate(codgrp = "All")) %>%
   mutate(proportion = round(count / total*100,1))
 
-fwrite(proportion_spec_cod_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_spec_cod_quarter.csv"))
+fwrite(proportion_spec_cod_quarter, here::here("output", "os_reports", "WP2_quality_indicators", "specpal_cod_quarter_RAW.csv"))
 
-knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "proportion_spec_cod_quarter.csv")))
+knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "specpal_cod_quarter_RAW.csv")))
 
 
 
