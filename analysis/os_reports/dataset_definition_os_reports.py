@@ -85,11 +85,11 @@ dataset.age_band = case(
 )
 
 ## Ethnicity
-ethnicity_codelist = codelist_from_csv(
-    "ethnicity_codelist_with_categories",
-    column="snomedcode",
-    category_column="Grouping_6",
-)
+# ethnicity_codelist = codelist_from_csv(
+#     "ethnicity_codelist_with_categories",
+#     column="snomedcode",
+#     category_column="Grouping_6",
+# )
 
 dataset.latest_ethnicity_code = (
     clinical_events.where(clinical_events.snomedct_code.is_in(ethnicity_codelist))
