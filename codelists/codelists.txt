@@ -32,6 +32,7 @@ opensafely/hyoscine-butylbromide-subcutaneous-formulations/252fefa4
 opensafely/levomepromazine-subcutaneous/40f222cf
 opensafely/morphine-subcutaneous-dmd/1185fc5b
 opensafely/oxycodone-subcutaneous-dmd/2a956f90
+opensafely/ethnicity-snomed-0removed/2e641f61
 
 opensafely/diamorphine-subcutaneous/1438bc51
 opensafely/hyoscine-hydrobromide-subcutaneous/6219d5e6

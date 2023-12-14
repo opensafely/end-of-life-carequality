@@ -1,10 +1,10 @@
-code,term,dmd_id
-36053511000001109,Haloperidol 5mg/1ml solution for injection ampoules,36053511000001109
-3245411000001107,Haloperidol 5mg/1ml solution for injection ampoules,3245411000001107
-10684411000001101,Haloperidol 5mg/1ml solution for injection ampoules,10684411000001101
-3247411000001101,Haloperidol 5mg/1ml solution for injection ampoules,3247411000001101
-37901111000001101,Haloperidol 5mg/1ml solution for injection ampoules,37901111000001101
-30994611000001101,Haloperidol 5mg/1ml solution for injection ampoules,30994611000001101
-3246911000001106,Haldol 5mg/1ml solution for injection ampoules,3246911000001106
-3245711000001101,Serenace 5mg/1ml solution for injection ampoules,3245711000001101
-321452008,VMP previous to 36053511000001109,321452008
+code,term,dmd_id,dmd_type,bnf_code
+36053511000001109,Haloperidol 5mg/1ml solution for injection ampoules,36053511000001109,VMP,0402010J0AAACAC
+3245411000001107,Haloperidol 5mg/1ml solution for injection ampoules,3245411000001107,AMP,0402010J0AAACAC
+10684411000001101,Haloperidol 5mg/1ml solution for injection ampoules,10684411000001101,AMP,0402010J0AAACAC
+3247411000001101,Haloperidol 5mg/1ml solution for injection ampoules,3247411000001101,AMP,0402010J0AAACAC
+37901111000001101,Haloperidol 5mg/1ml solution for injection ampoules,37901111000001101,AMP,0402010J0AAACAC
+30994611000001101,Haloperidol 5mg/1ml solution for injection ampoules,30994611000001101,AMP,0402010J0AAACAC
+3246911000001106,Haldol 5mg/1ml solution for injection ampoules,3246911000001106,AMP,0402010J0BDAEAC
+3245711000001101,Serenace 5mg/1ml solution for injection ampoules,3245711000001101,AMP,0402010J0BEAGAC
+321452008,VMP previous to 36053511000001109,321452008,VMP,0402010J0AAACAC

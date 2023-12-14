@@ -1,20 +1,20 @@
-code,term,dmd_id
-36044311000001104,Hyoscine hydrobromide 400micrograms/1ml solution for injection ampoules,36044311000001104
-3790211000001103,Hyoscine hydrobromide 400micrograms/1ml solution for injection ampoules,3790211000001103
-3791811000001105,Hyoscine hydrobromide 400micrograms/1ml solution for injection ampoules,3791811000001105
-37390211000001109,Hyoscine hydrobromide 400micrograms/1ml solution for injection ampoules,37390211000001109
-3791211000001109,Hyoscine hydrobromide 400micrograms/1ml solution for injection ampoules,3791211000001109
-32456211000001109,Hyoscine hydrobromide 400micrograms/1ml solution for injection ampoules,32456211000001109
-3790611000001101,Hyoscine hydrobromide 400micrograms/1ml solution for injection ampoules,3790611000001101
-9470711000001108,Hyoscine hydrobromide 400micrograms/1ml solution for injection ampoules,9470711000001108
-36044411000001106,Hyoscine hydrobromide 600micrograms/1ml solution for injection ampoules,36044411000001106
-3857611000001109,Hyoscine hydrobromide 600micrograms/1ml solution for injection ampoules,3857611000001109
-3858811000001107,Hyoscine hydrobromide 600micrograms/1ml solution for injection ampoules,3858811000001107
-37390711000001102,Hyoscine hydrobromide 600micrograms/1ml solution for injection ampoules,37390711000001102
-29210111000001102,Hyoscine hydrobromide 600micrograms/1ml solution for injection ampoules,29210111000001102
-23216511000001106,Hyoscine hydrobromide 600micrograms/1ml solution for injection ampoules,23216511000001106
-3858211000001106,Hyoscine hydrobromide 600micrograms/1ml solution for injection ampoules,3858211000001106
-23938211000001104,Hyoscine hydrobromide 600micrograms/1ml solution for injection ampoules,23938211000001104
-9470911000001105,Hyoscine hydrobromide 600micrograms/1ml solution for injection ampoules,9470911000001105
-354041006,VMP previous to 36044311000001104,354041006
-354042004,VMP previous to 36044411000001106,354042004
+code,term,dmd_id,dmd_type,bnf_code
+36044311000001104,Hyoscine hydrobromide 400micrograms/1ml solution for injection ampoules,36044311000001104,VMP,1501030H0AAAAAA
+3790211000001103,Hyoscine hydrobromide 400micrograms/1ml solution for injection ampoules,3790211000001103,AMP,1501030H0AAAAAA
+3791811000001105,Hyoscine hydrobromide 400micrograms/1ml solution for injection ampoules,3791811000001105,AMP,1501030H0AAAAAA
+37390211000001109,Hyoscine hydrobromide 400micrograms/1ml solution for injection ampoules,37390211000001109,AMP,1501030H0AAAAAA
+3791211000001109,Hyoscine hydrobromide 400micrograms/1ml solution for injection ampoules,3791211000001109,AMP,1501030H0AAAAAA
+32456211000001109,Hyoscine hydrobromide 400micrograms/1ml solution for injection ampoules,32456211000001109,AMP,1501030H0AAAAAA
+3790611000001101,Hyoscine hydrobromide 400micrograms/1ml solution for injection ampoules,3790611000001101,AMP,1501030H0AAAAAA
+9470711000001108,Hyoscine hydrobromide 400micrograms/1ml solution for injection ampoules,9470711000001108,AMP,1501030H0AAAAAA
+36044411000001106,Hyoscine hydrobromide 600micrograms/1ml solution for injection ampoules,36044411000001106,VMP,1501030H0AAABAB
+3857611000001109,Hyoscine hydrobromide 600micrograms/1ml solution for injection ampoules,3857611000001109,AMP,1501030H0AAABAB
+3858811000001107,Hyoscine hydrobromide 600micrograms/1ml solution for injection ampoules,3858811000001107,AMP,1501030H0AAABAB
+37390711000001102,Hyoscine hydrobromide 600micrograms/1ml solution for injection ampoules,37390711000001102,AMP,1501030H0AAABAB
+29210111000001102,Hyoscine hydrobromide 600micrograms/1ml solution for injection ampoules,29210111000001102,AMP,1501030H0AAABAB
+23216511000001106,Hyoscine hydrobromide 600micrograms/1ml solution for injection ampoules,23216511000001106,AMP,1501030H0AAABAB
+3858211000001106,Hyoscine hydrobromide 600micrograms/1ml solution for injection ampoules,3858211000001106,AMP,1501030H0AAABAB
+23938211000001104,Hyoscine hydrobromide 600micrograms/1ml solution for injection ampoules,23938211000001104,AMP,1501030H0AAABAB
+9470911000001105,Hyoscine hydrobromide 600micrograms/1ml solution for injection ampoules,9470911000001105,AMP,1501030H0AAABAB
+354041006,VMP previous to 36044311000001104,354041006,VMP,1501030H0AAAAAA
+354042004,VMP previous to 36044411000001106,354042004,VMP,1501030H0AAABAB
