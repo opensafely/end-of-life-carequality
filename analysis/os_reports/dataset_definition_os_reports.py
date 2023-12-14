@@ -22,7 +22,7 @@ from ehrql.tables.beta.tpp import (
 # Import codelists from the codelist folder
 
 import codelists
-
+from ehrql import codelist_from_csv
 ## KEY VARIABLES ##
 
 earliest_date = "2018-12-01"
@@ -69,30 +69,30 @@ dataset.cod_ons = ons_deaths.underlying_cause_of_death
 dataset.sex = patients.sex
 
 ## Age band 
-age = patients.age_on(dod_ons)
+# age = patients.age_on(dod_ons)
 
-dataset.age_band = case(
-        when(age < 20).then("0-19"),
-        when(age < 30).then("20-29"),
-        when(age < 40).then("30-39"),
-        when(age < 50).then("40-49"),
-        when(age < 60).then("50-59"),
-        when(age < 70).then("60-69"),
-        when(age < 80).then("70-79"),
-        when(age < 90).then("80-89"),
-        when(age >= 90).then("90+"),
-        otherwise="missing",
-)
-
-## Ethnicity
-# ethnicity_codelist = codelist_from_csv(
-#     "ethnicity_codelist_with_categories",
-#     column="snomedcode",
-#     category_column="Grouping_6",
+# dataset.age_band = case(
+#         when(age < 20).then("0-19"),
+#         when(age < 30).then("20-29"),
+#         when(age < 40).then("30-39"),
+#         when(age < 50).then("40-49"),
+#         when(age < 60).then("50-59"),
+#         when(age < 70).then("60-69"),
+#         when(age < 80).then("70-79"),
+#         when(age < 90).then("80-89"),
+#         when(age >= 90).then("90+"),
+#         otherwise="missing",
 # )
 
+## Ethnicity
+ethnicity_codelist = codelist_from_csv(
+    "ethnicity_codelist_with_categories",
+    column="snomedcode",
+    category_column="Grouping_6",
+)
+
 dataset.latest_ethnicity_code = (
-    clinical_events.where(clinical_events.snomedct_code.is_in(ethnicity_codelist))
+    clinical_events.where(clinical_events.snomedct_code.is_in(codelist.ethnicity_codelist))
     .where(clinical_events.date.is_on_or_before(dod_ons))
     .sort_by(clinical_events.date)
     .last_for_patient()
