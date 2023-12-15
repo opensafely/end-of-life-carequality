@@ -12,7 +12,7 @@ ethnicity_codes_6 = codelist_from_csv(
     category_column = "Grouping_6",
 )
 
-ethnicity_codelist = codelist_from_csv(
+ethnicity_codelist_with_categories = codelist_from_csv(
     "codelists/opensafely-ethnicity-snomed-0removed.csv",
     column = "snomedcode",
     category_column = "Grouping_6"
