@@ -246,7 +246,7 @@ NT_style <- function(){
 
 # Code settings
 
-startdate <- dmy("01-12-2018")
+startdate <- dmy("01-03-2019")
 enddate <- dmy("31-08-2023")
 
 # Deaths
