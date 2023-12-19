@@ -20,7 +20,7 @@ fs::dir_create("output", "os_reports", "WP2_quality_indicators")
 
 # Code settings -----------------------------------------------------------
 # need to decide on this
-startdate <- dmy("01-12-2018")
+startdate <- dmy("01-03-2019")
 enddate <- dmy("31-08-2023")
 
 
