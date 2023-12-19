@@ -100,16 +100,16 @@ dataset.latest_ethnicity_code = (
     .snomedct_code
 )
 
-dataset.latest_ethnicity_group = dataset.latest_ethnicity_code.to_category(
+latest_ethnicity_group = dataset.latest_ethnicity_code.to_category(
     ethnicity_codelist_with_categories
 )
 
 dataset.ethnity_new = case(
-  when(latest_ethnicity_group = 1). then("White"),
-  when(latest_ethnicity_group = 2). then("Mixed"),
-  when(latest_ethnicity_group = 3). then("Asian or Asian British"),
-  when(latest_ethnicity_group = 4). then("Black or Black British"),
-  when(latest_ethnicity_group = 5). then("Chinese or Other Ethnic Groups"),
+  when(latest_ethnicity_group == "1").then("White"),
+  when(latest_ethnicity_group == "2").then("Mixed"),
+  when(latest_ethnicity_group == "3").then("Asian or Asian British"),
+  when(latest_ethnicity_group == "4").then("Black or Black British"),
+  when(latest_ethnicity_group == "5").then("Chinese or Other Ethnic Groups"),
   otherwise="Not stated",
 )
 
