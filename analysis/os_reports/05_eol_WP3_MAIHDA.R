@@ -15,7 +15,7 @@ library(data.table)
 
 # Create folder structure
 
-fs::dir_create("output", "os_reports", "eol_service")
+fs::dir_create("output", "os_reports", "WP3")
 
 # Code settings
 
