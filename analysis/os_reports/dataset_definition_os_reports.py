@@ -104,7 +104,7 @@ latest_ethnicity_group = dataset.latest_ethnicity_code.to_category(
     ethnicity_codelist_with_categories
 )
 
-dataset.ethnity_new = case(
+dataset.ethnicity_new = case(
   when(latest_ethnicity_group == "1").then("White"),
   when(latest_ethnicity_group == "2").then("Mixed"),
   when(latest_ethnicity_group == "3").then("Asian or Asian British"),

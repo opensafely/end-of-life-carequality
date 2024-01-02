@@ -28,7 +28,7 @@ df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.g
   mutate(dod_ons = as_date(dod_ons)
          , sex = (sex)
          , age_band = (age_band)
-         , ethnicity = (ethnicity)
+         , ethnicity = (ethnicity_new)
          , imd_rounded = (imd_quintile)
          , study_month = floor_date(dod_ons, unit = "month")
          , pod_ons_new = case_when(pod_ons == "Elsewhere" 
@@ -68,7 +68,7 @@ count_by_sex_age_band <- df %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
 
-fwrite(count_by_sex_age_band, here::here("output", "os_reports", "eol_service", "count_by_age_band.csv"))
+fwrite(count_by_sex_age_band, here::here("output", "os_reports", "eol_service", "count_by_sex_age_band.csv"))
 
 count_by_ethnicity <- df %>%
   count(ethnicity) %>%
@@ -91,8 +91,67 @@ count_by_group <- df %>%
   
 fwrite(count_by_group, here::here("output", "os_reports", "eol_service", "count_by_group.csv"))
 
+# Descriptive analysis to inform modelling for cancer deaths at home - counts of age_band / sex / ethnicity and imd_rounded ------
 
+cancer_count_by_sex <- df %>%
+  filter(codgrp == "Cancer"
+         & pod_ons_new == "Home") %>%
+  group_by(sex) %>%
+  count(sex) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
 
+fwrite(cancer_count_by_sex, here::here("output", "os_reports", "eol_service", "cancer_count_by_sex.csv"))
+
+cancer_count_by_age_band <- df %>%
+  filter(codgrp == "Cancer"
+         & pod_ons_new == "Home") %>%
+  group_by(age_band) %>%
+  count(age_band) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+
+fwrite(cancer_count_by_age_band, here::here("output", "os_reports", "eol_service", "cancer_count_by_age_band.csv"))
+
+cancer_count_by_sex_age_band <- df %>%
+  filter(codgrp == "Cancer"
+         & pod_ons_new == "Home") %>%
+  group_by(sex, age_band) %>%
+  count(sex, age_band) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+
+fwrite(cancer_count_by_sex_age_band, here::here("output", "os_reports", "eol_service", "cancer_count_by_sex_age_band.csv"))
+
+cancer_count_by_ethnicity <- df %>%
+  filter(codgrp == "Cancer"
+         & pod_ons_new == "Home") %>%
+  group_by(ethnicity) %>%
+  count(ethnicity) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+
+fwrite(cancer_count_by_ethnicity, here::here("output", "os_reports", "eol_service", "cancer_count_by_ethnicity.csv"))
+
+cancer_count_by_imd_quintile <- df %>%
+  filter(codgrp == "Cancer"
+         & pod_ons_new == "Home") %>%
+  group_by(imd_quintile) %>%
+  count(imd_quintile) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+
+fwrite(cancer_count_by_imd_quintile, here::here("output", "os_reports", "eol_service", "cancer_count_by_imd_quintile.csv"))
+
+cancer_count_by_group <- df %>%
+  filter(codgrp == "Cancer"
+         & pod_ons_new == "Home") %>%
+  group_by(sex, age_band, imd_quintile, ethnicity) %>%
+  count(sex, age_band, imd_quintile, ethnicity) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+
+fwrite(cancer_count_by_group, here::here("output", "os_reports", "eol_service", "cancer_count_by_group.csv"))
 
 
 
