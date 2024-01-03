@@ -245,6 +245,12 @@
       "url": "https://codelists.opensafely.org/codelist/user/sophie_julian/specialist-palliative-care/46ad6a6e/",
       "downloaded_at": "2023-12-07 10:46:13.283165Z",
       "sha": "d923dff1a66002ee51a1a679c07995997de9b0ab"
+    },
+    "user-stuti_bagri-care_plan_palcare.csv": {
+      "id": "user/stuti_bagri/care_plan_palcare/24b59acb",
+      "url": "https://codelists.opensafely.org/codelist/user/stuti_bagri/care_plan_palcare/24b59acb/",
+      "downloaded_at": "2023-11-15 17:08:31.037803Z",
+      "sha": "91a65d14dfd312448e7c0504e87897e5e60729ad"
     }
   }
 }
