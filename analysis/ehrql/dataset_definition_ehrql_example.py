@@ -33,9 +33,7 @@ date_range = (earliest_date, latest_date)
 
 dataset = Dataset()
 
-last_ons_death = ons_deaths.sort_by(ons_deaths.date).last_for_patient()
-
-dod_ons = last_ons_death.date
+dod_ons = ons_deaths.date
 
 has_died = dod_ons.is_on_or_between(*date_range)
 
@@ -56,13 +54,13 @@ dataset.define_population(
 ## Key cohort variables ##
 
 ## ONS date of death
-dataset.dod_ons = last_ons_death.date
+dataset.dod_ons = ons_deaths.date
 
 ## ONS place of death
-dataset.pod_ons = last_ons_death.place
+dataset.pod_ons = ons_deaths.place
 
 ## ONS cause of death
-dataset.cod_ons = last_ons_death.underlying_cause_of_death
+dataset.cod_ons = ons_deaths.underlying_cause_of_death
 
 ## Demographics ##
 
