@@ -208,7 +208,7 @@ acp3m_pod_quarters_rounded <- df %>%
                         mean = mean(careplan_3m, na.rm=TRUE),
                         sd = sd(careplan_3m, na.rm=TRUE)) %>%
               mutate(pod_ons_new = "All") %>% 
-  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))))
+              mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))))
 
 fwrite(acp3m_pod_quarters_rounded, here::here("output", "os_reports", "WP2_quality_indicators", "acp3m_pod_quarters_rounded.csv"))
 
@@ -244,7 +244,7 @@ acp3m_pod_months_rounded <- df %>%
                         mean = mean(careplan_3m, na.rm=TRUE),
                         sd = sd(careplan_3m, na.rm=TRUE)) %>%
               mutate(pod_ons_new = "All") %>% 
-  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))))
+              mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))))
 
 fwrite(acp3m_pod_months_rounded, here::here("output", "os_reports", "WP2_quality_indicators", "acp3m_pod_months_rounded.csv"))
 
@@ -282,7 +282,7 @@ acp3m_cod_quarters_rounded <- df %>%
                         mean = mean(careplan_3m, na.rm=TRUE),
                         sd = sd(careplan_3m, na.rm=TRUE)) %>%
               mutate(codgrp = "All") %>% 
-  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))))
+              mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))))
 
 fwrite(acp3m_cod_quarters_rounded, here::here("output", "os_reports", "WP2_quality_indicators", "acp3m_cod_quarters_rounded.csv"))
 
@@ -318,7 +318,7 @@ acp3m_cod_months_rounded <- df %>%
                         mean = mean(careplan_3m, na.rm=TRUE),
                         sd = sd(careplan_3m, na.rm=TRUE)) %>%
               mutate(codgrp = "All") %>% 
-  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))))
+              mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))))
 
 fwrite(acp3m_cod_months_rounded, here::here("output", "os_reports", "WP2_quality_indicators", "acp3m_cod_months_rounded.csv"))
 
@@ -359,7 +359,7 @@ acpdur_pod_quarters_rounded <- df %>%
                         median = median(length_careplan, na.rm = TRUE),
                         sd = sd(length_careplan, na.rm=TRUE)) %>%
               mutate(pod_ons_new = "All") %>% 
-  mutate(across(c(mean, median, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))))
+              mutate(across(c(mean, median, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))))
 
 fwrite(acpdur_pod_quarters_rounded, here::here("output", "os_reports", "WP2_quality_indicators", "acpdur_pod_quarters_rounded.csv"))
 
@@ -401,7 +401,7 @@ acpdur_pod_months_rounded <- df %>%
                         median = median(length_careplan, na.rm = TRUE),
                         sd = sd(length_careplan, na.rm=TRUE)) %>%
               mutate(pod_ons_new = "All") %>% 
-  mutate(across(c(mean, median, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))))
+              mutate(across(c(mean, median, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))))
 
 fwrite(acpdur_pod_months_rounded, here::here("output", "os_reports", "WP2_quality_indicators", "acpdur_pod_months_rounded.csv"))
 
@@ -445,7 +445,7 @@ acpdur_cod_quarters_rounded <- df %>%
                         median = median(length_careplan, na.rm = TRUE),
                         sd = sd(length_careplan, na.rm=TRUE)) %>%
               mutate(codgrp = "All") %>% 
-  mutate(across(c(mean, median, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))))
+              mutate(across(c(mean, median, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))))
 
 fwrite(acpdur_cod_quarters_rounded, here::here("output", "os_reports", "WP2_quality_indicators", "acpdur_cod_quarters_rounded.csv"))
 
@@ -487,7 +487,7 @@ acpdur_cod_months_rounded <- df %>%
                         median = median(length_careplan, na.rm = TRUE),
                         sd = sd(length_careplan, na.rm=TRUE)) %>%
               mutate(codgrp = "All") %>% 
-  mutate(across(c(mean, median, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))))
+              mutate(across(c(mean, median, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))))
 
 fwrite(acpdur_cod_months_rounded, here::here("output", "os_reports", "WP2_quality_indicators", "acpdur_cod_months_rounded.csv"))
 
