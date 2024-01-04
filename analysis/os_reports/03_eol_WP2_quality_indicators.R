@@ -716,5 +716,36 @@ fwrite(proportion_spec_cod_quarter, here::here("output", "os_reports", "WP2_qual
 
 knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators", "specpal_cod_quarter_RAW.csv")))
 
+#Palliative care break down for cancer deaths -----------
+
+proportion_cancer_palcare_pod <- df %>%
+  filter(codgrp == "Cancer") %>%
+  group_by(study_month, pod_ons_new) %>%
+  summarise(count = sum(palliative_3m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = sum(palliative_3m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(pod_ons_new = "All")) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
+  mutate(proportion = round(count / total*100,1))
+
+fwrite(proportion_cancer_palcare_pod, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_cancer_palcare.csv"))
+
+# specialist ---
+
+proportion_cancer_spec_pod <- df %>%
+  filter(codgrp == "Cancer") %>%
+  group_by(study_month, pod_ons_new) %>%
+  summarise(count = sum(specialist_3m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_month) %>%
+              summarise(count = sum(specialist_3m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(pod_ons_new = "All")) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
+  mutate(proportion = round(count / total*100,1))
+
+fwrite(proportion_cancer_spec_pod, here::here("output", "os_reports", "WP2_quality_indicators", "proportion_cancer_spec.csv"))
 
 
