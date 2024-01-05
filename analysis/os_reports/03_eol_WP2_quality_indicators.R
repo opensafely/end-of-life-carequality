@@ -732,6 +732,24 @@ cancer_palcare_pod <- df %>%
 
 fwrite(cancer_palcare_pod, here::here("output", "os_reports", "WP2_quality_indicators", "cancer_palcare_ROUND.csv"))
 
+# quarterly ------
+
+cancer_palcare_pod_quarterly <- df %>%
+  filter(codgrp == "Cancer") %>%
+  group_by(study_quarter, pod_ons_new) %>%
+  summarise(count = sum(palliative_3m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_quarter) %>%
+              summarise(count = sum(palliative_3m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(pod_ons_new = "All")) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
+  mutate(proportion = round(count / total*100,1))
+
+fwrite(cancer_palcare_pod_quarterly, here::here("output", "os_reports", "WP2_quality_indicators", "cancer_palcare_ROUND_quarter.csv"))
+
+
+
 # specialist ---
 
 cancer_spec_pod <- df %>%
@@ -748,4 +766,19 @@ cancer_spec_pod <- df %>%
 
 fwrite(cancer_spec_pod, here::here("output", "os_reports", "WP2_quality_indicators", "cancer_spec_ROUND.csv"))
 
+#quarterly----
+
+cancer_spec_pod_quarterly <- df %>%
+  filter(codgrp == "Cancer") %>%
+  group_by(study_quarter, pod_ons_new) %>%
+  summarise(count = sum(specialist_3m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_quarter) %>%
+              summarise(count = sum(specialist_3m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(pod_ons_new = "All")) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
+  mutate(proportion = round(count / total*100,1))
+
+fwrite(cancer_spec_pod_quarterly, here::here("output", "os_reports", "WP2_quality_indicators", "cancer_spec_ROUND_quarter.csv"))
 
