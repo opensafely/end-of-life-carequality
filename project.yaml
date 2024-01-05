@@ -65,7 +65,8 @@ actions:
         proportion_aeviv1: output/os_reports/WP2_quality_indicators/aevis1*.csv
         proportion_aevis3: output/os_reports/WP2_quality_indicators/aevis3*.csv
         proportion_eolmed: output/os_reports/WP2_quality_indicators/eolmed*.csv
-        proportion_specpal_code: output/os_reports/WP2_quality_indicators/specpal*.csv  
+        proportion_specpal_code: output/os_reports/WP2_quality_indicators/specpal*.csv
+        proportion_cancer_palcare: output/os_reports/WP2_quality_indicators/cancer*.csv   
 
   WP2_outputs (advance care plan codes):
     run: r:latest analysis/os_reports/05_eol_WP2_advance_care_plan_measures.R
