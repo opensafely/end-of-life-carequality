@@ -26,9 +26,6 @@ enddate <- dmy("31-08-2023")
 
 df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.gz")) %>%
   mutate(dod_ons = as_date(dod_ons)
-         , sex = (sex)
-         , age_band = (age_band)
-         , ethnicity = (ethnicity_new)
          , imd_rounded = (imd_quintile)
          , study_month = floor_date(dod_ons, unit = "month")
          , pod_ons_new = case_when(pod_ons == "Elsewhere" 
@@ -71,7 +68,7 @@ count_by_sex_age_band <- df %>%
 fwrite(count_by_sex_age_band, here::here("output", "os_reports", "WP3", "count_by_sex_age_band.csv"))
 
 count_by_ethnicity <- df %>%
-  count(ethnicity) %>%
+  count(ethnicity_new) %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
 
@@ -85,7 +82,7 @@ count_by_imd_quintile <- df %>%
 fwrite(count_by_imd_quintile, here::here("output", "os_reports", "WP3", "count_by_imd_quintile.csv"))
 
 count_by_group <- df %>%
-  count(sex, age_band, ethnicity, imd_quintile) %>%
+  count(sex, age_band, ethnicity_new, imd_quintile) %>%
     dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
     dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
   
@@ -126,8 +123,8 @@ fwrite(cancer_count_by_sex_age_band, here::here("output", "os_reports", "WP3", "
 cancer_count_by_ethnicity <- df %>%
   filter(codgrp == "Cancer"
          & pod_ons_new == "Home") %>%
-  group_by(ethnicity) %>%
-  count(ethnicity) %>%
+  group_by(ethnicity_new) %>%
+  count(ethnicity_new) %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
 
@@ -146,17 +143,9 @@ fwrite(cancer_count_by_imd_quintile, here::here("output", "os_reports", "WP3", "
 cancer_count_by_group <- df %>%
   filter(codgrp == "Cancer"
          & pod_ons_new == "Home") %>%
-  group_by(sex, age_band, imd_quintile, ethnicity) %>%
-  count(sex, age_band, imd_quintile, ethnicity) %>%
+  group_by(sex, age_band, imd_quintile, ethnicity_new) %>%
+  count(sex, age_band, imd_quintile, ethnicity_new) %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
 
 fwrite(cancer_count_by_group, here::here("output", "os_reports", "WP3", "cancer_count_by_group.csv"))
-
-
-
-
-
-
-
-
