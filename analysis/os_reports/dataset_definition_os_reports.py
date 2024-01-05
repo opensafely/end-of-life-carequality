@@ -205,3 +205,30 @@ dataset.eol_med_3m = medications.where(
 ).where(
     medications.date.is_on_or_between(dod_ons - days(90), dod_ons)
 ).count_for_patient() 
+
+## Specialist palliative care last 3 months of life
+dataset.specialist_3m = clinical_events.where(
+    clinical_events.snomedct_code.is_in(codelists.specialist_codes)
+).where(
+    clinical_events.date.is_on_or_between(dod_ons - days(90), dod_ons)
+).count_for_patient()
+
+## Advance care plan
+dataset.has_careplan = clinical_events.where(
+    clinical_events.snomedct_code.is_in(codelists.care_plan_palcare)
+).where(
+    clinical_events.date.is_on_or_between(dod_ons - days(90), dod_ons)
+).exists_for_patient()
+
+dataset.careplan_3m = clinical_events.where(
+    clinical_events.snomedct_code.is_in(codelists.care_plan_palcare)
+).where(
+    clinical_events.date.is_on_or_between(dod_ons - days(90), dod_ons)
+).count_for_patient()
+
+first_careplan = clinical_events.where(
+    clinical_events.snomedct_code.is_in(codelists.care_plan_palcare)
+).sort_by(
+    clinical_events.date).first_for_patient().date
+
+dataset.length_careplan = (dod_ons - first_careplan).days

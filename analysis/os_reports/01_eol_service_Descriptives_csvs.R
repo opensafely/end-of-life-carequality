@@ -29,7 +29,7 @@ fs::dir_create("output", "os_reports", "eol_service")
 
 # Code settings
 
-startdate <- dmy("01-12-2018")
+startdate <- dmy("01-03-2019")
 enddate <- dmy("31-08-2023")
 
 # Prepare data
@@ -37,6 +37,24 @@ enddate <- dmy("31-08-2023")
 df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.gz")) %>%
   mutate(dod_ons = as_date(dod_ons)
          , study_month = floor_date(dod_ons, unit = "month")
+         , study_quarter = case_when(month(dod_ons) %in% c(3, 4, 5) & year(dod_ons) == 2019 ~ 1
+                                   , month(dod_ons) %in% c(6, 7, 8) & year(dod_ons) == 2019 ~ 2
+                                   , month(dod_ons) %in% c(9, 10, 11) & year(dod_ons) == 2019 ~ 3
+                                   , (month(dod_ons) == 12 & year(dod_ons) == 2019) | (month(dod_ons) %in% c(1, 2) & year(dod_ons) == 2020) ~ 4
+                                   , month(dod_ons) %in% c(3, 4, 5) & year(dod_ons) == 2020 ~ 5
+                                   , month(dod_ons) %in% c(6, 7, 8) & year(dod_ons) == 2020 ~ 6
+                                   , month(dod_ons) %in% c(9, 10, 11) & year(dod_ons) == 2020 ~ 7
+                                   , (month(dod_ons) == 12 & year(dod_ons) == 2020) | (month(dod_ons) %in% c(1, 2) & year(dod_ons) == 2021) ~ 8
+                                   , month(dod_ons) %in% c(3, 4, 5) & year(dod_ons) == 2021 ~ 9
+                                   , month(dod_ons) %in% c(6, 7, 8) & year(dod_ons) == 2021 ~ 10
+                                   , month(dod_ons) %in% c(9, 10, 11) & year(dod_ons) == 2021 ~11
+                                   , (month(dod_ons) == 12 & year(dod_ons) == 2021) | (month(dod_ons) %in% c(1, 2) & year(dod_ons) == 2022) ~ 12
+                                   , month(dod_ons) %in% c(3, 4, 5) & year(dod_ons) == 2022 ~ 13
+                                   , month(dod_ons) %in% c(6, 7, 8) & year(dod_ons) == 2022 ~ 14
+                                   , month(dod_ons) %in% c(9, 10, 11) & year(dod_ons) == 2022 ~ 15
+                                   , (month(dod_ons) == 12 & year(dod_ons) == 2022) | (month(dod_ons) %in% c(1, 2) & year(dod_ons) == 2023) ~ 16
+                                   , month(dod_ons) %in% c(3, 4, 5) & year(dod_ons) == 2023 ~ 17
+                                   , month(dod_ons) %in% c(6, 7, 8) & year(dod_ons) == 2023 ~ 18) 
          , pod_ons_new = case_when(pod_ons == "Elsewhere" 
                                    | pod_ons == "Other communal establishment" ~ "Elsewhere/other"
                                    , TRUE ~ as.character(pod_ons))
@@ -796,6 +814,31 @@ eladm_count_place_ROUND <- df %>%
 
 fwrite(eladm_count_place_ROUND, here::here("output", "os_reports", "eol_service", "eladm_count_place_ROUND.csv"))
 
+# Number of people with at least one elective admission in the last month of life by quarter and place of death - all deaths
+
+eladm_count_place_RAW_quarter <- df %>%
+  group_by(study_quarter, pod_ons_new) %>%
+  summarise(count = sum(eladm_1m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_quarter) %>%
+              summarise(count = sum(eladm_1m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(pod_ons_new = "All") %>%
+              mutate(proportion = round(count / total*100,1)))
+
+fwrite(eladm_count_place_RAW_quarter, here::here("output", "os_reports", "eol_service", "eladm_count_place_RAW_quarter.csv"))
+
+eladm_count_place_ROUND_quarter <- df %>%
+  group_by(study_quarter, pod_ons_new) %>%
+  summarise(count = sum(eladm_1m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_quarter) %>%
+              summarise(count = sum(eladm_1m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(pod_ons_new = "All")) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
+  mutate(proportion = round(count / total*100,1))
+
+fwrite(eladm_count_place_ROUND_quarter, here::here("output", "os_reports", "eol_service", "eladm_count_place_ROUND_quarter.csv"))
 
 # Number of people with at least one elective admission in the last month of life by month and cause of death
 
@@ -824,6 +867,32 @@ eladm_count_cause_ROUND <- df %>%
 
 fwrite(eladm_count_cause_ROUND, here::here("output", "os_reports", "eol_service", "eladm_count_cause_ROUND.csv"))
 
+# Number of people with at least one elective admission in the last month of life by quarter and cause of death
+
+eladm_count_cause_RAW_quarter <- df %>%
+  group_by(study_quarter, codgrp) %>%
+  summarise(count = sum(eladm_1m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_quarter) %>%
+              summarise(count = sum(eladm_1m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(codgrp = "All") %>%
+              mutate(proportion = round(count / total*100,1)))
+
+fwrite(eladm_count_cause_RAW_quarter, here::here("output", "os_reports", "eol_service", "eladm_count_cause_RAW_quarter.csv"))
+
+
+eladm_count_cause_ROUND_quarter <- df %>%
+  group_by(study_quarter, codgrp) %>%
+  summarise(count = sum(eladm_1m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_quarter) %>%
+              summarise(count = sum(eladm_1m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(codgrp = "All")) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
+  mutate(proportion = round(count / total*100,1))
+
+fwrite(eladm_count_cause_ROUND_quarter, here::here("output", "os_reports", "eol_service", "eladm_count_cause_ROUND_quarter.csv"))
 
 # Mean elective admissions by month and place of death - including all deaths (version including and excluding counts. Version including count not for release)
 
@@ -861,6 +930,41 @@ eladm_month <- df %>%
 
 fwrite(eladm_month, here::here("output", "os_reports", "eol_service", "eladm_month.csv"))
 
+# Mean elective admissions by quarter and place of death - including all deaths (version including and excluding counts. Version including count not for release)
+
+eladm_quarter_raw <- df %>%
+  group_by(study_quarter, pod_ons_new) %>%
+  summarise(count = n(),
+            mean = mean(eladm_1m, na.rm = TRUE)
+            , sd = sd(eladm_1m, na.rm = TRUE)) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
+  bind_rows(df %>%
+              group_by(study_quarter) %>%
+              summarise(count = n(),
+                        mean = mean(eladm_1m, na.rm = TRUE),
+                        sd = sd(gp_1m, na.rm = TRUE)) %>%
+              mutate(pod_ons_new = "All")) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) 
+
+fwrite(eladm_quarter_raw, here::here("output", "os_reports", "eol_service", "eladm_quarter_raw.csv"))
+
+
+eladm_quarter <- df %>%
+  group_by(study_quarter, pod_ons_new) %>%
+  summarise(count = n(),
+            mean = mean(eladm_1m, na.rm = TRUE)
+            , sd = sd(eladm_1m, na.rm = TRUE)) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
+  bind_rows(df %>%
+              group_by(study_quarter) %>%
+              summarise(count = n(),
+                        mean = mean(eladm_1m, na.rm = TRUE),
+                        sd = sd(gp_1m, na.rm = TRUE)) %>%
+              mutate(pod_ons_new = "All")) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
+  select(-c(count))
+
+fwrite(eladm_quarter, here::here("output", "os_reports", "eol_service", "eladm_quarter.csv"))
 
 # Mean elective admissions by month and cause of death (versions including and excluding counts. Version including count not for release)
 
@@ -898,6 +1002,41 @@ eladm_month_cod <- df %>%
 
 fwrite(eladm_month_cod, here::here("output", "os_reports", "eol_service", "eladm_month_cod.csv"))
 
+# Mean elective admissions by quarter and cause of death (versions including and excluding counts. Version including count not for release)
+
+eladm_quarter_cod_raw <- df %>%
+  group_by(study_quarter, codgrp) %>%
+  summarise(count = n(),
+            mean = mean(eladm_1m, na.rm = TRUE)
+            , sd = sd(eladm_1m, na.rm = TRUE)) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
+  bind_rows(df %>%
+              group_by(study_quarter) %>%
+              summarise(count = n(),
+                        mean = mean(eladm_1m, na.rm = TRUE),
+                        sd = sd(gp_1m, na.rm = TRUE)) %>%
+              mutate(codgrp = "All")) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) 
+
+fwrite(eladm_quarter_cod_raw, here::here("output", "os_reports", "eol_service", "eladm_quarter_cod_raw.csv"))
+
+
+eladm_quarter_cod <- df %>%
+  group_by(study_quarter, codgrp) %>%
+  summarise(count = n(),
+            mean = mean(eladm_1m, na.rm = TRUE)
+            , sd = sd(eladm_1m, na.rm = TRUE)) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
+  bind_rows(df %>%
+              group_by(study_quarter) %>%
+              summarise(count = n(),
+                        mean = mean(eladm_1m, na.rm = TRUE),
+                        sd = sd(gp_1m, na.rm = TRUE)) %>%
+              mutate(codgrp = "All")) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
+  select(-c(count))
+
+fwrite(eladm_quarter_cod, here::here("output", "os_reports", "eol_service", "eladm_quarter_cod.csv"))
 
 # Emergency admissions
 
@@ -1096,17 +1235,6 @@ nursing_month_cod_TOTAL <- df %>%
 
 fwrite(nursing_month_cod_TOTAL, here::here("output", "os_reports", "eol_service", "nursing_month_cod_TOTAL.csv"))
 
-nursing_month_cod_TOTAL2 <- df %>%
-  group_by(study_month, codgrp) %>%
-  summarise(sum = sum(nursing_1m, na.rm = TRUE)) %>%
-  bind_rows(df %>%
-              group_by(study_month) %>%
-              summarise(sum = sum(nursing_1m, na.rm=TRUE)) %>%
-              mutate(codgrp = "All"));
-
-fwrite(nursing_month_cod_TOTAL2, here::here("output", "os_reports", "eol_service", "nursing_month_cod_TOTAL2.csv"))
-
-
 # Number of people with at least one community nursing contact in the last month of life by month and place of death - all deaths
 
 cols_of_interest <- c("count", "total");
@@ -1136,6 +1264,32 @@ nursing_count_place_ROUND <- df %>%
 
 fwrite(nursing_count_place_ROUND, here::here("output", "os_reports", "eol_service", "nursing_count_place_ROUND.csv"))
 
+# Number of people with at least one community nursing contact in the last month of life by quarter and place of death - all deaths
+
+nursing_count_place_RAW_quarter <- df %>%
+  group_by(study_quarter, pod_ons_new) %>%
+  summarise(count = sum(nursing_1m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_quarter) %>%
+              summarise(count = sum(nursing_1m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(pod_ons_new = "All") %>%
+              mutate(proportion = round(count / total*100,1)))
+
+fwrite(nursing_count_place_RAW_quarter, here::here("output", "os_reports", "eol_service", "nursing_count_place_RAW_quarter.csv"))
+
+
+nursing_count_place_ROUND_quarter <- df %>%
+  group_by(study_quarter, pod_ons_new) %>%
+  summarise(count = sum(nursing_1m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_quarter) %>%
+              summarise(count = sum(nursing_1m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(pod_ons_new = "All")) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
+  mutate(proportion = round(count / total*100,1))
+
+fwrite(nursing_count_place_ROUND_quarter, here::here("output", "os_reports", "eol_service", "nursing_count_place_ROUND_quarter.csv"))
 
 # Number of people with at least one community nursing contact in the last month of life by month and cause of death
 
@@ -1164,6 +1318,32 @@ nursing_count_cause_ROUND <- df %>%
 
 fwrite(nursing_count_cause_ROUND, here::here("output", "os_reports", "eol_service", "nursing_count_cause_ROUND.csv"))
 
+# Number of people with at least one community nursing contact in the last month of life by quarter and cause of death
+
+nursing_count_cause_RAW_quarter <- df %>%
+  group_by(study_quarter, codgrp) %>%
+  summarise(count = sum(nursing_1m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df%>%
+              group_by(study_quarter) %>%
+              summarise(count = sum(nursing_1m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(codgrp = "All") %>%
+              mutate(proportion = round(count / total*100,1)))
+
+fwrite(nursing_count_cause_RAW_quarter, here::here("output", "os_reports", "eol_service", "nursing_count_cause_RAW_quarter.csv"))
+
+
+nursing_count_cause_ROUND_quarter <- df %>%
+  group_by(study_quarter, codgrp) %>%
+  summarise(count = sum(nursing_1m >= 1, na.rm = TRUE), total = n()) %>%
+  bind_rows(df %>%
+              group_by(study_quarter) %>%
+              summarise(count = sum(nursing_1m >= 1, na.rm = TRUE), total = n()) %>%
+              mutate(codgrp = "All")) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
+  mutate(proportion = round(count / total*100,1))
+
+fwrite(nursing_count_cause_ROUND_quarter, here::here("output", "os_reports", "eol_service", "nursing_count_cause_ROUND_quarter.csv"))
 
 # Mean number of community nurse contacts by month and place of death - including all deaths (versions including and excluding counts. Version including counts not for release)
 
@@ -1201,6 +1381,41 @@ mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_re
 
 fwrite(nursing_month, here::here("output", "os_reports", "eol_service", "nursing_month.csv"))
 
+# Mean number of community nurse contacts by quarter and place of death - including all deaths (versions including and excluding counts. Version including counts not for release)
+
+nursing_quarter_raw <- df %>%
+  group_by(study_quarter, pod_ons_new) %>%
+  summarise(count = n(),
+            mean = mean(nursing_1m, na.rm = TRUE)
+            , sd = sd(nursing_1m, na.rm = TRUE)) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
+  bind_rows(df %>%
+              group_by(study_quarter) %>%
+              summarise(count = n(),
+                        mean = mean(nursing_1m, na.rm = TRUE),
+                        sd = sd(gp_1m, na.rm = TRUE)) %>%
+              mutate(pod_ons_new = "All")) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) 
+
+fwrite(nursing_quarter_raw, here::here("output", "os_reports", "eol_service", "nursing_quarter_raw.csv"))
+
+
+nursing_quarter <- df %>%
+  group_by(study_quarter, pod_ons_new) %>%
+  summarise(count = n(),
+            mean = mean(nursing_1m, na.rm = TRUE)
+            , sd = sd(nursing_1m, na.rm = TRUE)) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
+  bind_rows(df %>%
+              group_by(study_quarter) %>%
+              summarise(count = n(),
+                        mean = mean(nursing_1m, na.rm = TRUE),
+                        sd = sd(gp_1m, na.rm = TRUE)) %>%
+              mutate(pod_ons_new = "All")) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
+  select(-c(count))
+
+fwrite(nursing_quarter, here::here("output", "os_reports", "eol_service", "nursing_quarter.csv"))
 
 # Mean community nursing interactions by month and cause of death (versions including and excluding counts. Version including counts not for release)
 
@@ -1237,3 +1452,39 @@ nursing_month_cod <- df %>%
   select(-c(count))
  
 fwrite(nursing_month_cod, here::here("output", "os_reports", "eol_service", "nursing_month_cod.csv"))
+
+# Mean community nursing interactions by quarter and cause of death (versions including and excluding counts. Version including counts not for release)
+
+nursing_quarter_cod_raw <- df %>%
+  group_by(study_quarter, codgrp) %>%
+  summarise(count = n(),
+            mean = mean(nursing_1m, na.rm = TRUE)
+            , sd = sd(nursing_1m, na.rm = TRUE)) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
+  bind_rows(df %>%
+              group_by(study_quarter) %>%
+              summarise(count = n(),
+                        mean = mean(nursing_1m, na.rm = TRUE),
+                        sd = sd(gp_1m, na.rm = TRUE)) %>%
+              mutate(codgrp = "All")) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) 
+
+fwrite(nursing_quarter_cod_raw, here::here("output", "os_reports", "eol_service", "nursing_quarter_cod_raw.csv"))
+
+
+nursing_quarter_cod <- df %>%
+  group_by(study_quarter, codgrp) %>%
+  summarise(count = n(),
+            mean = mean(nursing_1m, na.rm = TRUE)
+            , sd = sd(nursing_1m, na.rm = TRUE)) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
+  bind_rows(df %>%
+              group_by(study_quarter) %>%
+              summarise(count = n(),
+                        mean = mean(nursing_1m, na.rm = TRUE),
+                        sd = sd(gp_1m, na.rm = TRUE)) %>%
+              mutate(codgrp = "All")) %>%
+  mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
+  select(-c(count))
+
+fwrite(nursing_quarter_cod, here::here("output", "os_reports", "eol_service", "nursing_quarter_cod.csv"))

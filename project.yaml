@@ -26,11 +26,13 @@ actions:
         monthly_op_CSV: output/os_reports/eol_service/opapp_month*.csv
         monthly_op_Count: output/os_reports/eol_service/opapp_count*.csv  
         monthly_eladm_CSV: output/os_reports/eol_service/eladm_month*.csv
-        monthly_eladm_Count: output/os_reports/eol_service/eladm_count*.csv  
+        monthly_eladm_Count: output/os_reports/eol_service/eladm_count*.csv
+        quarterly_eladm_Count: output/os_reports/eol_service/eladm_quarter*.csv  
         monthly_emadm_CSV: output/os_reports/eol_service/emadm_month*.csv
         monthly_emadm_Count: output/os_reports/eol_service/emadm_count*.csv
         monthly_nursing_CSV: output/os_reports/eol_service/nursing_month*.csv 
         montly_nursing_Count: output/os_reports/eol_service/nursing_count*.csv
+        quarterly_nursing_Count: output/os_reports/eol_service/nursing_quarter*.csv
 
   os_report_charts:
     run: r:latest analysis/os_reports/02_eol_service_Descriptive_outputs.R
@@ -60,6 +62,20 @@ actions:
     outputs:
       moderately_sensitive:
         proportion_palcare_code: output/os_reports/WP2_quality_indicators/proportion*.csv
+        proportion_palcare_code: output/os_reports/WP2_quality_indicators/palcare*.csv
+        proportion_aeviv1: output/os_reports/WP2_quality_indicators/aevis1*.csv
+        proportion_aevis3: output/os_reports/WP2_quality_indicators/aevis3*.csv
+        proportion_eolmed: output/os_reports/WP2_quality_indicators/eolmed*.csv
+        proportion_specpal_code: output/os_reports/WP2_quality_indicators/specpal*.csv  
+
+  WP2_outputs (advance care plan codes):
+    run: r:latest analysis/os_reports/05_eol_WP2_advance_care_plan_measures.R
+    needs: [generate_study_population_os_reports]
+    outputs:
+      moderately_sensitive:
+        acp_code: output/os_reports/WP2_quality_indicators/acp*.csv
+        acp3m_code: output/os_reports/WP2_quality_indicators/acp3m*.csv
+        acpdur_code: output/os_reports/WP2_quality_indicators/acpdur*.csv
 
   WP3_descriptive_outputs:
     run: r:latest analysis/os_reports/05_eol_WP3_MAIHDA.R
