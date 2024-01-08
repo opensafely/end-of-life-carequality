@@ -719,7 +719,6 @@ knitr::kable(read.csv(here::here("output", "os_reports", "WP2_quality_indicators
 #Palliative care break down for cancer deaths -----------
 
 cancer_palcare_pod <- df %>%
-  filter(codgrp == "Cancer") %>%
   group_by(study_month, pod_ons_new) %>%
   summarise(count = sum(palliative_3m >= 1, na.rm = TRUE), total = sum(codgrp == "Cancer")) %>%
   bind_rows(df %>%
@@ -735,7 +734,6 @@ fwrite(cancer_palcare_pod, here::here("output", "os_reports", "WP2_quality_indic
 # quarterly ------
 
 cancer_palcare_pod_quarterly <- df %>%
-  filter(codgrp == "Cancer") %>%
   group_by(study_quarter, pod_ons_new) %>%
   summarise(count = sum(palliative_3m >= 1, na.rm = TRUE), total = sum(codgrp == "Cancer")) %>%
   bind_rows(df %>%
@@ -753,7 +751,6 @@ fwrite(cancer_palcare_pod_quarterly, here::here("output", "os_reports", "WP2_qua
 # specialist ----
 
 cancer_spec_pod <- df %>%
-  filter(codgrp == "Cancer") %>%
   group_by(study_month, pod_ons_new) %>%
   summarise(count = sum(specialist_3m >= 1, na.rm = TRUE), total = sum(codgrp == "Cancer")) %>%
   bind_rows(df %>%
@@ -769,7 +766,6 @@ fwrite(cancer_spec_pod, here::here("output", "os_reports", "WP2_quality_indicato
 #quarterly----
 
 cancer_spec_pod_quarterly <- df %>%
-  filter(codgrp == "Cancer") %>%
   group_by(study_quarter, pod_ons_new) %>%
   summarise(count = sum(specialist_3m >= 1, na.rm = TRUE), total = sum(codgrp == "Cancer")) %>%
   bind_rows(df %>%
