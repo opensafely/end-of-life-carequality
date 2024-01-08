@@ -150,19 +150,23 @@ dataset.specialist_3m = clinical_events.where(
     clinical_events.date.is_on_or_between(dod_ons - days(90), dod_ons)
 ).count_for_patient()
 
-## Advance care plan
+## Advance care plan measures
+
+## Presence of an advance care plan code in patients' GP record
 dataset.has_careplan = clinical_events.where(
     clinical_events.snomedct_code.is_in(codelists.care_plan_palcare)
 ).where(
     clinical_events.date.is_on_or_between(dod_ons - days(90), dod_ons)
 ).exists_for_patient()
 
+## Number of advance care plan codes in patients' GP record
 dataset.careplan_3m = clinical_events.where(
     clinical_events.snomedct_code.is_in(codelists.care_plan_palcare)
 ).where(
     clinical_events.date.is_on_or_between(dod_ons - days(90), dod_ons)
 ).count_for_patient()
 
+## Length of time for which advance care plan code has existed in patients' GP record
 first_careplan = clinical_events.where(
     clinical_events.snomedct_code.is_in(codelists.care_plan_palcare)
 ).sort_by(
