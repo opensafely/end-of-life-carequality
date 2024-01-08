@@ -1,8 +1,13 @@
 #-------------------------------------------------------------------------------
-# Tables for WP2_quality_indicators
+# Tables for advance care plan indicators (WP2)
 # Date: 18.09.2023 onwards
-# Author: Sophie (and Stuti)
-# Aim: Create quality indicators for end of life care.
+# Author: Stuti
+# Aim: WP2 of the end of life project aims to use primary care data to create indicators that are meaningful to patients on the quality of end of life care they receive. 
+# This file contains code for constructing indicators on the presence of advance care plans in patients' GP records. Indicators are as follows:
+# 1. Number and proportion of patients with an advanced care plan in the last 90 days (3 months) of life
+# 2. Average number of advance care plan codes recorded per person during the last 90 days (3 months) of life
+# 3. Duration of time for which advance care plan has been active (unit: days)
+
 #-------------------------------------------------------------------------------
 
 # Load packages -----------------------------------------------------------
@@ -64,13 +69,11 @@ df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.g
 #----------------------------------------------------#
 cols_of_interest <- c("count", "total")
 
-#Advance care planning ----------------------------
-
 #Number and proportion of patients with an advanced care plan in the last 90 days (3 months) of life by place of death
 
-#Quarterly breakdown
+  #Quarterly breakdown
 
-#Rounded estimates
+    #Rounded estimates
 
 acp_pod_quarters_rounded <- df %>%
   group_by(study_quarter, pod_ons_new) %>%
@@ -85,7 +88,7 @@ acp_pod_quarters_rounded <- df %>%
 
 fwrite(acp_pod_quarters_rounded, here::here("output", "os_reports", "WP2_quality_indicators", "acp_pod_quarters_rounded.csv"))
 
-#Raw estimates
+    #Raw estimates
 
 acp_pod_quarters_raw <- df %>%
   group_by(study_quarter, pod_ons_new) %>%
@@ -98,9 +101,9 @@ acp_pod_quarters_raw <- df %>%
 
 fwrite(acp_pod_quarters_raw, here::here("output", "os_reports", "WP2_quality_indicators", "acp_pod_quarters_raw.csv"))
 
-#Monthly breakdown
+  #Monthly breakdown
 
-#Rounded estimates
+    #Rounded estimates
 
 acp_pod_months_rounded <- df %>%
   group_by(study_month, pod_ons_new) %>%
@@ -115,7 +118,7 @@ acp_pod_months_rounded <- df %>%
 
 fwrite(acp_pod_months_rounded, here::here("output", "os_reports", "WP2_quality_indicators", "acp_pod_months_rounded.csv"))
 
-#Raw estimates
+    #Raw estimates
 
 acp_pod_months_raw <- df %>%
   group_by(study_month, pod_ons_new) %>%
@@ -130,9 +133,9 @@ fwrite(acp_pod_months_raw, here::here("output", "os_reports", "WP2_quality_indic
 
 #Number and proportion of patients with a care plan in the last 90 days (3 months) of life by cause of death
 
-#Quarterly breakdown
+  #Quarterly breakdown
 
-#Rounded estimates
+    #Rounded estimates
 
 acp_cod_quarters_rounded <- df %>%
   group_by(study_quarter, codgrp) %>%
@@ -147,7 +150,7 @@ acp_cod_quarters_rounded <- df %>%
 
 fwrite(acp_cod_quarters_rounded, here::here("output", "os_reports", "WP2_quality_indicators", "acp_cod_quarters_rounded.csv"))
 
-#Raw estimates
+    #Raw estimates
 
 acp_cod_quarters_raw <- df %>%
   group_by(study_quarter, codgrp) %>%
@@ -160,9 +163,9 @@ acp_cod_quarters_raw <- df %>%
 
 fwrite(acp_cod_quarters_raw, here::here("output", "os_reports", "WP2_quality_indicators", "acp_cod_quarters_raw.csv"))
 
-#Monthly breakdown
+  #Monthly breakdown
 
-#Rounded estimates
+    #Rounded estimates
 
 acp_cod_months_rounded <- df %>%
   group_by(study_month, codgrp) %>%
@@ -177,7 +180,7 @@ acp_cod_months_rounded <- df %>%
 
 fwrite(acp_cod_months_rounded, here::here("output", "os_reports", "WP2_quality_indicators", "acp_cod_months_rounded.csv"))
 
-#Raw estimates
+    #Raw estimates
 
 acp_cod_months_raw <- df %>%
   group_by(study_month, codgrp) %>%
@@ -192,9 +195,9 @@ fwrite(acp_cod_months_raw, here::here("output", "os_reports", "WP2_quality_indic
 
 #Average number of care plan codes recorded per person during the last 90 days (3 months) of life by place of death
 
-#Quarterly breakdown 
+  #Quarterly breakdown 
 
-#Rounded estimates
+    #Rounded estimates
 
 acp3m_pod_quarters_rounded <- df %>%
   group_by(study_quarter, pod_ons_new) %>%
@@ -212,7 +215,7 @@ acp3m_pod_quarters_rounded <- df %>%
 
 fwrite(acp3m_pod_quarters_rounded, here::here("output", "os_reports", "WP2_quality_indicators", "acp3m_pod_quarters_rounded.csv"))
 
-#Raw estimates
+    #Raw estimates
 
 acp3m_pod_quarters_raw <- df %>%
   group_by(study_quarter, pod_ons_new) %>%
@@ -228,9 +231,9 @@ acp3m_pod_quarters_raw <- df %>%
 
 fwrite(acp3m_pod_quarters_raw, here::here("output", "os_reports", "WP2_quality_indicators", "acp3m_pod_quarters_raw.csv"))
 
-#Monthly breakdown
+  #Monthly breakdown
 
-#Rounded estimates
+    #Rounded estimates
 
 acp3m_pod_months_rounded <- df %>%
   group_by(study_month, pod_ons_new) %>%
@@ -248,7 +251,7 @@ acp3m_pod_months_rounded <- df %>%
 
 fwrite(acp3m_pod_months_rounded, here::here("output", "os_reports", "WP2_quality_indicators", "acp3m_pod_months_rounded.csv"))
 
-#Raw estimates
+    #Raw estimates
 
 acp3m_pod_months_raw <- df %>%
   group_by(study_month, pod_ons_new) %>%
@@ -266,9 +269,9 @@ fwrite(acp3m_pod_months_raw, here::here("output", "os_reports", "WP2_quality_ind
 
 #Average number of care plan codes recorded per person during the last 90 days (3 months) of life by cause of death
 
-#Quarterly breakdown 
+  #Quarterly breakdown 
 
-#Rounded estimates
+    #Rounded estimates
 
 acp3m_cod_quarters_rounded <- df %>%
   group_by(study_quarter, codgrp) %>%
@@ -286,7 +289,7 @@ acp3m_cod_quarters_rounded <- df %>%
 
 fwrite(acp3m_cod_quarters_rounded, here::here("output", "os_reports", "WP2_quality_indicators", "acp3m_cod_quarters_rounded.csv"))
 
-#Raw estimates
+    #Raw estimates
 
 acp3m_cod_quarters_raw <- df %>%
   group_by(study_quarter, codgrp) %>%
@@ -302,9 +305,9 @@ acp3m_cod_quarters_raw <- df %>%
 
 fwrite(acp3m_cod_quarters_raw, here::here("output", "os_reports", "WP2_quality_indicators", "acp3m_cod_quarters_raw.csv"))
 
-#Monthly breakdown
+  #Monthly breakdown
 
-#Rounded estimates
+    #Rounded estimates
 
 acp3m_cod_months_rounded <- df %>%
   group_by(study_month, codgrp) %>%
@@ -322,7 +325,7 @@ acp3m_cod_months_rounded <- df %>%
 
 fwrite(acp3m_cod_months_rounded, here::here("output", "os_reports", "WP2_quality_indicators", "acp3m_cod_months_rounded.csv"))
 
-#Raw estimates
+    #Raw estimates
 
 acp3m_cod_months_raw <- df %>%
   group_by(study_month, codgrp) %>%
@@ -340,9 +343,9 @@ fwrite(acp3m_cod_months_raw, here::here("output", "os_reports", "WP2_quality_ind
 
 #Duration of time for which care plan has been active by place of death
 
-#Quarterly breakdown
+  #Quarterly breakdown
 
-#Rounded estimates
+    #Rounded estimates
 
 acpdur_pod_quarters_rounded <- df %>% 
   filter(length_careplan >= 0) %>% 
@@ -363,7 +366,7 @@ acpdur_pod_quarters_rounded <- df %>%
 
 fwrite(acpdur_pod_quarters_rounded, here::here("output", "os_reports", "WP2_quality_indicators", "acpdur_pod_quarters_rounded.csv"))
 
-#Raw estimates
+    #Raw estimates
 
 acpdur_pod_quarters_raw <- df %>% 
   filter(length_careplan >= 0) %>% 
@@ -382,9 +385,9 @@ acpdur_pod_quarters_raw <- df %>%
 
 fwrite(acpdur_pod_quarters_raw, here::here("output", "os_reports", "WP2_quality_indicators", "acpdur_pod_quarters_raw.csv"))
 
-#Monthly breakdown
+  #Monthly breakdown
 
-#Rounded estimates
+    #Rounded estimates
 
 acpdur_pod_months_rounded <- df %>% 
   filter(length_careplan >= 0) %>% 
@@ -405,7 +408,7 @@ acpdur_pod_months_rounded <- df %>%
 
 fwrite(acpdur_pod_months_rounded, here::here("output", "os_reports", "WP2_quality_indicators", "acpdur_pod_months_rounded.csv"))
 
-#Raw estimates
+    #Raw estimates
 
 acpdur_pod_months_raw <- df %>% 
   filter(length_careplan >= 0) %>% 
@@ -426,9 +429,9 @@ fwrite(acpdur_pod_months_raw, here::here("output", "os_reports", "WP2_quality_in
 
 #Duration of time for which care plan has been active by cause of death
 
-#Quarterly breakdown 
+  #Quarterly breakdown 
 
-#Rounded estimates
+    #Rounded estimates
 
 acpdur_cod_quarters_rounded <- df %>% 
   filter(length_careplan >= 0) %>% 
@@ -449,7 +452,7 @@ acpdur_cod_quarters_rounded <- df %>%
 
 fwrite(acpdur_cod_quarters_rounded, here::here("output", "os_reports", "WP2_quality_indicators", "acpdur_cod_quarters_rounded.csv"))
 
-#Raw estimates
+    #Raw estimates
 
 acpdur_cod_quarters_raw <- df %>% 
   filter(length_careplan >= 0) %>% 
@@ -468,9 +471,9 @@ acpdur_cod_quarters_raw <- df %>%
 
 fwrite(acpdur_cod_quarters_raw, here::here("output", "os_reports", "WP2_quality_indicators", "acpdur_cod_quarters_raw.csv"))
 
-#Monthly breakdown
+  #Monthly breakdown
 
-#Rounded estimates
+    #Rounded estimates
 
 acpdur_cod_months_rounded <- df %>% 
   filter(length_careplan >= 0) %>% 
@@ -491,7 +494,7 @@ acpdur_cod_months_rounded <- df %>%
 
 fwrite(acpdur_cod_months_rounded, here::here("output", "os_reports", "WP2_quality_indicators", "acpdur_cod_months_rounded.csv"))
 
-#Raw estimates
+    #Raw estimates
 
 acpdur_cod_months_raw <- df %>% 
   filter(length_careplan >= 0) %>% 
