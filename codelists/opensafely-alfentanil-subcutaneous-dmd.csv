@@ -1,23 +1,23 @@
-code,term,dmd_id
-35896411000001108,Alfentanil 1mg/2ml solution for injection ampoules,35896411000001108
-16729711000001102,Alfentanil 1mg/2ml solution for injection ampoules,16729711000001102
-13930311000001106,Alfentanil 1mg/2ml solution for injection ampoules,13930311000001106
-13803811000001108,Alfentanil 1mg/2ml solution for injection ampoules,13803811000001108
-14961811000001101,Alfentanil 1mg/2ml solution for injection ampoules,14961811000001101
-35896611000001106,Alfentanil 5mg/10ml solution for injection ampoules,35896611000001106
-18751711000001105,Alfentanil 5mg/10ml solution for injection ampoules,18751711000001105
-13930511000001100,Alfentanil 5mg/10ml solution for injection ampoules,13930511000001100
-13804011000001100,Alfentanil 5mg/10ml solution for injection ampoules,13804011000001100
-14961011000001107,Alfentanil 5mg/10ml solution for injection ampoules,14961011000001107
-35896711000001102,Alfentanil 5mg/1ml solution for injection ampoules,35896711000001102
-16441311000001109,Alfentanil 5mg/1ml solution for injection ampoules,16441311000001109
-14962111000001103,Alfentanil 5mg/1ml solution for injection ampoules,14962111000001103
-35896511000001107,Alfentanil 500micrograms/1ml solution for injection ampoules,35896511000001107
-21150011000001101,Alfentanil 500micrograms/1ml solution for injection ampoules,21150011000001101
-4400611000001107,Rapifen 1mg/2ml solution for injection ampoules,4400611000001107
-4401111000001105,Rapifen 5mg/10ml solution for injection ampoules,4401111000001105
-4410411000001106,Rapifen Intensive Care 5mg/1ml solution for injection ampoules,4410411000001106
-333909004,VMP previous to 35896711000001102,333909004
-333913006,VMP previous to 35896411000001108,333913006
-333914000,VMP previous to 35896611000001106,333914000
-430325001,VMP previous to 35896511000001107,430325001
+code,term,dmd_id,dmd_type,bnf_code
+35896411000001108,Alfentanil 1mg/2ml solution for injection ampoules,35896411000001108,VMP,1501043A0AAABAB
+16729711000001102,Alfentanil 1mg/2ml solution for injection ampoules,16729711000001102,AMP,1501043A0AAABAB
+13930311000001106,Alfentanil 1mg/2ml solution for injection ampoules,13930311000001106,AMP,1501043A0AAABAB
+13803811000001108,Alfentanil 1mg/2ml solution for injection ampoules,13803811000001108,AMP,1501043A0AAABAB
+14961811000001101,Alfentanil 1mg/2ml solution for injection ampoules,14961811000001101,AMP,1501043A0AAABAB
+35896611000001106,Alfentanil 5mg/10ml solution for injection ampoules,35896611000001106,VMP,1501043A0AAACAC
+18751711000001105,Alfentanil 5mg/10ml solution for injection ampoules,18751711000001105,AMP,1501043A0AAACAC
+13930511000001100,Alfentanil 5mg/10ml solution for injection ampoules,13930511000001100,AMP,1501043A0AAACAC
+13804011000001100,Alfentanil 5mg/10ml solution for injection ampoules,13804011000001100,AMP,1501043A0AAACAC
+14961011000001107,Alfentanil 5mg/10ml solution for injection ampoules,14961011000001107,AMP,1501043A0AAACAC
+35896711000001102,Alfentanil 5mg/1ml solution for injection ampoules,35896711000001102,VMP,1501043A0AAADAD
+16441311000001109,Alfentanil 5mg/1ml solution for injection ampoules,16441311000001109,AMP,1501043A0AAADAD
+14962111000001103,Alfentanil 5mg/1ml solution for injection ampoules,14962111000001103,AMP,1501043A0AAADAD
+35896511000001107,Alfentanil 500micrograms/1ml solution for injection ampoules,35896511000001107,VMP,1501043A0AAAFAF
+21150011000001101,Alfentanil 500micrograms/1ml solution for injection ampoules,21150011000001101,AMP,1501043A0AAAFAF
+4400611000001107,Rapifen 1mg/2ml solution for injection ampoules,4400611000001107,AMP,1501043A0BBAAAB
+4401111000001105,Rapifen 5mg/10ml solution for injection ampoules,4401111000001105,AMP,1501043A0BBABAC
+4410411000001106,Rapifen Intensive Care 5mg/1ml solution for injection ampoules,4410411000001106,AMP,1501043A0BBADAD
+333909004,VMP previous to 35896711000001102,333909004,VMP,1501043A0AAADAD
+333913006,VMP previous to 35896411000001108,333913006,VMP,1501043A0AAABAB
+333914000,VMP previous to 35896611000001106,333914000,VMP,1501043A0AAACAC
+430325001,VMP previous to 35896511000001107,430325001,VMP,1501043A0AAAFAF

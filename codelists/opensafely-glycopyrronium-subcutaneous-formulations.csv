@@ -1,19 +1,19 @@
-code,term,dmd_id
-38896111000001105,Glycopyrronium bromide 200micrograms/1ml solution for injection ampoules,38896111000001105
-14729811000001104,Glycopyrronium bromide 200micrograms/1ml solution for injection ampoules,14729811000001104
-28991411000001100,Glycopyrronium bromide 200micrograms/1ml solution for injection ampoules,28991411000001100
-13845011000001105,Glycopyrronium bromide 200micrograms/1ml solution for injection ampoules,13845011000001105
-20506811000001103,Glycopyrronium bromide 200micrograms/1ml solution for injection ampoules,20506811000001103
-37605211000001106,Glycopyrronium bromide 200micrograms/1ml solution for injection ampoules,37605211000001106
-11487811000001104,Glycopyrronium bromide 200micrograms/1ml solution for injection ampoules,11487811000001104
-38895711000001103,Glycopyrronium bromide 600micrograms/3ml solution for injection ampoules,38895711000001103
-14730811000001105,Glycopyrronium bromide 600micrograms/3ml solution for injection ampoules,14730811000001105
-28991211000001104,Glycopyrronium bromide 600micrograms/3ml solution for injection ampoules,28991211000001104
-13845211000001100,Glycopyrronium bromide 600micrograms/3ml solution for injection ampoules,13845211000001100
-20507011000001107,Glycopyrronium bromide 600micrograms/3ml solution for injection ampoules,20507011000001107
-37388311000001100,Glycopyrronium bromide 600micrograms/3ml solution for injection ampoules,37388311000001100
-11488111000001107,Glycopyrronium bromide 600micrograms/3ml solution for injection ampoules,11488111000001107
-3823111000001108,Robinul 200micrograms/1ml solution for injection ampoules,3823111000001108
-4000811000001101,Robinul 600micrograms/3ml solution for injection ampoules,4000811000001101
-333899005,VMP previous to 38896111000001105,333899005
-333900000,VMP previous to 38895711000001103,333900000
+code,term,dmd_id,dmd_type,bnf_code
+38896111000001105,Glycopyrronium bromide 200micrograms/1ml solution for injection ampoules,38896111000001105,VMP,1501030G0AAAAAA
+14729811000001104,Glycopyrronium bromide 200micrograms/1ml solution for injection ampoules,14729811000001104,AMP,1501030G0AAAAAA
+28991411000001100,Glycopyrronium bromide 200micrograms/1ml solution for injection ampoules,28991411000001100,AMP,1501030G0AAAAAA
+13845011000001105,Glycopyrronium bromide 200micrograms/1ml solution for injection ampoules,13845011000001105,AMP,1501030G0AAAAAA
+20506811000001103,Glycopyrronium bromide 200micrograms/1ml solution for injection ampoules,20506811000001103,AMP,1501030G0AAAAAA
+37605211000001106,Glycopyrronium bromide 200micrograms/1ml solution for injection ampoules,37605211000001106,AMP,1501030G0AAAAAA
+11487811000001104,Glycopyrronium bromide 200micrograms/1ml solution for injection ampoules,11487811000001104,AMP,1501030G0AAAAAA
+38895711000001103,Glycopyrronium bromide 600micrograms/3ml solution for injection ampoules,38895711000001103,VMP,1501030G0AAABAB
+14730811000001105,Glycopyrronium bromide 600micrograms/3ml solution for injection ampoules,14730811000001105,AMP,1501030G0AAABAB
+28991211000001104,Glycopyrronium bromide 600micrograms/3ml solution for injection ampoules,28991211000001104,AMP,1501030G0AAABAB
+13845211000001100,Glycopyrronium bromide 600micrograms/3ml solution for injection ampoules,13845211000001100,AMP,1501030G0AAABAB
+20507011000001107,Glycopyrronium bromide 600micrograms/3ml solution for injection ampoules,20507011000001107,AMP,1501030G0AAABAB
+37388311000001100,Glycopyrronium bromide 600micrograms/3ml solution for injection ampoules,37388311000001100,AMP,1501030G0AAABAB
+11488111000001107,Glycopyrronium bromide 600micrograms/3ml solution for injection ampoules,11488111000001107,AMP,1501030G0AAABAB
+3823111000001108,Robinul 200micrograms/1ml solution for injection ampoules,3823111000001108,AMP,1501030G0BBAAAA
+4000811000001101,Robinul 600micrograms/3ml solution for injection ampoules,4000811000001101,AMP,1501030G0BBABAB
+333899005,VMP previous to 38896111000001105,333899005,VMP,1501030G0AAAAAA
+333900000,VMP previous to 38895711000001103,333900000,VMP,1501030G0AAABAB

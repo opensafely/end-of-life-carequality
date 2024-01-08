@@ -1,6 +1,6 @@
-code,term,dmd_id
-38895311000001102,Levomepromazine 25mg/1ml solution for injection ampoules,38895311000001102
-21678411000001105,Levomepromazine 25mg/1ml solution for injection ampoules,21678411000001105
-22658511000001107,Levomepromazine 25mg/1ml solution for injection ampoules,22658511000001107
-4182911000001102,Nozinan 25mg/1ml solution for injection ampoules,4182911000001102
-321460009,VMP previous to 38895311000001102,321460009
+code,term,dmd_id,dmd_type,bnf_code
+38895311000001102,Levomepromazine 25mg/1ml solution for injection ampoules,38895311000001102,VMP,0402010L0AAAAAA
+21678411000001105,Levomepromazine 25mg/1ml solution for injection ampoules,21678411000001105,AMP,0402010L0AAAAAA
+22658511000001107,Levomepromazine 25mg/1ml solution for injection ampoules,22658511000001107,AMP,0402010L0AAAAAA
+4182911000001102,Nozinan 25mg/1ml solution for injection ampoules,4182911000001102,AMP,0402010L0BBAAAA
+321460009,VMP previous to 38895311000001102,321460009,VMP,0402010L0AAAAAA

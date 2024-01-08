@@ -1,11 +1,13 @@
-# Creates the population needed for the analysis to feed the OS report using ehrQL
+# Creates the population needed for the analysis using ehrQL
 
 # Functions from ehrQL
 
-from ehrql import (Dataset, days)
+from ehrql import (Dataset, days, case, when)
 
 from ehrql.tables.beta.tpp import (
+    addresses,
     appointments, 
+    clinical_events,
     emergency_care_attendances, 
     hospital_admissions,
     ons_deaths,
@@ -13,7 +15,6 @@ from ehrql.tables.beta.tpp import (
     patients,
     practice_registrations,
     medications,
-    clinical_events,
 )
 
 ## CODELISTS ##
@@ -21,6 +22,7 @@ from ehrql.tables.beta.tpp import (
 # Import codelists from the codelist folder
 
 import codelists
+from ehrql import codelist_from_csv
 
 ## KEY VARIABLES ##
 
@@ -46,6 +48,7 @@ dataset.define_population(
     has_died
     & was_registered_at_death
     & patients.sex.is_in(["female", "male"])
+    & (patients.exists_for_patient())
 )
 
 ## CREATE VARIABLES ##
@@ -66,7 +69,67 @@ dataset.cod_ons = ons_deaths.underlying_cause_of_death
 ## Sex
 dataset.sex = patients.sex
 
-## Services ##
+## Age band 
+age = patients.age_on(dod_ons)
+
+dataset.age_band = case(
+        when(age < 20).then("0-19"),
+        when(age < 30).then("20-29"),
+        when(age < 40).then("30-39"),
+        when(age < 50).then("40-49"),
+        when(age < 60).then("50-59"),
+        when(age < 70).then("60-69"),
+        when(age < 80).then("70-79"),
+        when(age < 90).then("80-89"),
+        when(age >= 90).then("90+"),
+        otherwise="missing",
+)
+
+## Ethnicity
+ethnicity_codelist_with_categories = codelist_from_csv(
+    "codelists/opensafely-ethnicity-snomed-0removed.csv",
+    column = "snomedcode",
+    category_column = "Grouping_6"
+)
+
+dataset.latest_ethnicity_code = (
+    clinical_events.where(clinical_events.snomedct_code.is_in(ethnicity_codelist_with_categories))
+    .where(clinical_events.date.is_on_or_before(dod_ons))
+    .sort_by(clinical_events.date)
+    .last_for_patient()
+    .snomedct_code
+)
+
+latest_ethnicity_group = dataset.latest_ethnicity_code.to_category(
+    ethnicity_codelist_with_categories
+)
+
+dataset.ethnicity_new = case(
+  when(latest_ethnicity_group == "1").then("White"),
+  when(latest_ethnicity_group == "2").then("Mixed"),
+  when(latest_ethnicity_group == "3").then("Asian or Asian British"),
+  when(latest_ethnicity_group == "4").then("Black or Black British"),
+  when(latest_ethnicity_group == "5").then("Chinese or Other Ethnic Groups"),
+  otherwise="Not stated",
+)
+
+# No ethnicity from SUS in ehrQL
+
+## Geography ##
+
+## Index of multiple deprivation based on patient address
+imd = addresses.for_patient_on(dod_ons).imd_rounded
+
+dataset.imd_quintile = case(
+    when((imd >= 0) & (imd < int(32844 * 1 / 5))).then("1"),
+    when(imd < int(32844 * 2 / 5)).then("2"),
+    when(imd < int(32844 * 3 / 5)).then("3"),
+    when(imd < int(32844 * 4 / 5)).then("4"),
+    when(imd < int(32844 * 5 / 5)).then("5"),
+    default="0"
+)
+
+## Services ## 
 
 ## GP consultations
 dataset.gp_1m = appointments.where(
@@ -96,7 +159,6 @@ dataset.aevis_1m = emergency_care_attendances.where(
 ).count_for_patient()
 
 ## Outpatient appointments
-# Need to check this is correct/how to do attended appointments?
 dataset.opapp_1m = opa_diag.where(
     opa_diag.appointment_date.is_on_or_between(dod_ons - days(30), dod_ons)
 ).count_for_patient()
@@ -126,6 +188,7 @@ dataset.nursing_1m = clinical_events.where(
 
 ## Palliative care
 dataset.palliative_3m = clinical_events.where(
+    
     clinical_events.snomedct_code.is_in(codelists.palcare_codes1)
 ).where(
     clinical_events.date.is_on_or_between(dod_ons - days(90), dod_ons)
