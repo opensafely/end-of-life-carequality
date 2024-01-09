@@ -68,7 +68,7 @@ actions:
         proportion_specpal_code: output/os_reports/WP2_quality_indicators/specpal*.csv
         proportion_cancer_palcare: output/os_reports/WP2_quality_indicators/cancer*.csv   
 
-  WP2_outputs (advance care plan codes):
+  WP2_outputs_advance_care_plan:
     run: r:latest analysis/os_reports/05_eol_WP2_advance_care_plan_measures.R
     needs: [generate_study_population_os_reports]
     outputs:
