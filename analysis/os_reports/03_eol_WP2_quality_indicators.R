@@ -772,7 +772,7 @@ fwrite(cancer_spec_pod, here::here("output", "os_reports", "WP2_quality_indicato
 #quarterly----
 
 cancer_spec_pod_quarterly <- df %>%
-  filer(codgrp == "Cancer") %>%
+  filter(codgrp == "Cancer") %>%
   group_by(study_quarter, pod_ons_new) %>%
   summarise(count = sum(specialist_3m >= 1, na.rm = TRUE), total = n()) %>%
   bind_rows(df %>%
