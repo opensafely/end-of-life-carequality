@@ -1,6 +1,6 @@
 ##############################################################
 # MAIHDA analysis
-# Author: Miranda Davies
+# Author: Miranda & Sophie 
 # Date: 07/12/23 # nolint # nolint: commented_code_linter.
 # Initial aim: Running descriptive statistics
 # for potential stratum variables to determine whether group sizes are sufficient
