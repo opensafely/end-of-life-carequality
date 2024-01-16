@@ -73,10 +73,7 @@ dataset.sex = patients.sex
 age = patients.age_on(dod_ons)
 
 dataset.age_band = case(
-        when(age < 20).then("0-19"),
-        when(age < 30).then("20-29"),
-        when(age < 40).then("30-39"),
-        when(age < 50).then("40-49"),
+        when(age < 50).then("0-49"),
         when(age < 60).then("50-59"),
         when(age < 70).then("60-69"),
         when(age < 80).then("70-79"),
@@ -117,7 +114,7 @@ dataset.ethnicity_new = case(
 
 ## Geography ##
 
-## Index of multiple deprivation based on patient address
+## Index of multiple deprivation based on patient address. 1-most deprived, 5-least deprived
 imd = addresses.for_patient_on(dod_ons).imd_rounded
 
 dataset.imd_quintile = case(
