@@ -4,7 +4,7 @@
 
 from ehrql import (Dataset, days, case, when)
 
-from ehrql.tables.beta.tpp import (
+from ehrql.tables.core.tpp import (
     addresses,
     appointments, 
     clinical_events,
@@ -15,7 +15,7 @@ from ehrql.tables.beta.tpp import (
     patients,
     practice_registrations,
     medications,
-    ethnicity_from_SUS
+    ethnicity_from_sus,
 )
 
 ## CODELISTS ##
@@ -102,39 +102,18 @@ latest_ethnicity_group = dataset.latest_ethnicity_code.to_category(
     ethnicity_codelist_with_categories
 )
 
-dataset.ethnicity_SNOMED = case(
-  when(latest_ethnicity_group == "1").then("White"),
-  when(latest_ethnicity_group == "2").then("Mixed"),
-  when(latest_ethnicity_group == "3").then("Asian or Asian British"),
-  when(latest_ethnicity_group == "4").then("Black or Black British"),
-  when(latest_ethnicity_group == "5").then("Chinese or Other Ethnic Groups"),
-  otherwise="Not stated",
-)
-
 # Add in code to extract SUS codelist
 
 dataset.ethnicity_NEW = case(
-  when(latest_ethnicity_group == "1" or (latest_ethnicity_group ="Not stated" and ethnicity_SUS == "1")).then("White"),
-  when(latest_ethnicity_group == "2" or (latest_ethnicity_group ="Not stated" and ethnicity_SUS == "2")).then("Mixed"),
-  when(latest_ethnicity_group == "3" or (latest_ethnicity_group ="Not stated" and ethnicity_SUS == "3")).then("Asian or Asian British"),
-  when(latest_ethnicity_group == "4" or (latest_ethnicity_group ="Not stated" and ethnicity_SUS == "4")).then("Black or Black British"),
-  when(latest_ethnicity_group == "5" or (latest_ethnicity_group ="Not stated" and ethnicity_SUS == "5")).then("Chinese or Other Ethnic Groups"),
-  otherwise="Not stated",
+  when(latest_ethnicity_group == "1" or latest_ethnicity_group =="Not stated" & ethnicity_from_sus == ("A", "B", "C" )).then("White"),
+  when(latest_ethnicity_group == "2" or latest_ethnicity_group =="Not stated" & ethnicity_from_sus == ("D", "E", "F", "G")).then("Mixed"),
+  when(latest_ethnicity_group == "3" or latest_ethnicity_group =="Not stated" & ethnicity_from_sus == ("H", "J", "K", "L")).then("Asian or Asian British"),
+  when(latest_ethnicity_group == "4" or latest_ethnicity_group =="Not stated" & ethnicity_from_sus == ("M", "N", "P")).then("Black or Black British"),
+  when(latest_ethnicity_group == "5" or latest_ethnicity_group =="Not stated" & ethnicity_from_sus == ("R", "S")).then("Chinese or Other Ethnic Groups"),
+  else 'Not stated'
+  end as ethnicity_NEW
 ) 
     
-    
-    
-    
-
-    
-    {"0": "DEFAULT",
-        "1": "ethnicity_gp = '1' OR (NOT ethnicity_gp AND ethnicity_sus = '1')",
-        "2": "ethnicity_gp = '2' OR (NOT ethnicity_gp AND ethnicity_sus = '2')",
-        "3": "ethnicity_gp = '3' OR (NOT ethnicity_gp AND ethnicity_sus = '3')",
-        "4": "ethnicity_gp = '4' OR (NOT ethnicity_gp AND ethnicity_sus = '4')",
-        "5": "ethnicity_gp = '5' OR (NOT ethnicity_gp AND ethnicity_sus = '5')"
-        },
-
 ## Geography ##
 
 ## Index of multiple deprivation based on patient address. 1-most deprived, 5-least deprived
