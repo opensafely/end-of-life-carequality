@@ -6,7 +6,7 @@ expectations:
 actions:   
 
   generate_study_population_os_reports:
-    run: ehrql:v1 generate-dataset analysis/os_reports/dataset_definition_os_reports.py --output output/os_reports/input_os_reports.csv.gz
+    run: ehrql:v0 generate-dataset analysis/os_reports/dataset_definition_os_reports.py --output output/os_reports/input_os_reports.csv.gz
     outputs:
       highly_sensitive:
         cohort: output/os_reports/input_os_reports.csv.gz

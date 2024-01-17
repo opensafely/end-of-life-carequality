@@ -4,7 +4,7 @@
 
 from ehrql import (Dataset, days, case, when)
 
-from ehrql.tables.core.tpp import (
+from ehrql.tables.beta.tpp import (
     addresses,
     appointments, 
     clinical_events,
@@ -105,15 +105,14 @@ latest_ethnicity_group = dataset.latest_ethnicity_code.to_category(
 # Add in code to extract SUS codelist
 
 dataset.ethnicity_NEW = case(
-  when(latest_ethnicity_group == "1" or latest_ethnicity_group =="Not stated" & ethnicity_from_sus == ("A", "B", "C" )).then("White"),
-  when(latest_ethnicity_group == "2" or latest_ethnicity_group =="Not stated" & ethnicity_from_sus == ("D", "E", "F", "G")).then("Mixed"),
-  when(latest_ethnicity_group == "3" or latest_ethnicity_group =="Not stated" & ethnicity_from_sus == ("H", "J", "K", "L")).then("Asian or Asian British"),
-  when(latest_ethnicity_group == "4" or latest_ethnicity_group =="Not stated" & ethnicity_from_sus == ("M", "N", "P")).then("Black or Black British"),
-  when(latest_ethnicity_group == "5" or latest_ethnicity_group =="Not stated" & ethnicity_from_sus == ("R", "S")).then("Chinese or Other Ethnic Groups"),
-  else 'Not stated'
-  end as ethnicity_NEW
+  when((latest_ethnicity_group == "1") | ((latest_ethnicity_group =="Not stated") & (ethnicity_from_sus == ("A", "B", "C" )))).then("White"),
+  when((latest_ethnicity_group == "2") | ((latest_ethnicity_group =="Not stated") & (ethnicity_from_sus == ("D", "E", "F", "G")))).then("Mixed"),
+  when((latest_ethnicity_group == "3") | ((latest_ethnicity_group =="Not stated") & (ethnicity_from_sus == ("H", "J", "K", "L")))).then("Asian or Asian British"),
+  when((latest_ethnicity_group == "4") | ((latest_ethnicity_group =="Not stated") & (ethnicity_from_sus == ("M", "N", "P")))).then("Black or Black British"),
+  when((latest_ethnicity_group == "5") | ((latest_ethnicity_group =="Not stated") & (ethnicity_from_sus == ("R", "S")))).then("Chinese or Other Ethnic Groups"),
+  otherwise="Not stated", 
 ) 
-    
+
 ## Geography ##
 
 ## Index of multiple deprivation based on patient address. 1-most deprived, 5-least deprived
