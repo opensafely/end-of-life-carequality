@@ -102,7 +102,7 @@ latest_ethnicity_group = dataset.latest_ethnicity_code.to_category(
     ethnicity_codelist_with_categories
 )
 
-# Add in code to extract SUS codelist
+# Add in code to extract ethnicity from SUS if it isn't present in primary care data
 
 dataset.ethnicity_NEW = case(
   when((latest_ethnicity_group == "1") | ((latest_ethnicity_group =="Not stated") & (ethnicity_from_sus == ("A", "B", "C" )))).then("White"),
