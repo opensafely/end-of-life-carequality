@@ -102,7 +102,9 @@ dataset.latest_ethnicity_code = (
     .last_for_patient()
     .snomedct_code
 )
-
+latest_ethnicity_group = dataset.latest_ethnicity_code.to_category(
+    ethnicity_codelist_with_categories
+)
 # Add in code to extract ethnicity from SUS if it isn't present in primary care data. 
 
 dataset.ethnicity_NEW = case(
