@@ -1,4 +1,9 @@
 # Creates the population needed for the analysis using ehrQL
+# Note:
+# Ethnicity recording in primary care records is supplemented with hospital records in the case of missing data
+# Primary care ethnicity codes are based on a 6 category SNOMED UK ethnicity category codelist, standardised to the 2001 census categories, used elsewhere in the NHS.
+# sus ethnicity codes are as defined by "Ethnic Category Code 2001" — the 16+1 ethnic data categories used in the 2001 census.
+
 
 # Functions from ehrQL
 
@@ -15,6 +20,7 @@ from ehrql.tables.beta.tpp import (
     patients,
     practice_registrations,
     medications,
+    ethnicity_from_sus,
 )
 
 ## CODELISTS ##
@@ -96,21 +102,19 @@ dataset.latest_ethnicity_code = (
     .last_for_patient()
     .snomedct_code
 )
-
 latest_ethnicity_group = dataset.latest_ethnicity_code.to_category(
     ethnicity_codelist_with_categories
 )
+# Add in code to extract ethnicity from SUS if it isn't present in primary care data. 
 
-dataset.ethnicity_new = case(
-  when(latest_ethnicity_group == "1").then("White"),
-  when(latest_ethnicity_group == "2").then("Mixed"),
-  when(latest_ethnicity_group == "3").then("Asian or Asian British"),
-  when(latest_ethnicity_group == "4").then("Black or Black British"),
-  when(latest_ethnicity_group == "5").then("Chinese or Other Ethnic Groups"),
-  otherwise="Not stated",
-)
-
-# No ethnicity from SUS in ehrQL
+dataset.ethnicity_NEW = case(
+  when((latest_ethnicity_group == "1") | ((latest_ethnicity_group =="Not stated") & (ethnicity_from_sus == ("A", "B", "C" )))).then("White"),
+  when((latest_ethnicity_group == "2") | ((latest_ethnicity_group =="Not stated") & (ethnicity_from_sus == ("D", "E", "F", "G")))).then("Mixed"),
+  when((latest_ethnicity_group == "3") | ((latest_ethnicity_group =="Not stated") & (ethnicity_from_sus == ("H", "J", "K", "L")))).then("Asian or Asian British"),
+  when((latest_ethnicity_group == "4") | ((latest_ethnicity_group =="Not stated") & (ethnicity_from_sus == ("M", "N", "P")))).then("Black or Black British"),
+  when((latest_ethnicity_group == "5") | ((latest_ethnicity_group =="Not stated") & (ethnicity_from_sus == ("R", "S")))).then("Chinese or Other Ethnic Groups"),
+  otherwise="Not stated", 
+) 
 
 ## Geography ##
 

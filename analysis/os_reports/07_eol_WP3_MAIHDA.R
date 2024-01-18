@@ -68,7 +68,7 @@ count_by_sex_age_band <- df %>%
 fwrite(count_by_sex_age_band, here::here("output", "os_reports", "WP3", "count_by_sex_age_band.csv"))
 
 count_by_ethnicity <- df %>%
-  count(ethnicity_new) %>%
+  count(ethnicity_NEW) %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
 
@@ -82,7 +82,7 @@ count_by_imd_quintile <- df %>%
 fwrite(count_by_imd_quintile, here::here("output", "os_reports", "WP3", "count_by_imd_quintile.csv"))
 
 count_by_group <- df %>%
-  count(sex, age_band, ethnicity_new, imd_quintile) %>%
+  count(sex, age_band, ethnicity_NEW, imd_quintile) %>%
     dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
     dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
   
@@ -123,8 +123,8 @@ fwrite(cancer_count_by_sex_age_band, here::here("output", "os_reports", "WP3", "
 cancer_count_by_ethnicity <- df %>%
   filter(codgrp == "Cancer"
          & pod_ons_new == "Home") %>%
-  group_by(ethnicity_new) %>%
-  count(ethnicity_new) %>%
+  group_by(ethnicity_NEW) %>%
+  count(ethnicity_NEW) %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
 
@@ -143,8 +143,8 @@ fwrite(cancer_count_by_imd_quintile, here::here("output", "os_reports", "WP3", "
 cancer_count_by_group <- df %>%
   filter(codgrp == "Cancer"
          & pod_ons_new == "Home") %>%
-  group_by(sex, age_band, imd_quintile, ethnicity_new) %>%
-  count(sex, age_band, imd_quintile, ethnicity_new) %>%
+  group_by(sex, age_band, imd_quintile, ethnicity_NEW) %>%
+  count(sex, age_band, imd_quintile, ethnicity_NEW) %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
 
