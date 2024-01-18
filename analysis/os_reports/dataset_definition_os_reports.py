@@ -1,4 +1,9 @@
 # Creates the population needed for the analysis using ehrQL
+# Note:
+# Ethnicity recording in primary care records is supplemented with hospital records in the case of missing data
+# Primary care ethnicity codes are based on a 6 category SNOMED UK ethnicity category codelist, standardised to the 2001 census categories, used elsewhere in the NHS.
+# sus ethnicity codes are as defined by "Ethnic Category Code 2001" — the 16+1 ethnic data categories used in the 2001 census.
+
 
 # Functions from ehrQL
 
@@ -98,11 +103,7 @@ dataset.latest_ethnicity_code = (
     .snomedct_code
 )
 
-latest_ethnicity_group = dataset.latest_ethnicity_code.to_category(
-    ethnicity_codelist_with_categories
-)
-
-# Add in code to extract ethnicity from SUS if it isn't present in primary care data
+# Add in code to extract ethnicity from SUS if it isn't present in primary care data. 
 
 dataset.ethnicity_NEW = case(
   when((latest_ethnicity_group == "1") | ((latest_ethnicity_group =="Not stated") & (ethnicity_from_sus == ("A", "B", "C" )))).then("White"),
