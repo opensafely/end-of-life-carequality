@@ -102,12 +102,23 @@ dataset.latest_ethnicity_code = (
     .last_for_patient()
     .snomedct_code
 )
+
 latest_ethnicity_group = dataset.latest_ethnicity_code.to_category(
     ethnicity_codelist_with_categories
 )
+
+dataset.ethnicity_new = case(
+  when(latest_ethnicity_group == "1").then("White"),
+  when(latest_ethnicity_group == "2").then("Mixed"),
+  when(latest_ethnicity_group == "3").then("Asian or Asian British"),
+  when(latest_ethnicity_group == "4").then("Black or Black British"),
+  when(latest_ethnicity_group == "5").then("Chinese or Other Ethnic Groups"),
+  otherwise="Not stated",
+)
+
 # Add in code to extract ethnicity from SUS if it isn't present in primary care data. 
 
-dataset.ethnicity_NEW = case(
+dataset.ethnicity_Combined = case(
   when((latest_ethnicity_group == "1") | ((latest_ethnicity_group =="Not stated") & (ethnicity_from_sus == ("A", "B", "C" )))).then("White"),
   when((latest_ethnicity_group == "2") | ((latest_ethnicity_group =="Not stated") & (ethnicity_from_sus == ("D", "E", "F", "G")))).then("Mixed"),
   when((latest_ethnicity_group == "3") | ((latest_ethnicity_group =="Not stated") & (ethnicity_from_sus == ("H", "J", "K", "L")))).then("Asian or Asian British"),
