@@ -108,14 +108,14 @@ latest_ethnicity_group = dataset.latest_ethnicity_code.to_category(
 
 # Add in code to extract ethnicity from SUS if it isn't present in primary care data. 
 
-ethnicity_sus = ethnicity_from_sus
+ethnicity_sus = ethnicity_from_sus.code
 
 dataset.ethnicity_Combined = case(
-  when((latest_ethnicity_group == "1") | ((latest_ethnicity_group =="Not stated") & (ethnicity_sus == ("A", "B", "C" )))).then("White"),
-  when((latest_ethnicity_group == "2") | ((latest_ethnicity_group =="Not stated") & (ethnicity_sus == ("D", "E", "F", "G")))).then("Mixed"),
-  when((latest_ethnicity_group == "3") | ((latest_ethnicity_group =="Not stated") & (ethnicity_sus == ("H", "J", "K", "L")))).then("Asian or Asian British"),
-  when((latest_ethnicity_group == "4") | ((latest_ethnicity_group =="Not stated") & (ethnicity_sus == ("M", "N", "P")))).then("Black or Black British"),
-  when((latest_ethnicity_group == "5") | ((latest_ethnicity_group =="Not stated") & (ethnicity_sus == ("R", "S")))).then("Chinese or Other Ethnic Groups"),
+  when((latest_ethnicity_group == "1") | ((latest_ethnicity_group =="NA") & (ethnicity_sus.is_in(["A", "B", "C"])))).then("White"),
+  when((latest_ethnicity_group == "2") | ((latest_ethnicity_group =="NA") & (ethnicity_sus.is_in(["D", "E", "F", "G"])))).then("Mixed"),
+  when((latest_ethnicity_group == "3") | ((latest_ethnicity_group =="NA") & (ethnicity_sus.is_in(["H", "J", "K", "L"])))).then("Asian or Asian British"),
+  when((latest_ethnicity_group == "4") | ((latest_ethnicity_group =="NA") & (ethnicity_sus.is_in(["M", "N", "P"])))).then("Black or Black British"),
+  when((latest_ethnicity_group == "5") | ((latest_ethnicity_group =="NA") & (ethnicity_sus.is_in(["R", "S"])))).then("Chinese or Other Ethnic Groups"),
   otherwise="Not stated", 
 ) 
 
