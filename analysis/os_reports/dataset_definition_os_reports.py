@@ -16,6 +16,7 @@ from ehrql.tables.beta.tpp import (
     emergency_care_attendances, 
     hospital_admissions,
     ons_deaths,
+    opa,
     opa_diag,
     patients,
     practice_registrations,
@@ -161,9 +162,13 @@ dataset.aevis_1m = emergency_care_attendances.where(
     emergency_care_attendances.arrival_date.is_on_or_between(dod_ons - days(30), dod_ons)
 ).count_for_patient()
 
-## Outpatient appointments
-dataset.opapp_1m = opa_diag.where(
-    opa_diag.appointment_date.is_on_or_between(dod_ons - days(30), dod_ons)
+## Outpatient appointments (Attended only)
+# Excludes most mental health care and community services
+
+dataset.opapp_1m = opa.where(
+    opa.attendance_status.is_in(["5", "6"])
+).where(    
+    opa.appointment_date.is_on_or_between(dod_ons - days(30), dod_ons)
 ).count_for_patient()
 
 ## Elective admissions
