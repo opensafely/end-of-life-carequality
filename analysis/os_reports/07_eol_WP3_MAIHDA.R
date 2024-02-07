@@ -6,6 +6,8 @@
 # for potential stratum variables to determine whether group sizes are sufficient
 ##############################################################
 
+# Note: Patients with no IMD are excluded from the analysis. Analysis focuses on patients who die at home, with a cancer diagnosis. 
+
 # Load packages
 
 library(tidyverse)
@@ -40,7 +42,7 @@ df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.g
                              , cod_ons_3 >= "I00" & cod_ons_3 <= "I99" ~ "Circulatory diseases"
                              , cod_ons_3 >= "C00" & cod_ons_3 <= "C99" ~ "Cancer"
                              , TRUE ~ "All other causes")) %>%
-  filter(study_month >= startdate & study_month <= enddate) 
+  filter(study_month >= startdate & study_month <= enddate & Imd_quintile >=1 )
 
 # Descriptive analysis to inform modelling - counts of age_band / sex / ethnicity and imd_rounded 
 
