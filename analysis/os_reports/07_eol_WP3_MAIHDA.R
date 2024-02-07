@@ -45,18 +45,18 @@ df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.g
 
 # Counts of places of death by ethnicity for all deaths + cancer only - not for release
 
-deaths_ethnicity_place_all <- df %>%
+deaths_ethnicity_place_all_raw <- df %>%
   group_by(ethnicity_Combined, pod_ons_new) %>%
   summarise(count = n()) %>%
 
-fwrite(deaths_ethnicity_place_all, here::here("output", "os_reports", "eol_service", "deaths_ethnicity_place_all_raw.csv"))
+fwrite(deaths_ethnicity_place_all_raw, here::here("output", "os_reports", "eol_service", "deaths_ethnicity_place_all_raw.csv"))
 
-deaths_ethnicity_place_cancer <- df %>%
+deaths_ethnicity_place_cancer_raw <- df %>%
   filter(codgrp == "Cancer") %>%
   group_by(ethnicity_Combined, pod_ons_new) %>%
   summarise(count = n()) %>%
 
-fwrite(deaths_ethnicity_place_cancer, here::here("output", "os_reports", "eol_service", "deaths_ethnicity_place_cancer_raw.csv"))
+fwrite(deaths_ethnicity_place_cancer_raw, here::here("output", "os_reports", "eol_service", "deaths_ethnicity_place_cancer_raw.csv"))
 
 # Descriptive analysis to inform modelling - counts of age_band / sex / ethnicity and imd_rounded 
 
