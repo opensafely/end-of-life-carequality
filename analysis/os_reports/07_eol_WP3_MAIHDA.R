@@ -6,6 +6,8 @@
 # for potential stratum variables to determine whether group sizes are sufficient
 ##############################################################
 
+# Note: Patients with no IMD are excluded from the analysis as are patients aged 0-24. Analysis focuses on patients who die at home, with a cancer diagnosis. 
+
 # Load packages
 
 library(tidyverse)
@@ -26,7 +28,6 @@ enddate <- dmy("31-08-2023")
 
 df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.gz")) %>%
   mutate(dod_ons = as_date(dod_ons)
-         , imd_rounded = (imd_quintile)
          , study_month = floor_date(dod_ons, unit = "month")
          , pod_ons_new = case_when(pod_ons == "Elsewhere" 
                                    | pod_ons == "Other communal establishment" ~ "Elsewhere/other"
@@ -40,7 +41,22 @@ df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.g
                              , cod_ons_3 >= "I00" & cod_ons_3 <= "I99" ~ "Circulatory diseases"
                              , cod_ons_3 >= "C00" & cod_ons_3 <= "C99" ~ "Cancer"
                              , TRUE ~ "All other causes")) %>%
-  filter(study_month >= startdate & study_month <= enddate) 
+  filter(study_month >= startdate & study_month <= enddate & imd_quintile >=1 & age_band != "0-24")
+
+# Counts of places of death by ethnicity for all deaths + cancer only - not for release
+
+deaths_ethnicity_place_all_raw <- df %>%
+  group_by(ethnicity_Combined, pod_ons_new) %>%
+  summarise(count = n())
+
+fwrite(deaths_ethnicity_place_all_raw, here::here("output", "os_reports", "WP3", "deaths_ethnicity_place_all_raw.csv"))
+
+deaths_ethnicity_place_cancer_raw <- df %>%
+  filter(codgrp == "Cancer") %>%
+  group_by(ethnicity_Combined, pod_ons_new) %>%
+  summarise(count = n())
+
+fwrite(deaths_ethnicity_place_cancer_raw, here::here("output", "os_reports", "WP3", "deaths_ethnicity_place_cancer_raw.csv"))
 
 # Descriptive analysis to inform modelling - counts of age_band / sex / ethnicity and imd_rounded 
 

@@ -82,5 +82,6 @@ actions:
     needs: [generate_study_population_os_reports]
     outputs:
       moderately_sensitive:
+        descriptive_stats_ethnicity_deaths: output/os_reports/WP3/deaths*.csv 
         descriptive_stats: output/os_reports/WP3/count*.csv
         descriptive_stats_cancer_home: output/os_reports/WP3/cancer*.csv
