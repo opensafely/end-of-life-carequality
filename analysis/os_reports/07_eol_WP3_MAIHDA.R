@@ -47,14 +47,14 @@ df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.g
 
 deaths_ethnicity_place_all_raw <- df %>%
   group_by(ethnicity_Combined, pod_ons_new) %>%
-  summarise(count = n()) %>%
+  summarise(count = n())
 
 fwrite(deaths_ethnicity_place_all_raw, here::here("output", "os_reports", "eol_service", "deaths_ethnicity_place_all_raw.csv"))
 
 deaths_ethnicity_place_cancer_raw <- df %>%
   filter(codgrp == "Cancer") %>%
   group_by(ethnicity_Combined, pod_ons_new) %>%
-  summarise(count = n()) %>%
+  summarise(count = n())
 
 fwrite(deaths_ethnicity_place_cancer_raw, here::here("output", "os_reports", "eol_service", "deaths_ethnicity_place_cancer_raw.csv"))
 
