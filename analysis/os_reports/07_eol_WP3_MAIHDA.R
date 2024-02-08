@@ -59,7 +59,7 @@ deaths_ethnicity_place_cancer_raw <- df %>%
   group_by(ethnicity_Combined, pod_ons_new) %>%
   summarise(count = n())
 
-fwrite(death.s_ethnicity_place_cancer_raw, here::here("output", "os_reports", "WP3", "deaths_ethnicity_place_cancer_raw.csv"))
+fwrite(deaths_ethnicity_place_cancer_raw, here::here("output", "os_reports", "WP3", "deaths_ethnicity_place_cancer_raw.csv"))
 
 # Checking group sizes for three broad ethnicity groupings
 
@@ -165,6 +165,8 @@ cancer_count_by_ethnicity <- df %>%
 fwrite(cancer_count_by_ethnicity, here::here("output", "os_reports", "WP3", "cancer_count_by_ethnicity.csv"))
 
 # Checking group sizes where ethnicity is split into 3 groups
+
+cols_of_interest <- c("n");
 
 cancer_count_by_Ethnicity_3 <- df %>%
   filter(codgrp == "Cancer"
