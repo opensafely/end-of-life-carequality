@@ -28,6 +28,9 @@ enddate <- dmy("31-08-2023")
 
 df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.gz")) %>%
   mutate(dod_ons = as_date(dod_ons)
+         , Ethnicity_3 = case_when(ethnicity_Combined == "White" ~ "White"
+                             , ethnicity_Combined == "Asian or Asian British" ~ "Asian or Asian British"
+                             , ethnicity_Combined == "Black or Black British" | ethnicity_Combined == "Mixed" | ethnicity_Combined == "Chinese or Other Ethnic Groups" | ethnicity_Combined == "Not stated" ~ "All other ethnic groups")
          , study_month = floor_date(dod_ons, unit = "month")
          , pod_ons_new = case_when(pod_ons == "Elsewhere" 
                                    | pod_ons == "Other communal establishment" ~ "Elsewhere/other"
@@ -56,7 +59,22 @@ deaths_ethnicity_place_cancer_raw <- df %>%
   group_by(ethnicity_Combined, pod_ons_new) %>%
   summarise(count = n())
 
-fwrite(deaths_ethnicity_place_cancer_raw, here::here("output", "os_reports", "WP3", "deaths_ethnicity_place_cancer_raw.csv"))
+fwrite(death.s_ethnicity_place_cancer_raw, here::here("output", "os_reports", "WP3", "deaths_ethnicity_place_cancer_raw.csv"))
+
+# Checking group sizes for three broad ethnicity groupings
+
+deaths_ethnicity3_place_all_raw <- df %>%
+  group_by(Ethnicity_3, pod_ons_new) %>%
+  summarise(count = n())
+
+fwrite(deaths_ethnicity_place_all_raw, here::here("output", "os_reports", "WP3", "deaths_ethnicity_place_all_raw.csv"))
+
+deaths_ethnicity3_place_cancer_raw <- df %>%
+  filter(codgrp == "Cancer") %>%
+  group_by(Ethnicity_3, pod_ons_new) %>%
+  summarise(count = n())
+
+fwrite(deaths_ethnicity3_place_cancer_raw, here::here("output", "os_reports", "WP3", "deaths_ethnicity3_place_cancer_raw.csv"))
 
 # Descriptive analysis to inform modelling - counts of age_band / sex / ethnicity and imd_rounded 
 
@@ -146,6 +164,18 @@ cancer_count_by_ethnicity <- df %>%
 
 fwrite(cancer_count_by_ethnicity, here::here("output", "os_reports", "WP3", "cancer_count_by_ethnicity.csv"))
 
+# Checking group sizes where ethnicity is split into 3 groups
+
+cancer_count_by_Ethnicity_3 <- df %>%
+  filter(codgrp == "Cancer"
+         & pod_ons_new == "Home") %>%
+  group_by(Ethnicity_3) %>%
+  count(Ethnicity_3) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+
+fwrite(cancer_count_by_Ethnicity_3, here::here("output", "os_reports", "WP3", "cancer_count_by_Ethnicity_3.csv"))
+
 cancer_count_by_imd_quintile <- df %>%
   filter(codgrp == "Cancer"
          & pod_ons_new == "Home") %>%
@@ -165,3 +195,21 @@ cancer_count_by_group <- df %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
 
 fwrite(cancer_count_by_group, here::here("output", "os_reports", "WP3", "cancer_count_by_group.csv"))
+
+# Group counts where ethnicity is split into three broad groups - cancer only + deaths at home
+
+cancer_count_by_group_eth3 <- df %>%
+  filter(codgrp == "Cancer"
+         & pod_ons_new == "Home") %>%
+  group_by(sex, age_band, imd_quintile, Ethnicity_3) %>%
+  count(sex, age_band, imd_quintile, Ethnicity_3) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+
+fwrite(cancer_count_by_group_eth3, here::here("output", "os_reports", "WP3", "cancer_count_by_group_3.csv"))
+
+
+
+
+
+
