@@ -34,7 +34,7 @@ from ehrql import codelist_from_csv
 ## KEY VARIABLES ##
 
 earliest_date = "2019-03-01"
-latest_date = "2023-08-31"
+latest_date = "2023-12-31"
 date_range = (earliest_date, latest_date)
 
 ## STUDY DEFINITION ##
