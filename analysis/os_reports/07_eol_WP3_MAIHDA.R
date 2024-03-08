@@ -30,7 +30,7 @@ enddate <- dmy("31-12-2023")
 
 df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.gz")) %>%
   mutate(dod_ons = as_date(dod_ons)
-         , Ethnicity_3 = case_when(ethnicity_Combined == "White" ~ "White"
+         , Ethnicity_2 = case_when(ethnicity_Combined == "White" ~ "White"
                              , ethnicity_Combined == "Asian or Asian British" | ethnicity_Combined == "Black or Black British" | ethnicity_Combined == "Mixed" | ethnicity_Combined == "Chinese or Other Ethnic Groups" | ethnicity_Combined == "Not stated" ~ "All other ethnic groups")
          , study_month = floor_date(dod_ons, unit = "month")
          , pod_ons_new = case_when(pod_ons == "Elsewhere" 
@@ -52,7 +52,7 @@ df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.g
 count_by_group_RAW <- df %>%
   filter(codgrp == "Cancer"
          & pod_ons_new == "Home") %>%
-  count(sex, age_band, ethnicity_Combined, imd_quintile) 
+  count(sex, age_band, ethnicity_2, imd_quintile) 
 
 fwrite(count_by_group_RAW, here::here("output", "os_reports", "WP3", "count_by_group_RAW.csv"))
 
@@ -61,7 +61,7 @@ cols_of_interest <- c("n");
 count_by_group <- df %>%
   filter(codgrp == "Cancer"
          & pod_ons_new == "Home") %>%
-  count(sex, age_band, ethnicity_Combined, imd_quintile) %>%
+  count(sex, age_band, ethnicity_2, imd_quintile) %>%
     dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
     dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
   
