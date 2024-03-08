@@ -69,7 +69,7 @@ fwrite(count_by_group, here::here("output", "os_reports", "WP3", "count_by_group
 
 # Form intersectional strata
 
-dplyr::group_by(sex, age_band, ethnicity_Combined, imd_quintile) %>% dplyr::mutate(strata = cur_group_id())
+dplyr::group_by(sex, age_band, Ethnicity_2, imd_quintile) %>% dplyr::mutate(strata = cur_group_id())
 
 # Total number of strata
 
