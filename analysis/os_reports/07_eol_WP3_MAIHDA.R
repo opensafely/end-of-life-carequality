@@ -52,7 +52,7 @@ df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.g
 count_by_group_RAW <- df %>%
   filter(codgrp == "Cancer"
          & pod_ons_new == "Home") %>%
-  count(sex, age_band, ethnicity_2, imd_quintile) 
+  count(sex, age_band, Ethnicity_2, imd_quintile) 
 
 fwrite(count_by_group_RAW, here::here("output", "os_reports", "WP3", "count_by_group_RAW.csv"))
 
@@ -61,7 +61,7 @@ cols_of_interest <- c("n");
 count_by_group <- df %>%
   filter(codgrp == "Cancer"
          & pod_ons_new == "Home") %>%
-  count(sex, age_band, ethnicity_2, imd_quintile) %>%
+  count(sex, age_band, Ethnicity_2, imd_quintile) %>%
     dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
     dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
   
