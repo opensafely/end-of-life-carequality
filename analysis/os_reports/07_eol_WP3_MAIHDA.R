@@ -78,7 +78,7 @@ gp_MAIHDA <- read_csv(file = here::here("output", "os_reports", "WP3", "gp_MAIHD
 
 # Table: Group level mean (GLM) GP Interactions (Counts rounded to the nearest 5)
 
-cols_of_interest <- c("n");
+cols_of_interest <- c("count");
 
 GLM_sex <- gp_MAIHDA %>%
   group_by(sex) %>%
@@ -88,7 +88,6 @@ GLM_sex <- gp_MAIHDA %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
 
 fwrite(GLM_sex, here::here("output", "os_reports", "WP3", "GLM_sex.csv"))
-
 
 GLM_Ethnicity_2 <- gp_MAIHDA %>%
   group_by(Ethnicity_2) %>%
@@ -117,14 +116,14 @@ GLM_age_band <- gp_MAIHDA %>%
 
 fwrite(GLM_age_band, here::here("output", "os_reports", "WP3", "GLM_age_band.csv"))
 
-# Form intersectional strata (80 strata in total)
+# Form intersectional strata (80 strata in total) - development syntax
 
-dplyr::group_by(sex, age_band, Ethnicity_2, imd_quintile) %>% dplyr::mutate(strata = cur_group_id())
+# dplyr::group_by(sex, age_band, Ethnicity_2, imd_quintile) %>% dplyr::mutate(strata = cur_group_id())
 
 # Calculate simple intersectional model
 
-model1 <- brm(gp_1m ~ 1 + (1|strata), data = gp_MAIHDA, family = poisson)
-summary(fm1)
+# model1 <- brm(gp_1m ~ 1 + (1|strata), data = gp_MAIHDA, family = poisson)
+# summary(fm1)
 
 
 
