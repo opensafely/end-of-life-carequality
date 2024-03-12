@@ -111,7 +111,7 @@ GLM_age_band <- gp_MAIHDA %>%
   group_by(age_band) %>%
   summarise(count = n(),
             mean = mean(gp_1m, na.rm = TRUE)
-            , sd = sd(gp_1m, na.rm = TRUE)) R%>%
+            , sd = sd(gp_1m, na.rm = TRUE)) %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
 
 fwrite(GLM_age_band, here::here("output", "os_reports", "WP3", "GLM_age_band.csv"))
