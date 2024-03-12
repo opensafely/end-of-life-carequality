@@ -83,4 +83,5 @@ actions:
     outputs:
       moderately_sensitive:
         descriptive_stats: output/os_reports/WP3/count*.csv
+        descriptive_means: output/os_reports/WP3/GLM*.csv
 
