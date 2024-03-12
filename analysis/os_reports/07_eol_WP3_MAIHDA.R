@@ -67,20 +67,6 @@ count_by_group <- df %>%
   
 fwrite(count_by_group, here::here("output", "os_reports", "WP3", "count_by_group.csv"))
 
-# Form intersectional strata
-
-# dplyr::group_by(sex, age_band, Ethnicity_2, imd_quintile) %>% dplyr::mutate(strata = cur_group_id())
-
-# Total number of strata
-
-# total.number.strata-80
-
-# n.strata <-table(data$strata)
-
-# n.strata.10 <-sum(n.strata$N >=10)
-
-# n.strata.10/total.number.strata * 100
-
 # Load the data - focus first on MAIDHA analysis with GP consultations as the outcome
 
 gp_MAIHDA <- df %>%
@@ -131,7 +117,14 @@ GLM_age_band <- gp_MAIHDA %>%
 
 fwrite(GLM_age_band, here::here("output", "os_reports", "WP3", "GLM_age_band.csv"))
 
+# Form intersectional strata (80 strata in total)
 
+dplyr::group_by(sex, age_band, Ethnicity_2, imd_quintile) %>% dplyr::mutate(strata = cur_group_id())
+
+# Calculate simple intersectional model
+
+model1 <- brm(gp_1m ~ 1 + (1|strata), data = gp_MAIHDA, family = poisson)
+summary(fm1)
 
 
 
