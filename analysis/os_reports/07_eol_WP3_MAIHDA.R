@@ -90,21 +90,26 @@ fwrite(gp_MAIHDA, here::here("output", "os_reports", "WP3", "gp_MAIHDA.csv"))
 
 gp_MAIHDA <- read_csv(file = here::here("output", "os_reports", "WP3", "gp_MAIHDA.csv"))
 
-# Table: Group level mean (GLM) GP Interactions
+# Table: Group level mean (GLM) GP Interactions (Counts rounded to the nearest 5)
+
+cols_of_interest <- c("n");
 
 GLM_sex <- gp_MAIHDA %>%
   group_by(sex) %>%
   summarise(count = n(),
             mean = mean(gp_1m, na.rm = TRUE)
-            , sd = sd(gp_1m, na.rm = TRUE))
+            , sd = sd(gp_1m, na.rm = TRUE)) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
 
 fwrite(GLM_sex, here::here("output", "os_reports", "WP3", "GLM_sex.csv"))
+
 
 GLM_Ethnicity_2 <- gp_MAIHDA %>%
   group_by(Ethnicity_2) %>%
   summarise(count = n(),
             mean = mean(gp_1m, na.rm = TRUE)
-            , sd = sd(gp_1m, na.rm = TRUE))
+            , sd = sd(gp_1m, na.rm = TRUE)) %>%
+dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
 
 fwrite(GLM_Ethnicity_2, here::here("output", "os_reports", "WP3", "GLM_Ethnicity_2.csv"))
 
@@ -112,7 +117,8 @@ GLM_imd_quintile <- gp_MAIHDA %>%
   group_by(imd_quintile) %>%
   summarise(count = n(),
             mean = mean(gp_1m, na.rm = TRUE)
-            , sd = sd(gp_1m, na.rm = TRUE))
+            , sd = sd(gp_1m, na.rm = TRUE)) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
 
 fwrite(GLM_imd_quintile, here::here("output", "os_reports", "WP3", "GLM_imd_quintile.csv"))
 
@@ -120,7 +126,8 @@ GLM_age_band <- gp_MAIHDA %>%
   group_by(age_band) %>%
   summarise(count = n(),
             mean = mean(gp_1m, na.rm = TRUE)
-            , sd = sd(gp_1m, na.rm = TRUE))
+            , sd = sd(gp_1m, na.rm = TRUE)) R%>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
 
 fwrite(GLM_age_band, here::here("output", "os_reports", "WP3", "GLM_age_band.csv"))
 
