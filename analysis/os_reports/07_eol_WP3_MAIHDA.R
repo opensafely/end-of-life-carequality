@@ -12,7 +12,7 @@
 # Analysis over a two calendar year period
 
 # Load packages
-
+library(glmmTMB)
 library(tidyverse)
 library(lubridate)
 library(dplyr)
@@ -111,15 +111,29 @@ GLM_age_band <- df %>%
 
 fwrite(GLM_age_band, here::here("output", "os_reports", "WP3", "GLM_age_band.csv"))
 
-# Form intersectional strata (80 strata in total) - development syntax
+# Form intersectional strata (80 strata in total) ethnicity (2), sex (2), IMD (5), age-band(4) - development syntax
 
-# dplyr::group_by(sex, age_band, Ethnicity_2, imd_quintile) %>% dplyr::mutate(strata = cur_group_id())
+gp_MAIHDA <-df %>%
+group_by(sex, age_band, Ethnicity_2, imd_quintile) %>% 
+  dplyr::mutate(strata = cur_group_id())
+
+# Calculate sample sizes of strata
+
+Count_strata <- gp_MAIHDA %>%
+  group_by(strata) %>%
+  summarise(count = n());
+
+# Calculate mean gp interactions by strata
+
+Mean_strata <- gp_MAIHDA %>%
+  group_by(strata) %>%
+  summarise(mean = mean(gp_1m, na.rm = TRUE))
+
 
 # Calculate simple intersectional model
 
-# model1 <- brm(gp_1m ~ 1 + (1|strata), data = gp_MAIHDA, family = poisson)
-# summary(fm1)
-
+model1 <- glmmTMB(gp_1m ~ 1 + (1|strata), data = gp_MAIHDA, family = poisson)
+summary(model1)
 
 
 
