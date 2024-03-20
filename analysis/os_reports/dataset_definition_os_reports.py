@@ -16,6 +16,7 @@ from ehrql.tables.beta.tpp import (
     emergency_care_attendances, 
     hospital_admissions,
     ons_deaths,
+    opa,
     opa_diag,
     patients,
     practice_registrations,
@@ -32,7 +33,7 @@ from ehrql import codelist_from_csv
 
 ## KEY VARIABLES ##
 
-earliest_date = "2019-03-01"
+earliest_date = "2022-09-01"
 latest_date = "2023-08-31"
 date_range = (earliest_date, latest_date)
 
@@ -79,9 +80,8 @@ dataset.sex = patients.sex
 age = patients.age_on(dod_ons)
 
 dataset.age_band = case(
-        when(age < 50).then("0-49"),
-        when(age < 60).then("50-59"),
-        when(age < 70).then("60-69"),
+        when(age < 25).then("0-24"),
+        when(age < 70).then("25-69"),
         when(age < 80).then("70-79"),
         when(age < 90).then("80-89"),
         when(age >= 90).then("90+"),
