@@ -1,22 +1,36 @@
 ##############################################################
-# MAIHDA analysis
+# Multilevel analysis of individual heterogeneity and discriminatory accuracy (MAIHDA) analysis
 # Author: Miranda & Sophie 
-# Date: 07/12/23 # nolint # nolint: commented_code_linter.
-# Initial aim: Running descriptive statistics
-# for potential stratum variables to determine whether group sizes are sufficient
+# Date: 07/12/23 
+# Initial aim: To develop code to run MAIHDA analysis to explore the relationship between patient demographic characteristics and no. of GP interactions in the last 90-days of life. 
 ##############################################################
 
 # Note: Patients with no IMD are excluded from the analysis as are patients aged 0-24. 
 # Analysis focuses on patients who die at home, with a cancer diagnosis. 
 # Ethnicity is considered as two groups for the purpose of MAIHDA, but more detailed analysis of ethnicity will be conducted separately.
-# Analysis over a two calendar year period
+# Analysis over a two calendar year period (2022/2023)
+# Code developed referring to https://strengejacke.github.io/ggeffects/articles/practical_intersectionality.html
+
+# Install packages
+
+#install.packages("parameters")
+#install.packages("performance")
+#install.packages("ggeffects")
+#install.packages("Matrix")
+#install.packages("TMB", type = "source")
 
 # Load packages
-library(glmmTMB)
+
 library(tidyverse)
 library(lubridate)
 library(dplyr)
 library(data.table)
+library(parameters)# model summaries
+library(performance)# model fit indices, ICC
+library(ggeffects)   # predictions and significance testing
+library(insight)     # extracting random effects variances
+library(datawizard)  # data wrangling and preparation
+library(glmmTMB)# multilevel modelling
 
 # Create folder structure
 
@@ -113,27 +127,127 @@ fwrite(GLM_age_band, here::here("output", "os_reports", "WP3", "GLM_age_band.csv
 
 # Form intersectional strata (80 strata in total) ethnicity (2), sex (2), IMD (5), age-band(4) - development syntax
 
-gp_MAIHDA <-df %>%
-group_by(sex, age_band, Ethnicity_2, imd_quintile) %>% 
-  dplyr::mutate(strata = cur_group_id())
+#gp_MAIHDA <-df %>%
+#group_by(sex, age_band, Ethnicity_2, imd_quintile) %>% 
+# dplyr::mutate(strata = cur_group_id())
+
+
+df$strata <- ifelse(
+  is.na(df$sex) | is.na(df$age_band) | is.na(df$Ethnicity_2) | is.na(df$imd_quintile),
+  NA_character_,
+  paste0(df$sex,",",df$age_band,",",df$Ethnicity_2,",",df$imd_quintile)
+)
+df$strata <- factor(df$strata)
+data_tabulate(df$strata)
+
 
 # Calculate sample sizes of strata
 
-Count_strata <- gp_MAIHDA %>%
+Count_strata <- df %>%
   group_by(strata) %>%
   summarise(count = n());
 
 # Calculate mean gp interactions by strata
 
-Mean_strata <- gp_MAIHDA %>%
+Mean_strata <- df %>%
   group_by(strata) %>%
   summarise(mean = mean(gp_1m, na.rm = TRUE))
 
 
 # Calculate simple intersectional model
 
-model1 <- glmmTMB(gp_1m ~ 1 + (1|strata), data = gp_MAIHDA, family = poisson)
+# Linear model with no fixed effects, only intersectional dimensions (sex, ethnicity, age and imd)
+
+model_null <- glmmTMB(gp_1m ~ 1 + (1|strata), data = df, family = poisson)
 summary(model1)
+
+model_parameters(model_null)
+
+# Quantify discriminatory accuracy - calculate the ICC
+# The higher the ICC, the greater the similarity within strata regarding no. of gp interactions, and greater difference between strata in terms of gp interactions
+
+icc(model_null)
+
+# Partially-adjusted intersectional model and PCV
+# To establish which dimensions contribute to inequality (explains the most between-stratum variance)
+# PCV = proportional change in the between-stratum variance
+
+# Fit four models each with one dimension as predictor
+
+m_sex <- glmmTMB(gp_1m ~ sex + (1 | strata), data = df)
+m_age_band <- glmmTMB(gp_1m ~ age_band + (1 | strata), data = df)
+m_Ethnicity_2 <- glmmTMB(gp_1m ~ Ethnicity_2 + (1 | strata), data = df)
+m_imd_quintile <- glmmTMB(gp_1m ~ imd_quintile + (1 | strata), data = df)
+
+compare_parameters(m_sex, m_age_band, m_Ethnicity_2, m_imd_quintile)
+
+icc(m_sex)$ICC_adjusted #Singularity
+icc(m_age_band)$ICC_adjusted
+icc(m_Ethnicity_2)$ICC_adjusted
+icc(m_imd_quintile)$ICC_adjusted
+
+# Calculate the proportional change in between-stratum variance (PCV).
+# PCV ranges 0 - 1, and the closer to 1, the more this particular dimension explains social inequalities.
+
+# extract random effect variances from all models
+v_null <- get_variance(model_null)
+v_sex <- get_variance(m_sex) #Singularity
+v_age_band <- get_variance(m_age_band)
+v_Ethnicity_2 <- get_variance(m_Ethnicity_2)
+v_imd_quintile <- get_variance(m_imd_quintile)
+
+# PCV (proportional change in between-stratum variance)
+
+# from null-model to sex-model
+(v_null$var.random - v_sex$var.random) / v_null$var.random
+
+# PCV from null-model to age-model
+(v_null$var.random - v_age_band$var.random) / v_null$var.random
+
+# PCV from null-model to ethnicity-model
+(v_null$var.random - v_Ethnicity_2$var.random) / v_null$var.random
+
+# PCV from null-model to imd-model
+(v_null$var.random - v_imd_quintile$var.random) / v_null$var.random
+
+# Predict between-stratum variance and test for significant differences
+# How do strata vary? Which combinations of characteristics define higher / lower gp interactions
+
+predictions <- predict_response(
+  model_null, 
+  c("strata"),
+  margin = "empirical"
+)
+
+plot(predictions)
+
+
+# Pairwise comparisons to show which differences between groups are statistically significant.Use Test to look at specific comparisons as too many currently. 
+
+test_predictions(predictions, test = NULL)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
