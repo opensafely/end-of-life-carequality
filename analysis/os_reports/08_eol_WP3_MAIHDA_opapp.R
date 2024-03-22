@@ -8,19 +8,16 @@
 # Set up------------------
 # Load packages
 
+library(tidyverse)
+library(dplyr)
 
 # MAIHDA packages
-#install.packages("ggeffects")
+
 library(ggeffects)
-#install.packages("insight")
 library(insight)
-#install.packages("datawizard")
 library(datawizard)
-#install.packages("parameters")
 library(parameters)
-#install.packages("performance")
 library(performance)
-#install.packages("glmmTMB")
 library(glmmTMB)
 
 # Create folder structure
@@ -158,9 +155,9 @@ fwrite(predictions, here::here("output", "os_reports", "WP3", "predictions.csv")
 predictions_plot <- plot(predictions) +
   theme(axis.text.x = element_text(angle = 90))
 
-fwrite(predictions_plot, here::here("output", "WP3", "os_reports", "prediction_plots.png"))
+#test predictions
+test_predictions(predictions, test = NULL)
 
-test_predictions(predictions, by = "age_band")
 
 
 
