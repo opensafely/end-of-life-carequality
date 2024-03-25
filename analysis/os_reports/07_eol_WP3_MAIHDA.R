@@ -1,5 +1,5 @@
 ##############################################################
-# Multilevel analysis of individual heterogeneity and discriminatory accuracy (MAIHDA) analysis
+# Multilevel analysis of individual heterogeneity and discriminatory accuracy (MAIHDA) analysis 
 # Author: Miranda & Sophie 
 # Date: 07/12/23 
 # Initial aim: To develop code to run MAIHDA analysis to explore the relationship between patient demographic characteristics and no. of GP interactions in the last 90-days of life. 
