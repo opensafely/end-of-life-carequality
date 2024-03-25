@@ -85,3 +85,9 @@ actions:
         descriptive_stats: output/os_reports/WP3/count*.csv
         descriptive_means: output/os_reports/WP3/GLM*.csv
 
+WP3_ethnicity_outputs:
+  run: r:latest analysis/os_reports/09_eol_Ethnicity_breakdown.R
+  needs: [generate_study_population_os_reports]
+  outputs:
+    moderately_sensitive:
+      descriptive_ethnicity: output/os_reports/WP3/ethnicity*.csv
