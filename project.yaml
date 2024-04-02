@@ -11,71 +11,71 @@ actions:
       highly_sensitive:
         cohort: output/os_reports/input_os_reports.csv.gz
            
-  os_report_csvs:
-    run: r:latest analysis/os_reports/01_eol_service_Descriptives_csvs.R
-    needs: [generate_study_population_os_reports]
-    outputs:
-      moderately_sensitive:
-        monthly_deaths_Number: output/os_reports/eol_service/deaths_month*.csv
-        monthly_gp_CSV: output/os_reports/eol_service/gp_month*.csv
-        monthly_gp_Count: output/os_reports/eol_service/gp_count*.csv
-        monthly_med_CSV: output/os_reports/eol_service/eol_med*.csv
-        monthly_med_Count: output/os_reports/eol_service/eol_med_count*.csv
-        monthly_aevis_CSV: output/os_reports/eol_service/aevis_month*.csv
-        monthly_aevis_Count: output/os_reports/eol_service/aevis_count*.csv        
-        monthly_op_CSV: output/os_reports/eol_service/opapp_month*.csv
-        monthly_op_Count: output/os_reports/eol_service/opapp_count*.csv  
-        monthly_eladm_CSV: output/os_reports/eol_service/eladm_month*.csv
-        monthly_eladm_Count: output/os_reports/eol_service/eladm_count*.csv
-        quarterly_eladm_Count: output/os_reports/eol_service/eladm_quarter*.csv  
-        monthly_emadm_CSV: output/os_reports/eol_service/emadm_month*.csv
-        monthly_emadm_Count: output/os_reports/eol_service/emadm_count*.csv
-        monthly_nursing_CSV: output/os_reports/eol_service/nursing_month*.csv 
-        montly_nursing_Count: output/os_reports/eol_service/nursing_count*.csv
-        quarterly_nursing_Count: output/os_reports/eol_service/nursing_quarter*.csv
+  # os_report_csvs:
+  #   run: r:latest analysis/os_reports/01_eol_service_Descriptives_csvs.R
+  #   needs: [generate_study_population_os_reports]
+  #   outputs:
+  #     moderately_sensitive:
+  #       monthly_deaths_Number: output/os_reports/eol_service/deaths_month*.csv
+  #       monthly_gp_CSV: output/os_reports/eol_service/gp_month*.csv
+  #       monthly_gp_Count: output/os_reports/eol_service/gp_count*.csv
+  #       monthly_med_CSV: output/os_reports/eol_service/eol_med*.csv
+  #       monthly_med_Count: output/os_reports/eol_service/eol_med_count*.csv
+  #       monthly_aevis_CSV: output/os_reports/eol_service/aevis_month*.csv
+  #       monthly_aevis_Count: output/os_reports/eol_service/aevis_count*.csv        
+  #       monthly_op_CSV: output/os_reports/eol_service/opapp_month*.csv
+  #       monthly_op_Count: output/os_reports/eol_service/opapp_count*.csv  
+  #       monthly_eladm_CSV: output/os_reports/eol_service/eladm_month*.csv
+  #       monthly_eladm_Count: output/os_reports/eol_service/eladm_count*.csv
+  #       quarterly_eladm_Count: output/os_reports/eol_service/eladm_quarter*.csv  
+  #       monthly_emadm_CSV: output/os_reports/eol_service/emadm_month*.csv
+  #       monthly_emadm_Count: output/os_reports/eol_service/emadm_count*.csv
+  #       monthly_nursing_CSV: output/os_reports/eol_service/nursing_month*.csv 
+  #       montly_nursing_Count: output/os_reports/eol_service/nursing_count*.csv
+  #       quarterly_nursing_Count: output/os_reports/eol_service/nursing_quarter*.csv
 
-  os_report_charts:
-    run: r:latest analysis/os_reports/02_eol_service_Descriptive_outputs.R
-    needs: [os_report_csvs]
-    outputs:
-      moderately_sensitive:
-        monthly_deaths_cod: output/os_reports/eol_service/charts/deaths_cod*.png
-        monthly_deaths_place: output/os_reports/eol_service/charts/deaths_place*.png
-        monthly_gp_cod: output/os_reports/eol_service/charts/gp_cod*.png
-        monthly_gp_place: output/os_reports/eol_service/charts/gp_place*.png
-        monthly_med_cod: output/os_reports/eol_service/charts/eol_med_cod*.png
-        monthly_med_place: output/os_reports/eol_service/charts/eol_med_place*.png
-        monthly_aevis_cod: output/os_reports/eol_service/charts/aevis_cod*.png 
-        monthly_aevis_place: output/os_reports/eol_service/charts/aevis_place*.png 
-        monthly_op_cod: output/os_reports/eol_service/charts/opapp_cod*.png
-        monthly_op_place: output/os_reports/eol_service/charts/opapp_place*.png
-        monthly_eladm_cod: output/os_reports/eol_service/charts/eladm_cod*.png
-        monthly_eladm_place: output/os_reports/eol_service/charts/eladm_place*.png      
-        monthly_emadm_cod: output/os_reports/eol_service/charts/emadm_cod*.png
-        monthly_emadm_place: output/os_reports/eol_service/charts/emadm_place*.png
-        monthly_nursing_cod: output/os_reports/eol_service/charts/nursing_cod*.png 
-        monthly_nursing_place: output/os_reports/eol_service/charts/nursing_place*.png
+  # os_report_charts:
+  #   run: r:latest analysis/os_reports/02_eol_service_Descriptive_outputs.R
+  #   needs: [os_report_csvs]
+  #   outputs:
+  #     moderately_sensitive:
+  #       monthly_deaths_cod: output/os_reports/eol_service/charts/deaths_cod*.png
+  #       monthly_deaths_place: output/os_reports/eol_service/charts/deaths_place*.png
+  #       monthly_gp_cod: output/os_reports/eol_service/charts/gp_cod*.png
+  #       monthly_gp_place: output/os_reports/eol_service/charts/gp_place*.png
+  #       monthly_med_cod: output/os_reports/eol_service/charts/eol_med_cod*.png
+  #       monthly_med_place: output/os_reports/eol_service/charts/eol_med_place*.png
+  #       monthly_aevis_cod: output/os_reports/eol_service/charts/aevis_cod*.png 
+  #       monthly_aevis_place: output/os_reports/eol_service/charts/aevis_place*.png 
+  #       monthly_op_cod: output/os_reports/eol_service/charts/opapp_cod*.png
+  #       monthly_op_place: output/os_reports/eol_service/charts/opapp_place*.png
+  #       monthly_eladm_cod: output/os_reports/eol_service/charts/eladm_cod*.png
+  #       monthly_eladm_place: output/os_reports/eol_service/charts/eladm_place*.png      
+  #       monthly_emadm_cod: output/os_reports/eol_service/charts/emadm_cod*.png
+  #       monthly_emadm_place: output/os_reports/eol_service/charts/emadm_place*.png
+  #       monthly_nursing_cod: output/os_reports/eol_service/charts/nursing_cod*.png 
+  #       monthly_nursing_place: output/os_reports/eol_service/charts/nursing_place*.png
         
-  WP2_outputs:
-    run: r:latest analysis/os_reports/03_eol_WP2_quality_indicators.R
-    needs: [generate_study_population_os_reports]
-    outputs:
-      moderately_sensitive:
-        proportion_palcare_code: output/os_reports/WP2_quality_indicators/palcare*.csv
-        proportion_aeviv1: output/os_reports/WP2_quality_indicators/aevis1*.csv
-        proportion_aevis3: output/os_reports/WP2_quality_indicators/aevis3*.csv
-        proportion_eolmed: output/os_reports/WP2_quality_indicators/eolmed*.csv
-        proportion_specpal_code: output/os_reports/WP2_quality_indicators/specpal*.csv
-        proportion_cancer_palcare: output/os_reports/WP2_quality_indicators/cancer*.csv   
+  # WP2_outputs:
+  #   run: r:latest analysis/os_reports/03_eol_WP2_quality_indicators.R
+  #   needs: [generate_study_population_os_reports]
+  #   outputs:
+  #     moderately_sensitive:
+  #       proportion_palcare_code: output/os_reports/WP2_quality_indicators/palcare*.csv
+  #       proportion_aeviv1: output/os_reports/WP2_quality_indicators/aevis1*.csv
+  #       proportion_aevis3: output/os_reports/WP2_quality_indicators/aevis3*.csv
+  #       proportion_eolmed: output/os_reports/WP2_quality_indicators/eolmed*.csv
+  #       proportion_specpal_code: output/os_reports/WP2_quality_indicators/specpal*.csv
+  #       proportion_cancer_palcare: output/os_reports/WP2_quality_indicators/cancer*.csv   
 
-  WP2_outputs_advance_care_plan:
-    run: r:latest analysis/os_reports/05_eol_WP2_advance_care_plan_measures.R
-    needs: [generate_study_population_os_reports]
-    outputs:
-      moderately_sensitive:
-        acp_code: output/os_reports/WP2_quality_indicators/acp*.csv
-        acp3m_code: output/os_reports/WP2_quality_indicators/acp3m*.csv
-        acpdur_code: output/os_reports/WP2_quality_indicators/acpdur*.csv
+  # WP2_outputs_advance_care_plan:
+  #   run: r:latest analysis/os_reports/05_eol_WP2_advance_care_plan_measures.R
+  #   needs: [generate_study_population_os_reports]
+  #   outputs:
+  #     moderately_sensitive:
+  #       acp_code: output/os_reports/WP2_quality_indicators/acp*.csv
+  #       acp3m_code: output/os_reports/WP2_quality_indicators/acp3m*.csv
+  #       acpdur_code: output/os_reports/WP2_quality_indicators/acpdur*.csv
 
   WP3_descriptive_outputs:
     run: r:latest analysis/os_reports/07_eol_WP3_MAIHDA.R
