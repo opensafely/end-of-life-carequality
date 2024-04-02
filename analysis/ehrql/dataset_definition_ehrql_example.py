@@ -6,7 +6,7 @@ from ehrql import (Dataset, days, case, when)
 
 from ehrql.tables.beta.tpp import (
     addresses, 
-    appointments, 
+    # appointments, 
     clinical_events, 
     emergency_care_attendances, 
     hospital_admissions, 
@@ -114,18 +114,18 @@ dataset.ltc = clinical_events.where(
 
 ## Services ##
 
-## GP consultations
-dataset.gp_1m = appointments.where(
-    appointments.status.is_in([
-        "Arrived",
-        "In Progress",
-        "Finished",
-        "Visit",
-        "Waiting",
-        "Patient Walked Out",
-    ])).where(
-        appointments.start_date.is_on_or_between(dod_ons - days(30), dod_ons)
-    ).count_for_patient()
+# ## GP consultations
+# dataset.gp_1m = appointments.where(
+#     appointments.status.is_in([
+#         "Arrived",
+#         "In Progress",
+#         "Finished",
+#         "Visit",
+#         "Waiting",
+#         "Patient Walked Out",
+#     ])).where(
+#         appointments.start_date.is_on_or_between(dod_ons - days(30), dod_ons)
+#     ).count_for_patient()
 
 ## Hospital activity
 
