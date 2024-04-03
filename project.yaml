@@ -77,13 +77,13 @@ actions:
   #       acp3m_code: output/os_reports/WP2_quality_indicators/acp3m*.csv
   #       acpdur_code: output/os_reports/WP2_quality_indicators/acpdur*.csv
 
-  WP3_descriptive_outputs:
-    run: r:latest analysis/os_reports/07_eol_WP3_MAIHDA.R
-    needs: [generate_study_population_os_reports]
-    outputs:
-      moderately_sensitive:
-        descriptive_stats: output/os_reports/WP3/count*.csv
-        descriptive_means: output/os_reports/WP3/GLM*.csv
+  # WP3_descriptive_outputs:
+  #   run: r:latest analysis/os_reports/07_eol_WP3_MAIHDA.R
+  #   needs: [generate_study_population_os_reports]
+  #   outputs:
+  #     moderately_sensitive:
+  #       descriptive_stats: output/os_reports/WP3/count*.csv
+  #       descriptive_means: output/os_reports/WP3/GLM*.csv
 
   WP3_ethnicity_outputs:
     run: r:latest analysis/os_reports/09_eol_Ethnicity_breakdown.R
