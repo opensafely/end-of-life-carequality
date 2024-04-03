@@ -103,14 +103,14 @@ study = StudyDefinition(
 
     ## GP consultations
     # Consultation can include things like phone number update  
-    gp_1m = patients.with_gp_consultations(
-        returning = "number_of_matches_in_period",
-        between = ["dod_ons - 30 days", "dod_ons"],
-        return_expectations = {
-            "int": {"distribution": "normal", "mean": 5, "stddev": 1}, 
-            "incidence": 0.8
-            }
-    ),
+    # gp_1m = patients.with_gp_consultations(
+    #     returning = "number_of_matches_in_period",
+    #     between = ["dod_ons - 30 days", "dod_ons"],
+    #     return_expectations = {
+    #         "int": {"distribution": "normal", "mean": 5, "stddev": 1}, 
+    #         "incidence": 0.8
+    #         }
+    # ),
   
     ##A&E Visits
     # time period: 1 month prior to death

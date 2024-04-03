@@ -242,21 +242,21 @@ study = StudyDefinition(
             }
     ),
 
-    ## GP clinical coded activity in year prior to death
-    # Use as a proxy for contact with GP   
-    gp_binary = patients.with_gp_consultations(
-        returning = "binary_flag",
-        between = ["index_date", "last_day_of_month(index_date)"]
-    ),
+    # ## GP clinical coded activity in year prior to death
+    # # Use as a proxy for contact with GP   
+    # gp_binary = patients.with_gp_consultations(
+    #     returning = "binary_flag",
+    #     between = ["index_date", "last_day_of_month(index_date)"]
+    # ),
 
-    gp = patients.with_gp_consultations(
-        returning = "number_of_matches_in_period",
-        between = ["index_date", "last_day_of_month(index_date)"],
-        return_expectations = {
-            "int": {"distribution": "normal", "mean": 5, "stddev": 1}, 
-            "incidence": 0.8
-            }
-    ),
+    # gp = patients.with_gp_consultations(
+    #     returning = "number_of_matches_in_period",
+    #     between = ["index_date", "last_day_of_month(index_date)"],
+    #     return_expectations = {
+    #         "int": {"distribution": "normal", "mean": 5, "stddev": 1}, 
+    #         "incidence": 0.8
+    #         }
+    # ),
 
     ## EOL medication
     # Start with midazolam as existing codelist

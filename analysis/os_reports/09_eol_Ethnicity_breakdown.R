@@ -168,7 +168,7 @@ ethnicity_age_sex_imd <- df %>%
 
 fwrite(ethnicity_age_sex_imd, here::here("output", "os_reports", "WP3", "ethnicity_age_sex_imd.csv"))
 
-# Ethnicity breakdwon by sex and IMD
+# Ethnicity breakdown by sex and IMD
 
 cols_of_interest <- c("count");
 
@@ -185,3 +185,225 @@ ethnicity_sex_imd <- df %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
 
 fwrite(ethnicity_sex_imd, here::here("output", "os_reports", "WP3", "ethnicity_sex_imd.csv"))
+
+# Ethnicity breakdown by place of death:
+
+cols_of_interest <- c("count");
+
+ethnicity_pod_raw <- df %>%
+  group_by(ethnicity_Combined, pod_ons_new) %>%
+  summarise(count = n());
+
+fwrite(ethnicity_pod_raw, here::here("output", "os_reports", "WP3", "ethnicity_pod_raw.csv"))
+
+ethnicity_pod <- df %>%
+  group_by(ethnicity_Combined, pod_ons_new) %>%
+  summarise(count = n()) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+
+fwrite(ethnicity_pod, here::here("output", "os_reports", "WP3", "ethnicity_pod.csv"))
+
+# Ethnicity breakdown by place of death and age:
+
+cols_of_interest <- c("count");
+
+ethnicity_pod_age_raw <- df %>%
+  group_by(ethnicity_Combined, pod_ons_new, age_band) %>%
+  summarise(count = n());
+
+fwrite(ethnicity_pod_age_raw, here::here("output", "os_reports", "WP3", "ethnicity_pod_age_raw.csv"))
+
+ethnicity_pod_age <- df %>%
+  group_by(ethnicity_Combined, pod_ons_new, age_band) %>%
+  summarise(count = n()) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+
+fwrite(ethnicity_pod_age, here::here("output", "os_reports", "WP3", "ethnicity_pod_age.csv"))
+
+# Ethnicity breakdown by place of death and imd:
+
+cols_of_interest <- c("count");
+
+ethnicity_pod_imd_raw <- df %>%
+  group_by(ethnicity_Combined, pod_ons_new, imd_quintile) %>%
+  summarise(count = n());
+
+fwrite(ethnicity_pod_imd_raw, here::here("output", "os_reports", "WP3", "ethnicity_pod_imd_raw.csv"))
+
+ethnicity_pod_imd <- df %>%
+  group_by(ethnicity_Combined, pod_ons_new, imd_quintile) %>%
+  summarise(count = n()) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+
+fwrite(ethnicity_pod_imd, here::here("output", "os_reports", "WP3", "ethnicity_pod_imd.csv"))
+
+# Ethnicity breakdown by place of death and sex
+
+  cols_of_interest <- c("count");
+
+ethnicity_pod_sex_raw <- df %>%
+  group_by(ethnicity_Combined, pod_ons_new, sex) %>%
+  summarise(count = n());
+
+fwrite(ethnicity_pod_sex_raw, here::here("output", "os_reports", "WP3", "ethnicity_pod_sex_raw.csv"))
+
+ethnicity_pod_sex <- df %>%
+  group_by(ethnicity_Combined, pod_ons_new, sex) %>%
+  summarise(count = n()) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+
+fwrite(ethnicity_pod_sex, here::here("output", "os_reports", "WP3", "ethnicity_pod_sex.csv"))
+
+# Ethnicity breakdown by place of death and age and IMD
+
+cols_of_interest <- c("count");
+
+ethnicity_pod_age_imd_raw <- df %>%
+  group_by(ethnicity_Combined, pod_ons_new, age_band, imd_quintile) %>%
+  summarise(count = n());
+
+fwrite(ethnicity_pod_age_imd_raw, here::here("output", "os_reports", "WP3", "ethnicity_pod_age_imd_raw.csv"))
+
+ethnicity_pod_age_imd <- df %>%
+  group_by(ethnicity_Combined, pod_ons_new, age_band, imd_quintile) %>%
+  summarise(count = n()) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+
+fwrite(ethnicity_pod_age_imd, here::here("output", "os_reports", "WP3", "ethnicity_pod_age_imd.csv"))
+
+
+# Ethnicity breakdown by place of death and age and IMD and sex
+
+cols_of_interest <- c("count");
+
+ethnicity_pod_age_imd_sex_raw <- df %>%
+  group_by(ethnicity_Combined, pod_ons_new, age_band, imd_quintile, sex) %>%
+  summarise(count = n());
+
+fwrite(ethnicity_pod_age_imd_sex_raw, here::here("output", "os_reports", "WP3", "ethnicity_pod_age_imd_sex_raw.csv"))
+
+ethnicity_pod_age_imd_sex <- df %>%
+  group_by(ethnicity_Combined, pod_ons_new, age_band, imd_quintile, sex) %>%
+  summarise(count = n()) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+
+fwrite(ethnicity_pod_age_imd_sex, here::here("output", "os_reports", "WP3", "ethnicity_pod_age_imd_sex.csv"))
+
+# Ethnicity breakdown by cause of death:
+
+cols_of_interest <- c("count");
+
+ethnicity_Cod_raw <- df %>%
+  group_by(ethnicity_Combined, codgrp) %>%
+  summarise(count = n());
+
+fwrite(ethnicity_Cod_raw, here::here("output", "os_reports", "WP3", "ethnicity_Cod_raw.csv"))
+
+ethnicity_Cod <- df %>%
+  group_by(ethnicity_Combined, codgrp) %>%
+  summarise(count = n()) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+
+fwrite(ethnicity_Cod, here::here("output", "os_reports", "WP3", "ethnicity_Cod.csv"))
+
+# Ethnicity breakdown by cause of death and age:
+
+cols_of_interest <- c("count");
+
+ethnicity_Cod_age_raw <- df %>%
+  group_by(ethnicity_Combined, codgrp, age_band) %>%
+  summarise(count = n());
+
+fwrite(ethnicity_Cod_age_raw, here::here("output", "os_reports", "WP3", "ethnicity_Cod_age_raw.csv"))
+
+ethnicity_Cod_age <- df %>%
+  group_by(ethnicity_Combined, codgrp, age_band) %>%
+  summarise(count = n()) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+
+fwrite(ethnicity_Cod_age, here::here("output", "os_reports", "WP3", "ethnicity_Cod_age.csv"))
+
+# Ethnicity breakdown by cause of death and imd:
+
+cols_of_interest <- c("count");
+
+ethnicity_Cod_imd_raw <- df %>%
+  group_by(ethnicity_Combined, codgrp, imd_quintile) %>%
+  summarise(count = n());
+
+fwrite(ethnicity_Cod_imd_raw, here::here("output", "os_reports", "WP3", "ethnicity_Cod_imd_raw.csv"))
+
+ethnicity_Cod_imd <- df %>%
+  group_by(ethnicity_Combined, codgrp, imd_quintile) %>%
+  summarise(count = n()) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+
+fwrite(ethnicity_Cod_imd, here::here("output", "os_reports", "WP3", "ethnicity_Cod_imd.csv"))
+
+# Ethnicity breakdown by cause of death and sex
+
+cols_of_interest <- c("count");
+
+ethnicity_Cod_sex_raw <- df %>%
+  group_by(ethnicity_Combined, codgrp, sex) %>%
+  summarise(count = n());
+
+fwrite(ethnicity_Cod_sex_raw, here::here("output", "os_reports", "WP3", "ethnicity_Cod_sex_raw.csv"))
+
+ethnicity_Cod_sex <- df %>%
+  group_by(ethnicity_Combined, codgrp, sex) %>%
+  summarise(count = n()) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+
+fwrite(ethnicity_Cod_sex, here::here("output", "os_reports", "WP3", "ethnicity_Cod_sex.csv"))
+
+# Ethnicity breakdown by cause of death and age and IMD
+
+cols_of_interest <- c("count");
+
+ethnicity_Cod_age_imd_raw <- df %>%
+  group_by(ethnicity_Combined, codgrp, age_band, imd_quintile) %>%
+  summarise(count = n());
+
+fwrite(ethnicity_Cod_age_imd_raw, here::here("output", "os_reports", "WP3", "ethnicity_Cod_age_imd_raw.csv"))
+
+ethnicity_Cod_age_imd <- df %>%
+  group_by(ethnicity_Combined, codgrp, age_band, imd_quintile) %>%
+  summarise(count = n()) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+
+fwrite(ethnicity_Cod_age_imd, here::here("output", "os_reports", "WP3", "ethnicity_Cod_age_imd.csv"))
+
+
+# Ethnicity breakdown by cause of death and age and IMD and sex
+
+cols_of_interest <- c("count");
+
+ethnicity_Cod_age_imd_sex_raw <- df %>%
+  group_by(ethnicity_Combined, codgrp, age_band, imd_quintile, sex) %>%
+  summarise(count = n());
+
+fwrite(ethnicity_Cod_age_imd_sex_raw, here::here("output", "os_reports", "WP3", "ethnicity_Cod_age_imd_sex_raw.csv"))
+
+ethnicity_Cod_age_imd_sex <- df %>%
+  group_by(ethnicity_Combined, codgrp, age_band, imd_quintile, sex) %>%
+  summarise(count = n()) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+
+fwrite(ethnicity_Cod_age_imd_sex, here::here("output", "os_reports", "WP3", "ethnicity_Cod_age_imd_sex.csv"))
+
+
+
+
