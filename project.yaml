@@ -85,19 +85,19 @@ actions:
   #       descriptive_stats: output/os_reports/WP3/count*.csv
   #       descriptive_means: output/os_reports/WP3/GLM*.csv
 
-  WP3_MAIHDA_outputs:
-      run: r.latest analysis/os_reports/07_eol_WP3_MAIHDA.R
-      needs: [generate_study_population_os_reports]
-      outputs:
-        moderately_sensitive:
-          descriptive_beta: output/os_reports/WP3/beta.csv
-          descriptive_sigma2u: output/os_reports/WP3/sigma2u.csv
-          descriptive_expectation: output/os_reports/WP3/expectation.csv
-          descriptive_variance: output/os_reports/WP3/variance.csv
-          descriptive_variance2: output/os_reports/WP3/variance2.csv
-          descriptive_variance1: output/os_reports/WP3/variance1.csv
-          descriptive_vpc2: output/os_reports/WP3/vpc2.csv
-          descriptive_vpc1: output/os_reports/WP3/vpc1.csv
+ # WP3_MAIHDA_outputs:
+ #   run: r:latest analysis/os_reports/07_eol_WP3_MAIHDA.R
+ #   needs: [generate_study_population_os_reports]
+ #   outputs:
+ #     moderately_sensitive:
+ #       descriptive_beta: output/os_reports/WP3/beta.csv
+ #       descriptive_sigma2u: output/os_reports/WP3/sigma2u.csv
+ #       descriptive_expectation: output/os_reports/WP3/expectation.csv
+ #       descriptive_variance: output/os_reports/WP3/variance.csv
+ #       descriptive_variance2: output/os_reports/WP3/variance2.csv
+ #       descriptive_variance1: output/os_reports/WP3/variance1.csv
+ #       descriptive_vpc2: output/os_reports/WP3/vpc2.csv
+ #       descriptive_vpc1: output/os_reports/WP3/vpc1.csv
 
   WP3_ethnicity_outputs:
     run: r:latest analysis/os_reports/09_eol_Ethnicity_breakdown.R
