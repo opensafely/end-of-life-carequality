@@ -127,7 +127,7 @@ fwrite(GLM_age_band, here::here("output", "os_reports", "WP3", "GLM_age_band.csv
 
 AE_MAIHDA <-df %>%
   group_by(sex, age_band, Ethnicity_2, imd_quintile) %>% 
-  mutate(strata = cur_group_id())
+  dplyr::mutate(strata = cur_group_id(), na.rm = TRUE)
 
 # Model 1  - includes a strata random intercept to account for clustering by strata #
 # Calculate simple intersectional model (Null model - Captures variation without considering the impact of any specific predictor)
