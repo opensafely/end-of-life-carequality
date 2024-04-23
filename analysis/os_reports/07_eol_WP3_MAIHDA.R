@@ -145,7 +145,6 @@ write.csv (beta0, file = 'beta0.csv', row.names = FALSE)
 beta0 <- read_csv(file =  "beta0.csv")
 fwrite(beta0, here::here("output", "os_reports", "WP3", "beta0.csv"))
 
-
 # Cluster variance
 str(summary(fm1))
 sigma2u <- summary(fm1)$varcor$cond$strata[1,1]
