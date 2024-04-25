@@ -90,6 +90,7 @@ actions:
     needs: [generate_study_population_os_reports]
     outputs:
       moderately_sensitive:
+        descriptive_Mean_Aevis: output/os_reports/WP3/GLM_Aevis_RAW.csv
         descriptive_beta0: output/os_reports/WP3/beta0.csv
         descriptive_sigma2u: output/os_reports/WP3/sigma2u.csv
         descriptive_expectation: output/os_reports/WP3/expectation.csv

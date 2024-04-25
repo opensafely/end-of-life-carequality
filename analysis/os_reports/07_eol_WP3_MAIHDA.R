@@ -81,6 +81,18 @@ fwrite(count_by_group, here::here("output", "os_reports", "WP3", "count_by_group
 
 # MAIDHA analysis with A&E attendances as the outcome
 
+# Mean A&E attendances for patients with cancer who die at home- Raw not for release
+
+GLM_Aevis_RAW <- df %>%
+    filter(codgrp == "Cancer"
+        & pod_ons_new == "Home") %>%
+  summarise(count = n(),
+            mean = mean(aevis_1m, na.rm = TRUE)
+            , sd = sd(aevis_1m, na.rm = TRUE)) 
+
+fwrite(GLM_Aevis_RAW, here::here("output", "os_reports", "WP3", "GLM_Aevis_RAW.csv"))
+
+
 # Table: Group level mean (GLM) A&E attendances (Counts rounded to the nearest 5)
 
 cols_of_interest <- c("count");
