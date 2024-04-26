@@ -16,11 +16,8 @@ library(performance)
 library(glmmTMB)
 library(broom)
 library(data.table)
+library(jtools)
 
-#troubleshooting code
-install.packages("Matrix")
-install.packages("TMB", type = "source")
-library(glmmTMB)
 
 # Create folder structure
 
@@ -61,7 +58,7 @@ GLM_sex <- df %>%
             , sd = sd(opapp_1m, na.rm = TRUE)) %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
 
-fwrite(GLM_sex, here::here("output", "WP3", "GLM_sex_opapp.csv"))
+fwrite(GLM_sex, here::here("output", "WP3", "OP_GLM_sex.csv"))
 
 
 GLM_Ethnicity_2 <- df %>%
@@ -71,7 +68,7 @@ GLM_Ethnicity_2 <- df %>%
             , sd = sd(opapp_1m, na.rm = TRUE)) %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
 
-fwrite(GLM_Ethnicity_2, here::here("output", "WP3", "GLM_ethnicity_opapp.csv"))
+fwrite(GLM_Ethnicity_2, here::here("output", "WP3", "OP_GLM_ethnicity.csv"))
 
 
 GLM_imd_quintile <- df %>%
@@ -81,7 +78,7 @@ GLM_imd_quintile <- df %>%
             , sd = sd(opapp_1m, na.rm = TRUE)) %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
 
-fwrite(GLM_imd_quintile, here::here("output", "WP3", "GLM_IMD_opapp.csv"))
+fwrite(GLM_imd_quintile, here::here("output", "WP3", "OP_GLM_IMD.csv"))
 
 GLM_age_band <- df %>%
   group_by(age_band) %>%
@@ -90,9 +87,56 @@ GLM_age_band <- df %>%
             , sd = sd(opapp_1m, na.rm = TRUE)) %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
 
-fwrite(GLM_age_band, here::here("output", "WP3", "GLM_age_opapp.csv"))
+fwrite(GLM_age_band, here::here("output", "WP3", "OP_GLM_age.csv"))
 
-#define strata--------------------
+#previous analysis ----------
+#define strata-
+
+df$strata <- ifelse(
+  is.na(df$sex) | is.na(df$age_band) | is.na(df$Ethnicity_2) | is.na(df$imd_quintile),
+  NA_character_,
+  paste0(df$sex,",",df$age_band,",",df$Ethnicity_2,",",df$imd_quintile)
+)
+
+df$strata <- factor(df$strata)
+
+#Null model
+
+Model_null <- glmmTMB(opapp_1m ~ 1 +(1 | strata), data = df) 
+model_parameters(Model_null)
+
+icc(Model_null)
+summ(Model_null)
+
+write.csv (icc, file = 'icc.csv')
+beta0 <- read_csv(file =  "icc.csv")
+fwrite(beta0, here::here("output", "os_reports", "WP3", "OPnull.csv"))
+
+# Partially adjusted intersectional model 
+
+model_sex <- glmmTMB(opapp_1m ~ sex + (1|strata), data = df)
+model_age <- glmmTMB(opapp_1m ~ age_band + (1|strata), data = df)
+model_ethnicity <- glmmTMB(opapp_1m ~ Ethnicity_2 + (1|strata), data = df)
+model_IMD <- glmmTMB(opapp_1m ~ imd_quintile + (1|strata), data = df)
+
+compare_parameters(model_sex, model_age, model_ethnicity, model_IMD)  
+
+icc(model_sex)$ICC_adjusted
+icc(model_age)$ICC_adjusted #singularity 
+icc(model_ethnicity)$ICC_adjusted
+icc(model_IMD)$ICC_adjusted 
+
+#PCV -
+# random effects 
+
+variance_null <- get_variance(Model_null)
+variance_sex <- get_variance(model_sex)
+variance_age <- get_variance(model_age) #singularity again
+variance_ethnicity <- get_variance(model_ethnicity)
+variance_imd <- get_variance(model_IMD)
+
+#new analysis------------
+#define strata----
 # Form intersectional strata (80 strata in total)
 
 OP_MAIHDA <-df %>%
