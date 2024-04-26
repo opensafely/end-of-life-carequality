@@ -106,11 +106,9 @@ Model_null <- glmmTMB(opapp_1m ~ 1 +(1 | strata), data = df)
 model_parameters(Model_null)
 
 icc(Model_null)
-summ(Model_null)
 
-write.csv (icc, file = 'icc.csv')
-beta0 <- read_csv(file =  "icc.csv")
-fwrite(beta0, here::here("output", "os_reports", "WP3", "OPnull.csv"))
+fwrite(print(icc(Model_null)), here::here("output", "os_reports", "WP3", "OPnull.csv"))
+
 
 # Partially adjusted intersectional model 
 
