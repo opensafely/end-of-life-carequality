@@ -16,7 +16,7 @@ library(performance)
 library(glmmTMB)
 library(broom)
 library(data.table)
-library(jtools)
+
 
 
 # Create folder structure
