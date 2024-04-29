@@ -136,17 +136,17 @@ dataset.imd_quintile = case(
 ## Services ## 
 
 ## GP consultations
-# dataset.gp_1m = appointments.where(
-#     appointments.status.is_in([
-#         "Arrived",
-#         "In Progress",
-#         "Finished",
-#         "Visit",
-#         "Waiting",
-#         "Patient Walked Out",
-#     ])).where(
-#         appointments.start_date.is_on_or_between(dod_ons - days(30), dod_ons)
-#     ).count_for_patient()
+ dataset.gp_1m = appointments.where(
+     appointments.status.is_in([
+         "Arrived",
+         "In Progress",
+         "Finished",
+         "Visit",
+         "Waiting",
+         "Patient Walked Out",
+     ])).where(
+         appointments.start_date.is_on_or_between(dod_ons - days(30), dod_ons)
+     ).count_for_patient()
 
 ## Medications for symptom management at end of life
 dataset.eol_med_1m = medications.where(
