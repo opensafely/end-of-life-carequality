@@ -57,81 +57,58 @@ df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.g
                               , TRUE ~ "All other causes")) %>%
   filter(study_month >= startdate & study_month <= enddate & imd_quintile >=1 & age_band != "0-24" & codgrp == "Cancer" & pod_ons_new == "Home")
 
-
-# Counts by grouping variables _RAW not for release
-
-count_by_group_RAW <- df %>%
-  filter(codgrp == "Cancer"
-         & pod_ons_new == "Home") %>%
-  count(sex, age_band, Ethnicity_2, imd_quintile) 
-
-fwrite(count_by_group_RAW, here::here("output", "os_reports", "WP3", "count_by_group_RAW.csv"))
-
-cols_of_interest <- c("n");
-
-count_by_group <- df %>%
-  filter(codgrp == "Cancer"
-         & pod_ons_new == "Home") %>%
-  count(sex, age_band, Ethnicity_2, imd_quintile) %>%
-    dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
-    dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
-  
-fwrite(count_by_group, here::here("output", "os_reports", "WP3", "count_by_group.csv"))
-
-
-# MAIDHA analysis with A&E attendances as the outcome
-
-# Mean A&E attendances for patients with cancer who die at home- Raw not for release
-
-GLM_Aevis_RAW <- df %>%
-    filter(codgrp == "Cancer"
-        & pod_ons_new == "Home") %>%
-  summarise(count = n(),
-            mean = mean(aevis_1m, na.rm = TRUE)
-            , sd = sd(aevis_1m, na.rm = TRUE)) 
-
-fwrite(GLM_Aevis_RAW, here::here("output", "os_reports", "WP3", "GLM_Aevis_RAW.csv"))
-
-
-# Table: Group level mean (GLM) A&E attendances (Counts rounded to the nearest 5)
+# MAIDHA analysis with GP interactions as the outcome
 
 cols_of_interest <- c("count");
 
-GLM_sex <- df %>%
+GLM_GP_OVERALL <- df %>%
+  summarise(count = n(),
+            mean = mean(gp_1m, na.rm = TRUE)
+            , sd = sd(gp_1m, na.rm = TRUE)) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+
+fwrite(GLM_GP_OVERALL, here::here("output", "os_reports", "WP3", "GLM_GP_OVERALL.csv"))
+
+
+# Table: Group level mean (GLM) GP interactions (Counts rounded to the nearest 5)
+
+cols_of_interest <- c("count");
+
+GLM_GP_sex <- df %>%
   group_by(sex) %>%
   summarise(count = n(),
-            mean = mean(aevis_1m, na.rm = TRUE)
-            , sd = sd(aevis_1m, na.rm = TRUE)) %>%
+            mean = mean(gp_1m, na.rm = TRUE)
+            , sd = sd(gp_1m, na.rm = TRUE)) %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
 
-fwrite(GLM_sex, here::here("output", "os_reports", "WP3", "GLM_sex.csv"))
+fwrite(GLM_GP_sex, here::here("output", "os_reports", "WP3", "GLM_GP_sex.csv"))
 
-GLM_Ethnicity_2 <- df %>%
+GLM_GP_Ethnicity_2 <- df %>%
   group_by(Ethnicity_2) %>%
   summarise(count = n(),
-            mean = mean(aevis_1m, na.rm = TRUE)
-            , sd = sd(aevis_1m, na.rm = TRUE)) %>%
+            mean = mean(gpaevis_1m, na.rm = TRUE)
+            , sd = sd(gp_1m, na.rm = TRUE)) %>%
 dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
 
-fwrite(GLM_Ethnicity_2, here::here("output", "os_reports", "WP3", "GLM_Ethnicity_2.csv"))
+fwrite(GLM_GP_Ethnicity_2, here::here("output", "os_reports", "WP3", "GLM_GP_Ethnicity_2.csv"))
 
-GLM_imd_quintile <- df %>%
+GLM_GP_imd_quintile <- df %>%
   group_by(imd_quintile) %>%
   summarise(count = n(),
-            mean = mean(aevis_1m, na.rm = TRUE)
-            , sd = sd(aevis_1m, na.rm = TRUE)) %>%
+            mean = mean(gp_1m, na.rm = TRUE)
+            , sd = sd(gp_1m, na.rm = TRUE)) %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
 
-fwrite(GLM_imd_quintile, here::here("output", "os_reports", "WP3", "GLM_imd_quintile.csv"))
+fwrite(GLM_GP_imd_quintile, here::here("output", "os_reports", "WP3", "GLM_GP_imd_quintile.csv"))
 
-GLM_age_band <- df %>%
+GLM_GP_age_band <- df %>%
   group_by(age_band) %>%
   summarise(count = n(),
-            mean = mean(aevis_1m, na.rm = TRUE)
-            , sd = sd(aevis_1m, na.rm = TRUE)) %>%
+            mean = mean(gp_1m, na.rm = TRUE)
+            , sd = sd(gp_1m, na.rm = TRUE)) %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
 
-fwrite(GLM_age_band, here::here("output", "os_reports", "WP3", "GLM_age_band.csv"))
+fwrite(GLM_GP_age_band, here::here("output", "os_reports", "WP3", "GLM_GP_age_band.csv"))
 
 #########################################################################################################################################
 # Outcome variable = GP interactions
@@ -218,10 +195,75 @@ write.csv(GPvpc1, 'GPvpc1.csv', row.names = FALSE)
 GPvpc1 <-read_csv(file = "GPvpc1.csv")
 fwrite(GPvpc1, here::here("output", "os_reports", "WP3", "GPvpc1.csv"))
 
-
-
-
 #########################################################################################################################################
+
+# MAIDHA analysis with A&E attendances as the outcome
+
+# Mean A&E attendances for patients with cancer who die at home- Raw not for release
+
+GLM_Aevis_RAW <- df %>%
+  filter(codgrp == "Cancer"
+         & pod_ons_new == "Home") %>%
+  summarise(count = n(),
+            mean = mean(aevis_1m, na.rm = TRUE)
+            , sd = sd(aevis_1m, na.rm = TRUE)) 
+
+fwrite(GLM_Aevis_RAW, here::here("output", "os_reports", "WP3", "GLM_Aevis_RAW.csv"))
+
+
+# Table: Group level mean (GLM) A&E attendances (Counts rounded to the nearest 5)
+
+cols_of_interest <- c("count");
+
+GLM_sex <- df %>%
+  group_by(sex) %>%
+  summarise(count = n(),
+            mean = mean(aevis_1m, na.rm = TRUE)
+            , sd = sd(aevis_1m, na.rm = TRUE)) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+
+fwrite(GLM_sex, here::here("output", "os_reports", "WP3", "GLM_sex.csv"))
+
+GLM_Ethnicity_2 <- df %>%
+  group_by(Ethnicity_2) %>%
+  summarise(count = n(),
+            mean = mean(aevis_1m, na.rm = TRUE)
+            , sd = sd(aevis_1m, na.rm = TRUE)) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+
+fwrite(GLM_Ethnicity_2, here::here("output", "os_reports", "WP3", "GLM_Ethnicity_2.csv"))
+
+GLM_imd_quintile <- df %>%
+  group_by(imd_quintile) %>%
+  summarise(count = n(),
+            mean = mean(aevis_1m, na.rm = TRUE)
+            , sd = sd(aevis_1m, na.rm = TRUE)) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+
+fwrite(GLM_imd_quintile, here::here("output", "os_reports", "WP3", "GLM_imd_quintile.csv"))
+
+GLM_age_band <- df %>%
+  group_by(age_band) %>%
+  summarise(count = n(),
+            mean = mean(aevis_1m, na.rm = TRUE)
+            , sd = sd(aevis_1m, na.rm = TRUE)) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+
+fwrite(GLM_age_band, here::here("output", "os_reports", "WP3", "GLM_age_band.csv"))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # Outcome variable = A&E attendances
 
