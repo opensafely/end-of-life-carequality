@@ -90,15 +90,15 @@ actions:
     needs: [generate_study_population_os_reports]
     outputs:
       moderately_sensitive:
-        descriptive_Mean_Aevis: output/os_reports/WP3/GLM_Aevis_RAW.csv
-        descriptive_beta0: output/os_reports/WP3/beta0.csv
-        descriptive_sigma2u: output/os_reports/WP3/sigma2u.csv
-        descriptive_expectation: output/os_reports/WP3/expectation.csv
-        descriptive_variance: output/os_reports/WP3/variance.csv
-        descriptive_variance2: output/os_reports/WP3/variance2.csv
-        descriptive_variance1: output/os_reports/WP3/variance1.csv
-        descriptive_vpc2: output/os_reports/WP3/vpc2.csv
-        descriptive_vpc1: output/os_reports/WP3/vpc1.csv
+        descriptive_Mean_Gp: output/os_reports/WP3/GLM_GP*.csv
+        descriptive_gpbeta0: output/os_reports/WP3/GPbeta0.csv
+        descriptive_gpsigma2u: output/os_reports/WP3/GPsigma2u.csv
+        descriptive_gpexpectation: output/os_reports/WP3/GPexpectation.csv
+        descriptive_gpvariance: output/os_reports/WP3/GPvariance.csv
+        descriptive_gpvariance2: output/os_reports/WP3/GPvariance2.csv
+        descriptive_gpvariance1: output/os_reports/WP3/GPvariance1.csv
+        descriptive_gpvpc2: output/os_reports/WP3/GPvpc2.csv
+        descriptive_gpvpc1: output/os_reports/WP3/GPvpc1.csv
 
   WP3_ethnicity_outputs:
     run: r:latest analysis/os_reports/09_eol_Ethnicity_breakdown.R
