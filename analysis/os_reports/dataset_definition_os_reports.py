@@ -11,7 +11,7 @@ from ehrql import (Dataset, days, case, when)
 
 from ehrql.tables.beta.tpp import (
     addresses,
-    # appointments, 
+    appointments, 
     clinical_events,
     emergency_care_attendances, 
     hospital_admissions,
