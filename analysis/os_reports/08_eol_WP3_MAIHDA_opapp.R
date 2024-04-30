@@ -59,7 +59,7 @@ GLM_sex <- df %>%
             , sd = sd(opapp_1m, na.rm = TRUE)) %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
 
-fwrite(GLM_sex, here::here("output", "WP3", "OP_GLM_sex.csv"))
+fwrite(GLM_sex, here::here("output", "os_reports", "WP3", "OP_GLM_sex.csv"))
 
 
 GLM_Ethnicity_2 <- df %>%
@@ -69,7 +69,7 @@ GLM_Ethnicity_2 <- df %>%
             , sd = sd(opapp_1m, na.rm = TRUE)) %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
 
-fwrite(GLM_Ethnicity_2, here::here("output", "WP3", "OP_GLM_ethnicity.csv"))
+fwrite(GLM_Ethnicity_2, here::here("output", "os_reports", "WP3", "OP_GLM_ethnicity.csv"))
 
 
 GLM_imd_quintile <- df %>%
@@ -79,7 +79,7 @@ GLM_imd_quintile <- df %>%
             , sd = sd(opapp_1m, na.rm = TRUE)) %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
 
-fwrite(GLM_imd_quintile, here::here("output", "WP3", "OP_GLM_IMD.csv"))
+fwrite(GLM_imd_quintile, here::here("output", "os_reports", "WP3", "OP_GLM_IMD.csv"))
 
 GLM_age_band <- df %>%
   group_by(age_band) %>%
@@ -88,7 +88,7 @@ GLM_age_band <- df %>%
             , sd = sd(opapp_1m, na.rm = TRUE)) %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
 
-fwrite(GLM_age_band, here::here("output", "WP3", "OP_GLM_age.csv"))
+fwrite(GLM_age_band, here::here("output", "os_reports", "WP3", "OP_GLM_age.csv"))
 
 #previous analysis ----------
 #define strata-
