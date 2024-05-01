@@ -45,8 +45,8 @@ df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.g
                               , cod_ons_3 %in% c("F01", "F03", "G30") ~ "Dementia and Alzheimer's disease"
                               , cod_ons_3 >= "I00" & cod_ons_3 <= "I99" ~ "Circulatory diseases"
                               , cod_ons_3 >= "C00" & cod_ons_3 <= "C99" ~ "Cancer"
-                              , TRUE ~ "All other causes")) %>%
-  filter(codgrp == "Cancer", pod_ons_new == "Home", age_band != "0-24", imd_quintile >=1)
+                              , TRUE ~ "All other causes")) #%>%
+  #filter(codgrp == "Cancer", pod_ons_new == "Home", age_band != "0-24", imd_quintile >=1)
 
 #produce means and SD for each group ----------------
 cols_of_interest <- c("count");
@@ -101,45 +101,43 @@ df$strata <- factor(df$strata)
 
 #Null model
 
-Model_null <- glmmTMB(opapp_1m ~ 1 +(1 | strata), data = df) 
-model_parameters(Model_null)
+# Model_null <- glmmTMB(opapp_1m ~ 1 +(1 | strata), data = df) 
+# model_parameters(Model_null)
 
-icc(Model_null)
+# icc(Model_null)
 
-fwrite(print(icc(Model_null)), here::here("output", "os_reports", "WP3", "OPnull.csv"))
-
-
-# Partially adjusted intersectional model 
-
-model_sex <- glmmTMB(opapp_1m ~ sex + (1|strata), data = df)
-model_age <- glmmTMB(opapp_1m ~ age_band + (1|strata), data = df)
-model_ethnicity <- glmmTMB(opapp_1m ~ Ethnicity_2 + (1|strata), data = df)
-model_IMD <- glmmTMB(opapp_1m ~ imd_quintile + (1|strata), data = df)
-
-compare_parameters(model_sex, model_age, model_ethnicity, model_IMD)  
-
-fwrite(print(compare_parameters(model_sex, model_age, model_ethnicity, model_IMD)
-             , here::here("output", "os_reports", "WP3", "OPparameters.csv")))
-
-icc(model_sex)$ICC_adjusted
-icc(model_age)$ICC_adjusted #singularity 
-icc(model_ethnicity)$ICC_adjusted
-icc(model_IMD)$ICC_adjusted 
-
-###############################
-#fwrite(icc(model_sex)$ICC_adjusted, here::here("output", "os_reports", "WP3", "OPsexICC.csv"))
+# #fwrite(print(icc(Model_null)), here::here("output", "os_reports", "WP3", "OPnull.csv"))
 
 
+# # Partially adjusted intersectional model 
+
+# model_sex <- glmmTMB(opapp_1m ~ sex + (1|strata), data = df)
+# model_age <- glmmTMB(opapp_1m ~ age_band + (1|strata), data = df)
+# model_ethnicity <- glmmTMB(opapp_1m ~ Ethnicity_2 + (1|strata), data = df)
+# model_IMD <- glmmTMB(opapp_1m ~ imd_quintile + (1|strata), data = df)
+
+# compare_parameters(model_sex, model_age, model_ethnicity, model_IMD)  
+
+# #fwrite(print(compare_parameters(model_sex, model_age, model_ethnicity, model_IMD)
+#              #, here::here("output", "os_reports", "WP3", "OPparameters.csv")))
+
+# icc(model_sex)$ICC_adjusted
+# icc(model_age)$ICC_adjusted #singularity 
+# icc(model_ethnicity)$ICC_adjusted
+# icc(model_IMD)$ICC_adjusted 
+
+# ###############################
+# #fwrite(icc(model_sex)$ICC_adjusted, here::here("output", "os_reports", "WP3", "OPsexICC.csv"))
 
 
-#PCV -
-# random effects 
+# #PCV -
+# # random effects 
 
-variance_null <- get_variance(Model_null)
-variance_sex <- get_variance(model_sex)
-variance_age <- get_variance(model_age) #singularity again
-variance_ethnicity <- get_variance(model_ethnicity)
-variance_imd <- get_variance(model_IMD)
+# variance_null <- get_variance(Model_null)
+# variance_sex <- get_variance(model_sex)
+# variance_age <- get_variance(model_age) #singularity again
+# variance_ethnicity <- get_variance(model_ethnicity)
+# variance_imd <- get_variance(model_IMD)
 
 #new analysis------------
 #define strata----
@@ -158,50 +156,50 @@ summary(fm1)
 
 # Intercept (mean no. of outpatient attendances when all predictors = 0)
 str(summary(fm1))
-beta0 <- summary(fm1)$coefficients$cond[1,1]
-beta0
+OPbeta0 <- summary(fm1)$coefficients$cond[1,1]
+OPbeta0
 
 write.csv (OPbeta0, file = 'OPbeta0.csv', row.names = FALSE)
-OPbeta0 <- read_csv(file =  "OPbeta0.csv")
+OPOPbeta0 <- read_csv(file =  "OPbeta0.csv")
 fwrite(OPbeta0, here::here("output", "os_reports", "WP3", "OPbeta0.csv"))
 
 
 # Cluster variance
 str(summary(fm1))
-sigma2u <- summary(fm1)$varcor$cond$strata[1,1]
-sigma2u
+OPsigma2u <- summary(fm1)$varcor$cond$strata[1,1]
+OPsigma2u
 
 write.csv(OPsigma2u, file = 'OPsigma2u.csv', row.names = FALSE)
 OPsigma2u <-read_csv(file = "OPsigma2u.csv")
 fwrite(OPsigma2u, here::here("output", "os_reports", "WP3", "OPsigma2u.csv"))
 
 # Marginal expectation (approximately = mean no. of outpatient attendances)
-expectation <- exp(beta0 + sigma2u/2)
-expectation
+OPexpectation <- exp(OPbeta0 + OPsigma2u/2)
+OPexpectation
 
 write.csv(OPexpectation, file = 'OPexpectation.csv', row.names = FALSE)
 OPexpectation <-read_csv(file = "OPexpectation.csv")
 fwrite(OPexpectation, here::here("output", "os_reports", "WP3", "OPexpectation.csv"))
 
 # Marginal variance
-variance <- expectation + expectation^2*(exp(sigma2u) - 1)
-variance
+OPvariance <- expectation + expectation^2*(exp(OPsigma2u) - 1)
+OPvariance
 
 write.csv(OPvariance, file = 'OPvariance.csv', row.names = FALSE)
 OPvariance <-read_csv(file = "OPvariance.csv")
 fwrite(OPvariance, here::here("output", "os_reports", "WP3", "OPvariance.csv"))
 
 # Marginal variance: Level-2 component (Variance between clusters - based on age groups, sex, etc)
-variance2 <- expectation^2*(exp(sigma2u) - 1)
-variance2
+OPvariance2 <- expectation^2*(exp(OPsigma2u) - 1)
+OPvariance2
 
 write.csv(OPvariance2, file = 'OPvariance2.csv', row.names = FALSE)
 OPvariance2 <-read_csv(file = "OPvariance2.csv")
 fwrite(OPvariance2, here::here("output", "os_reports", "WP3", "OPvariance2.csv"))
 
 # Marginal variance: Level-1 component (variance within clusters)
-variance1 <- expectation
-variance1
+OPvariance1 <- expectation
+OPvariance1
 
 write.csv(OPvariance1, file = 'OPvariance1.csv', row.names = FALSE)
 Ovariance1 <-read_csv(file = "OPvariance1.csv")
@@ -239,13 +237,13 @@ summary(fm2)
 
 # Intercept
 str(summary(fm2))
-beta0 <- summary(fm2)$coefficients$cond[1,1]
-beta0
+OPbeta0 <- summary(fm2)$coefficients$cond[1,1]
+OPbeta0
 
 # Cluster variance
 str(summary(fm2))
-sigma2u <- summary(fm2)$varcor$cond$strata[1,1]
-sigma2u
+OPsigma2u <- summary(fm2)$varcor$cond$strata[1,1]
+OPsigma2u
 
 # Overdispersion parameter
 str(summary(fm2))
@@ -253,19 +251,19 @@ alpha <- 1/(summary(fm2)$sigma)
 alpha
 
 # Marginal expectation
-expectation <- exp(beta0 + sigma2u/2)
+expectation <- exp(OPbeta0 + OPsigma2u/2)
 expectation
 
 # Marginal variance
-variance <- expectation + expectation^2*(exp(sigma2u)*(1 + alpha) - 1)
+variance <- expectation + expectation^2*(exp(OPsigma2u)*(1 + alpha) - 1)
 variance
 
 # Marginal variance: Level-2 component
-variance2 <- expectation^2*(exp(sigma2u) - 1)
+variance2 <- expectation^2*(exp(OPsigma2u) - 1)
 variance2
 
 # Marginal variance: Level-1 component
-variance1 <- expectation + expectation^2*exp(sigma2u)*alpha
+variance1 <- expectation + expectation^2*exp(OPsigma2u)*alpha
 variance1
 
 # Level-2 VPC
@@ -292,13 +290,13 @@ summary(fm3)
 
 # Intercept
 str(summary(fm3))
-beta0 <- summary(fm3)$coefficients$cond[1,1]
-beta0
+OPbeta0 <- summary(fm3)$coefficients$cond[1,1]
+OPbeta0
 
 # Cluster variance - sex
 str(summary(fm3))
-sigma2u <- summary(fm3)$varcor$cond$sex[1,1]
-sigma2u
+OPsigma2u <- summary(fm3)$varcor$cond$sex[1,1]
+OPsigma2u
 
 # Cluster variance - imd_quintile
 str(summary(fm3))
@@ -319,32 +317,32 @@ alpha <- 1/(summary(fm3)$sigma)
 alpha
 
 # Marginal expectation
-expectation <- exp(beta0 + sigma2u/2 + sigma2v/2 + sigma2w/2 + sigma2x/2)
+expectation <- exp(OPbeta0 + OPsigma2u/2 + sigma2v/2 + sigma2w/2 + sigma2x/2)
 expectation
 
 # Marginal variance
 variance <- expectation + 
-  expectation^2*(exp(sigma2u + sigma2v + sigma2w + sigma2x)*(1 + alpha) - 1)
+  expectation^2*(exp(OPsigma2u + sigma2v + sigma2w + sigma2x)*(1 + alpha) - 1)
 variance
 
 # Marginal variance: Level-5 component
-variance5 <- (expectation^2*(exp(sigma2u) - 1))
+variance5 <- (expectation^2*(exp(OPsigma2u) - 1))
 variance5
 
 # Marginal variance: Level-4 component
-variance4 <- expectation^2*exp(sigma2u)*(exp(sigma2v) - 1)
+variance4 <- expectation^2*exp(OPsigma2u)*(exp(sigma2v) - 1)
 variance4
 
 # Marginal variance: Level-3 component
-variance3 <- expectation^2*exp(sigma2u)*(exp(sigma2v)*(exp(sigma2w) - 1))
+variance3 <- expectation^2*exp(OPsigma2u)*(exp(sigma2v)*(exp(sigma2w) - 1))
 variance3
 
 # Marginal variance: Level-2 component
-variance2 <- expectation^2*exp(sigma2u)*(exp(sigma2v)*(exp(sigma2w)*(exp(sigma2x) - 1)))
+variance2 <- expectation^2*exp(OPsigma2u)*(exp(sigma2v)*(exp(sigma2w)*(exp(sigma2x) - 1)))
 variance2
 
 # Marginal variance: Level-1 component
-variance1 <- expectation + expectation^2*exp(sigma2u + sigma2v + sigma2w + sigma2x)*alpha
+variance1 <- expectation + expectation^2*exp(OPsigma2u + sigma2v + sigma2w + sigma2x)*alpha
 variance1
 
 # Should the different level VPC be interpreted as the proportion of variance in outcome explained by each characteristic? 
