@@ -97,5 +97,5 @@ actions:
      needs: [generate_study_population_os_reports]
      outputs:
         moderately_sensitive:
-        descriptive_ethnicity: output/os_reports/WP3/ethnicity*.csv
+          descriptive_ethnicity: output/os_reports/WP3/ethnicity*.csv
         
