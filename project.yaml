@@ -92,10 +92,10 @@ actions:
   #      descriptive_gpvpc2: output/os_reports/WP3/GPvpc2.csv
   #      descriptive_gpvpc1: output/os_reports/WP3/GPvpc1.csv
 
-   WP3_ethnicity_outputs:
-     run: r:latest analysis/os_reports/09_eol_Ethnicity_breakdown.R
-     needs: [generate_study_population_os_reports]
-     outputs:
-        moderately_sensitive:
-          descriptive_ethnicity: output/os_reports/WP3/ethnicity*.csv
+  WP3_ethnicity_outputs:
+    run: r:latest analysis/os_reports/09_eol_Ethnicity_breakdown.R
+    needs: [generate_study_population_os_reports]
+    outputs:
+      moderately_sensitive:
+        descriptive_ethnicity: output/os_reports/WP3/ethnicity*.csv
         
