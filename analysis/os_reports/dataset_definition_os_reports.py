@@ -136,7 +136,7 @@ dataset.imd_quintile = case(
 ## Services ## 
 
 ## GP consultations
- dataset.gp_1m = appointments.where(
+dataset.gp_1m = appointments.where(
      appointments.status.is_in([
          "Arrived",
          "In Progress",
