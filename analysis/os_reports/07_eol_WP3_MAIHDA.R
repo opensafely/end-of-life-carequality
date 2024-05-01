@@ -86,7 +86,7 @@ fwrite(GLM_GP_sex, here::here("output", "os_reports", "WP3", "GLM_GP_sex.csv"))
 GLM_GP_Ethnicity_2 <- df %>%
   group_by(Ethnicity_2) %>%
   summarise(count = n(),
-            mean = mean(gpaevis_1m, na.rm = TRUE)
+            mean = mean(gp_1m, na.rm = TRUE)
             , sd = sd(gp_1m, na.rm = TRUE)) %>%
 dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
 
