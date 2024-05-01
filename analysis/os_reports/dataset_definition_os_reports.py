@@ -138,7 +138,7 @@ dataset.imd_quintile = case(
 ## GP consultations
 dataset.gp_1m = appointments.where(
      appointments.status.is_in([
-         "Arrived",
+        "Arrived",
          "In Progress",
          "Finished",
          "Visit",
