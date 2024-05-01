@@ -16,7 +16,7 @@ library(performance)
 library(glmmTMB)
 library(broom)
 library(data.table)
-
+library(lubridate)
 
 
 # Create folder structure
@@ -119,10 +119,19 @@ model_IMD <- glmmTMB(opapp_1m ~ imd_quintile + (1|strata), data = df)
 
 compare_parameters(model_sex, model_age, model_ethnicity, model_IMD)  
 
+fwrite(print(compare_parameters(model_sex, model_age, model_ethnicity, model_IMD)
+             , here::here("output", "os_reports", "WP3", "OPparameters.csv")))
+
 icc(model_sex)$ICC_adjusted
 icc(model_age)$ICC_adjusted #singularity 
 icc(model_ethnicity)$ICC_adjusted
 icc(model_IMD)$ICC_adjusted 
+
+###############################
+#fwrite(icc(model_sex)$ICC_adjusted, here::here("output", "os_reports", "WP3", "OPsexICC.csv"))
+
+
+
 
 #PCV -
 # random effects 
@@ -153,9 +162,9 @@ str(summary(fm1))
 beta0 <- summary(fm1)$coefficients$cond[1,1]
 beta0
 
-write.csv (beta0, file = 'beta0.csv')
-beta0 <- read_csv(file =  "beta0.csv")
-fwrite(beta0, here::here("output", "os_reports", "WP3", "OPbeta0.csv"))
+write.csv (OPbeta0, file = 'OPbeta0.csv', row.names = FALSE)
+OPbeta0 <- read_csv(file =  "OPbeta0.csv")
+fwrite(OPbeta0, here::here("output", "os_reports", "WP3", "OPbeta0.csv"))
 
 
 # Cluster variance
@@ -163,41 +172,41 @@ str(summary(fm1))
 sigma2u <- summary(fm1)$varcor$cond$strata[1,1]
 sigma2u
 
-write.csv(sigma2u, file = 'sigma2u.csv')
-sigma2u.csv <-read_csv(file = "sigma2.csv")
-fwrite(sigma2u, here::here("output", "os_reports", "WP3", "OPsigma2u.csv"))
+write.csv(OPsigma2u, file = 'OPsigma2u.csv', row.names = FALSE)
+OPsigma2u <-read_csv(file = "OPsigma2u.csv")
+fwrite(OPsigma2u, here::here("output", "os_reports", "WP3", "OPsigma2u.csv"))
 
 # Marginal expectation (approximately = mean no. of outpatient attendances)
 expectation <- exp(beta0 + sigma2u/2)
 expectation
 
-write.csv(expectation, file = 'expectation.csv')
-expectation.csv <-read_csv(file = "expectation.csv")
-fwrite(expectation, here::here("output", "os_reports", "WP3", "OPexpectation.csv"))
+write.csv(OPexpectation, file = 'OPexpectation.csv', row.names = FALSE)
+OPexpectation <-read_csv(file = "OPexpectation.csv")
+fwrite(OPexpectation, here::here("output", "os_reports", "WP3", "OPexpectation.csv"))
 
 # Marginal variance
 variance <- expectation + expectation^2*(exp(sigma2u) - 1)
 variance
 
-write.csv(variance, file = 'variance.csv')
-variance.csv <-read_csv(file = "variance.csv")
-fwrite(variance, here::here("output", "os_reports", "WP3", "OPvariance.csv"))
+write.csv(OPvariance, file = 'OPvariance.csv', row.names = FALSE)
+OPvariance <-read_csv(file = "OPvariance.csv")
+fwrite(OPvariance, here::here("output", "os_reports", "WP3", "OPvariance.csv"))
 
 # Marginal variance: Level-2 component (Variance between clusters - based on age groups, sex, etc)
 variance2 <- expectation^2*(exp(sigma2u) - 1)
 variance2
 
-write.csv(variance2, file = 'variance2.csv')
-variance2.csv <-read_csv(file = "variance2.csv")
-fwrite(variance2, here::here("output", "os_reports", "WP3", "OPvariance2.csv"))
+write.csv(OPvariance2, file = 'OPvariance2.csv', row.names = FALSE)
+OPvariance2 <-read_csv(file = "OPvariance2.csv")
+fwrite(OPvariance2, here::here("output", "os_reports", "WP3", "OPvariance2.csv"))
 
 # Marginal variance: Level-1 component (variance within clusters)
 variance1 <- expectation
 variance1
 
-write.csv(variance1, file = 'variance1.csv')
-variance1.csv <-read_csv(file = "variance1.csv")
-fwrite(variance1, here::here("output", "os_reports", "WP3", "OPvariance1.csv"))
+write.csv(OPvariance1, file = 'OPvariance1.csv', row.names = FALSE)
+Ovariance1 <-read_csv(file = "OPvariance1.csv")
+fwrite(OPvariance1, here::here("output", "os_reports", "WP3", "OPvariance1.csv"))
 
 # Level-2 VPC (variance partition coefficient)
 # VPC = proportion of the total variance located at the strata level - the global measure of intersectionality. 
