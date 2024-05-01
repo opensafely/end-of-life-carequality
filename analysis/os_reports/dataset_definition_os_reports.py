@@ -11,7 +11,7 @@ from ehrql import (Dataset, days, case, when)
 
 from ehrql.tables.beta.tpp import (
     addresses,
-    # appointments, 
+    appointments, 
     clinical_events,
     emergency_care_attendances, 
     hospital_admissions,
@@ -138,7 +138,7 @@ dataset.imd_quintile = case(
 ## GP consultations
 dataset.gp_1m = appointments.where(
      appointments.status.is_in([
-         "Arrived",
+        "Arrived",
          "In Progress",
          "Finished",
          "Visit",
