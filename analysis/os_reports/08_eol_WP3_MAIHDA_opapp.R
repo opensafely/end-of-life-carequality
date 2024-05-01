@@ -46,7 +46,7 @@ df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.g
                               , cod_ons_3 >= "I00" & cod_ons_3 <= "I99" ~ "Circulatory diseases"
                               , cod_ons_3 >= "C00" & cod_ons_3 <= "C99" ~ "Cancer"
                               , TRUE ~ "All other causes")) #%>%
-  #filter(codgrp == "Cancer", pod_ons_new == "Home", age_band != "0-24", imd_quintile >=1)
+  filter(codgrp == "Cancer", pod_ons_new == "Home", age_band != "0-24", imd_quintile >=1)
 
 #produce means and SD for each group ----------------
 cols_of_interest <- c("count");
@@ -160,7 +160,7 @@ OPbeta0 <- summary(fm1)$coefficients$cond[1,1]
 OPbeta0
 
 write.csv (OPbeta0, file = 'OPbeta0.csv', row.names = FALSE)
-OPOPbeta0 <- read_csv(file =  "OPbeta0.csv")
+OPbeta0 <- read_csv(file =  "OPbeta0.csv")
 fwrite(OPbeta0, here::here("output", "os_reports", "WP3", "OPbeta0.csv"))
 
 
@@ -182,7 +182,7 @@ OPexpectation <-read_csv(file = "OPexpectation.csv")
 fwrite(OPexpectation, here::here("output", "os_reports", "WP3", "OPexpectation.csv"))
 
 # Marginal variance
-OPvariance <- expectation + expectation^2*(exp(OPsigma2u) - 1)
+OPvariance <- OPexpectation + OPexpectation^2*(exp(OPsigma2u) - 1)
 OPvariance
 
 write.csv(OPvariance, file = 'OPvariance.csv', row.names = FALSE)
@@ -190,7 +190,7 @@ OPvariance <-read_csv(file = "OPvariance.csv")
 fwrite(OPvariance, here::here("output", "os_reports", "WP3", "OPvariance.csv"))
 
 # Marginal variance: Level-2 component (Variance between clusters - based on age groups, sex, etc)
-OPvariance2 <- expectation^2*(exp(OPsigma2u) - 1)
+OPvariance2 <- OPexpectation^2*(exp(OPsigma2u) - 1)
 OPvariance2
 
 write.csv(OPvariance2, file = 'OPvariance2.csv', row.names = FALSE)
@@ -198,7 +198,7 @@ OPvariance2 <-read_csv(file = "OPvariance2.csv")
 fwrite(OPvariance2, here::here("output", "os_reports", "WP3", "OPvariance2.csv"))
 
 # Marginal variance: Level-1 component (variance within clusters)
-OPvariance1 <- expectation
+OPvariance1 <- OPexpectation
 OPvariance1
 
 write.csv(OPvariance1, file = 'OPvariance1.csv', row.names = FALSE)
@@ -210,7 +210,7 @@ fwrite(OPvariance1, here::here("output", "os_reports", "WP3", "OPvariance1.csv")
 # VPC = same as ICC
 # A high VPC means the strata are useful for understanding differences in outpatient attendances. 
 # Where VPC = 0, strata = random sample from the population not relevant to understanding outpatient attendances at end of life. 
-vpc2 <- variance2/(variance2 + variance1)
+vpc2 <- OPvariance2/(OPvariance2 + OPvariance1)
 vpc2
 
 write.csv(vpc2, file = 'vpc2.csv')
@@ -218,7 +218,7 @@ vpc2.csv <-read_csv(file = "vpc2.csv")
 fwrite(vpc2, here::here("output", "os_reports", "WP3", "OPvpc2.csv"))
 
 # Level-1 VPC (variance partition coefficient - variance at the individual level)
-vpc1 <- variance1/(variance2 + variance1)
+vpc1 <- OPvariance1/(OPvariance2 + OPvariance1)
 vpc1
 
 write.csv(vpc1, file = 'vpc1.csv')
@@ -251,27 +251,27 @@ alpha <- 1/(summary(fm2)$sigma)
 alpha
 
 # Marginal expectation
-expectation <- exp(OPbeta0 + OPsigma2u/2)
-expectation
+OPexpectation <- exp(OPbeta0 + OPsigma2u/2)
+OPexpectation
 
 # Marginal variance
-variance <- expectation + expectation^2*(exp(OPsigma2u)*(1 + alpha) - 1)
+variance <- OPexpectation + OPexpectation^2*(exp(OPsigma2u)*(1 + alpha) - 1)
 variance
 
 # Marginal variance: Level-2 component
-variance2 <- expectation^2*(exp(OPsigma2u) - 1)
-variance2
+OPvariance2 <- OPexpectation^2*(exp(OPsigma2u) - 1)
+OPvariance2
 
 # Marginal variance: Level-1 component
-variance1 <- expectation + expectation^2*exp(OPsigma2u)*alpha
-variance1
+OPvariance1 <- OPexpectation + OPexpectation^2*exp(OPsigma2u)*alpha
+OPvariance1
 
 # Level-2 VPC
-vpc2 <- variance2/(variance2 + variance1)
+vpc2 <- OPvariance2/(OPvariance2 + OPvariance1)
 vpc2
 
 # Level-1 VPC
-vpc1 <- variance1/(variance2 + variance1)
+vpc1 <- OPvariance1/(OPvariance2 + OPvariance1)
 vpc1
 
 # Predict cluster random intercept effects
@@ -317,52 +317,52 @@ alpha <- 1/(summary(fm3)$sigma)
 alpha
 
 # Marginal expectation
-expectation <- exp(OPbeta0 + OPsigma2u/2 + sigma2v/2 + sigma2w/2 + sigma2x/2)
-expectation
+OPexpectation <- exp(OPbeta0 + OPsigma2u/2 + sigma2v/2 + sigma2w/2 + sigma2x/2)
+OPexpectation
 
 # Marginal variance
-variance <- expectation + 
-  expectation^2*(exp(OPsigma2u + sigma2v + sigma2w + sigma2x)*(1 + alpha) - 1)
+variance <- OPexpectation + 
+  OPexpectation^2*(exp(OPsigma2u + sigma2v + sigma2w + sigma2x)*(1 + alpha) - 1)
 variance
 
 # Marginal variance: Level-5 component
-variance5 <- (expectation^2*(exp(OPsigma2u) - 1))
+variance5 <- (OPexpectation^2*(exp(OPsigma2u) - 1))
 variance5
 
 # Marginal variance: Level-4 component
-variance4 <- expectation^2*exp(OPsigma2u)*(exp(sigma2v) - 1)
+variance4 <- OPexpectation^2*exp(OPsigma2u)*(exp(sigma2v) - 1)
 variance4
 
 # Marginal variance: Level-3 component
-variance3 <- expectation^2*exp(OPsigma2u)*(exp(sigma2v)*(exp(sigma2w) - 1))
+variance3 <- OPexpectation^2*exp(OPsigma2u)*(exp(sigma2v)*(exp(sigma2w) - 1))
 variance3
 
 # Marginal variance: Level-2 component
-variance2 <- expectation^2*exp(OPsigma2u)*(exp(sigma2v)*(exp(sigma2w)*(exp(sigma2x) - 1)))
-variance2
+OPvariance2 <- OPexpectation^2*exp(OPsigma2u)*(exp(sigma2v)*(exp(sigma2w)*(exp(sigma2x) - 1)))
+OPvariance2
 
 # Marginal variance: Level-1 component
-variance1 <- expectation + expectation^2*exp(OPsigma2u + sigma2v + sigma2w + sigma2x)*alpha
-variance1
+OPvariance1 <- OPexpectation + OPexpectation^2*exp(OPsigma2u + sigma2v + sigma2w + sigma2x)*alpha
+OPvariance1
 
 # Should the different level VPC be interpreted as the proportion of variance in outcome explained by each characteristic? 
 
 # Level-5 VPC
-vpc5 <- variance5/(variance5 + variance4 + variance3 + variance2 + variance1)
+vpc5 <- variance5/(variance5 + variance4 + variance3 + OPvariance2 + OPvariance1)
 vpc5
 
 # Level-4 VPC
-vpc4 <- variance4/(variance5 + variance4 + variance3 + variance2 + variance1)
+vpc4 <- variance4/(variance5 + variance4 + variance3 + OPvariance2 + OPvariance1)
 vpc4
 
 # Level-3 VPC
-vpc3 <- variance3/(variance5 + variance4 + variance3 + variance2 + variance1)
+vpc3 <- variance3/(variance5 + variance4 + variance3 + OPvariance2 + OPvariance1)
 vpc3
 
 # Level-2 VPC
-vpc2 <- variance2/(variance5 + variance4 + variance3 + variance2 + variance1)
+vpc2 <- OPvariance2/(variance5 + variance4 + variance3 + OPvariance2 + OPvariance1)
 vpc2
 
 # Level-1 VPC
-vpc1 <- variance1/(variance5 + variance4 + variance3 + variance2 + variance1)
+vpc1 <- OPvariance1/(variance5 + variance4 + variance3 + OPvariance2 + OPvariance1)
 vpc1
