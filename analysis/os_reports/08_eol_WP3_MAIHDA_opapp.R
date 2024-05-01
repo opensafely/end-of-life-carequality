@@ -210,20 +210,20 @@ fwrite(OPvariance1, here::here("output", "os_reports", "WP3", "OPvariance1.csv")
 # VPC = same as ICC
 # A high VPC means the strata are useful for understanding differences in outpatient attendances. 
 # Where VPC = 0, strata = random sample from the population not relevant to understanding outpatient attendances at end of life. 
-vpc2 <- OPvariance2/(OPvariance2 + OPvariance1)
-vpc2
+OPvpc2 <- OPvariance2/(OPvariance2 + OPvariance1)
+OPvpc2
 
-write.csv(vpc2, file = 'vpc2.csv')
-vpc2.csv <-read_csv(file = "vpc2.csv")
-fwrite(vpc2, here::here("output", "os_reports", "WP3", "OPvpc2.csv"))
+write.csv(OPvpc2, file = 'OPvpc2.csv')
+OPvpc2.csv <-read_csv(file = "OPvpc2.csv")
+fwrite(OPvpc2, here::here("output", "os_reports", "WP3", "OPOPvpc2.csv"))
 
 # Level-1 VPC (variance partition coefficient - variance at the individual level)
-vpc1 <- OPvariance1/(OPvariance2 + OPvariance1)
-vpc1
+OPvpc1 <- OPvariance1/(OPvariance2 + OPvariance1)
+OPvpc1
 
-write.csv(vpc1, file = 'vpc1.csv')
-vpc1.csv <-read_csv(file = "vpc1.csv")
-fwrite(vpc1, here::here("output", "os_reports", "WP3", "OPvpc1.csv"))
+write.csv(OPvpc1, file = 'OPvpc1.csv')
+OPvpc1.csv <-read_csv(file = "OPvpc1.csv")
+fwrite(OPvpc1, here::here("output", "os_reports", "WP3", "OPOPvpc1.csv"))
 
 ##################################################################################################################################
 
@@ -267,12 +267,12 @@ OPvariance1 <- OPexpectation + OPexpectation^2*exp(OPsigma2u)*alpha
 OPvariance1
 
 # Level-2 VPC
-vpc2 <- OPvariance2/(OPvariance2 + OPvariance1)
-vpc2
+OPvpc2 <- OPvariance2/(OPvariance2 + OPvariance1)
+OPvpc2
 
 # Level-1 VPC
-vpc1 <- OPvariance1/(OPvariance2 + OPvariance1)
-vpc1
+OPvpc1 <- OPvariance1/(OPvariance2 + OPvariance1)
+OPvpc1
 
 # Predict cluster random intercept effects
 fm2u <- ranef(fm2)
@@ -360,9 +360,9 @@ vpc3 <- variance3/(variance5 + variance4 + variance3 + OPvariance2 + OPvariance1
 vpc3
 
 # Level-2 VPC
-vpc2 <- OPvariance2/(variance5 + variance4 + variance3 + OPvariance2 + OPvariance1)
-vpc2
+OPvpc2 <- OPvariance2/(variance5 + variance4 + variance3 + OPvariance2 + OPvariance1)
+OPvpc2
 
 # Level-1 VPC
-vpc1 <- OPvariance1/(variance5 + variance4 + variance3 + OPvariance2 + OPvariance1)
-vpc1
+OPvpc1 <- OPvariance1/(variance5 + variance4 + variance3 + OPvariance2 + OPvariance1)
+OPvpc1
