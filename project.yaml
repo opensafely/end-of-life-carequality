@@ -77,20 +77,13 @@ actions:
   #       acp3m_code: output/os_reports/WP2_quality_indicators/acp3m*.csv
   #       acpdur_code: output/os_reports/WP2_quality_indicators/acpdur*.csv
 
-  # WP3_MAIHDA_outputs:
-  #  run: r:latest analysis/os_reports/07_eol_WP3_MAIHDA.R
-  #  needs: [generate_study_population_os_reports]
-  #  outputs:
-  #    moderately_sensitive:
-  #      descriptive_Mean_Gp: output/os_reports/WP3/GLM_GP*.csv
-  #      descriptive_gpbeta0: output/os_reports/WP3/GPbeta0.csv
-  #      descriptive_gpsigma2u: output/os_reports/WP3/GPsigma2u.csv
-  #      descriptive_gpexpectation: output/os_reports/WP3/GPexpectation.csv
-  #      descriptive_gpvariance: output/os_reports/WP3/GPvariance.csv
-  #      descriptive_gpvariance2: output/os_reports/WP3/GPvariance2.csv
-  #      descriptive_gpvariance1: output/os_reports/WP3/GPvariance1.csv
-  #      descriptive_gpvpc2: output/os_reports/WP3/GPvpc2.csv
-  #      descriptive_gpvpc1: output/os_reports/WP3/GPvpc1.csv
+   WP3_MAIHDA_outputs_GP:
+    run: r:latest analysis/os_reports/07_eol_WP3_MAIHDA_gp_a&e.R
+    needs: [generate_study_population_os_reports]
+    outputs:
+      moderately_sensitive:
+        descriptive_NullModel: output/os_reports/WP3/GP*.csv
+
 # WP3_ethnicity_outputs:
 #   run: r:latest analysis/os_reports/09_eol_Ethnicity_breakdown.R
 #   needs: [generate_study_population_os_reports]
