@@ -3,7 +3,7 @@
 # Second attempt at MAIHDA code development trying to use library packages supported by MAIHDA
 # Author: Miranda & Sophie 
 # Date: 08/04/24 
-# Initial aim: To develop code to run MAIHDA analysis to explore the relationship between patient demographic characteristics and no. of A&E attendances in the last 90-days of life. 
+# Initial aim: To develop code to run MAIHDA analysis to explore the relationship between patient demographic characteristics and no. of GP interactions/A&E attendances in the last 90-days of life. 
 ##############################################################
 
 # Note: Patients with no IMD are excluded from the analysis as are patients aged 0-24. 
@@ -67,7 +67,7 @@ GLM_GP_OVERALL <- df %>%
             , sd = sd(gp_1m, na.rm = TRUE)) %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
 
-fwrite(GLM_GP_OVERALL, here::here("output", "os_reports", "WP3", "GLM_GP_OVERALL.csv"))
+fwrite(GLM_GP_OVERALL, here::here("output", "os_reports", "WP3", "GP_OVERALL.csv"))
 
 
 # Table: Group level mean (GLM) GP interactions (Counts rounded to the nearest 5)
@@ -81,7 +81,7 @@ GLM_GP_sex <- df %>%
             , sd = sd(gp_1m, na.rm = TRUE)) %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
 
-fwrite(GLM_GP_sex, here::here("output", "os_reports", "WP3", "GLM_GP_sex.csv"))
+fwrite(GLM_GP_sex, here::here("output", "os_reports", "WP3", "GP_sex.csv"))
 
 GLM_GP_Ethnicity_2 <- df %>%
   group_by(Ethnicity_2) %>%
@@ -90,7 +90,7 @@ GLM_GP_Ethnicity_2 <- df %>%
             , sd = sd(gp_1m, na.rm = TRUE)) %>%
 dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
 
-fwrite(GLM_GP_Ethnicity_2, here::here("output", "os_reports", "WP3", "GLM_GP_Ethnicity_2.csv"))
+fwrite(GLM_GP_Ethnicity_2, here::here("output", "os_reports", "WP3", "GP_Ethnicity_2.csv"))
 
 GLM_GP_imd_quintile <- df %>%
   group_by(imd_quintile) %>%
@@ -99,7 +99,7 @@ GLM_GP_imd_quintile <- df %>%
             , sd = sd(gp_1m, na.rm = TRUE)) %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
 
-fwrite(GLM_GP_imd_quintile, here::here("output", "os_reports", "WP3", "GLM_GP_imd_quintile.csv"))
+fwrite(GLM_GP_imd_quintile, here::here("output", "os_reports", "WP3", "GP_imd_quintile.csv"))
 
 GLM_GP_age_band <- df %>%
   group_by(age_band) %>%
@@ -108,7 +108,7 @@ GLM_GP_age_band <- df %>%
             , sd = sd(gp_1m, na.rm = TRUE)) %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
 
-fwrite(GLM_GP_age_band, here::here("output", "os_reports", "WP3", "GLM_GP_age_band.csv"))
+fwrite(GLM_GP_age_band, here::here("output", "os_reports", "WP3", "GP_age_band.csv"))
 
 #########################################################################################################################################
 # Outcome variable = GP interactions
