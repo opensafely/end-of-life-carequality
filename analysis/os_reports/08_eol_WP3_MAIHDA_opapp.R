@@ -205,12 +205,12 @@ fwrite(OPsigma2u2, here::here("output", "os_reports", "WP3", "OPsigma2u2.csv"))
 
 # Overdispersion parameter
 str(summary(fm2))
-alpha2 <- 1/(summary(fm2)$sigma)
-alpha2
+OPalpha2 <- 1/(summary(fm2)$sigma)
+OPalpha2
 
-write.csv(alpha2, file = 'alpha2.csv', row.names = FALSE)
-alpha2 <-read_csv(file = "alpha2.csv")
-fwrite(alpha2, here::here("output", "os_reports", "WP3", "alpha2.csv"))
+write.csv(OPalpha2, file = 'OPalpha2.csv', row.names = FALSE)
+alpha2 <-read_csv(file = "OPalpha2.csv")
+fwrite(OPalpha2, here::here("output", "os_reports", "WP3", "OPalpha2.csv"))
 
 # Marginal expectation
 OPexpectation2 <- exp(OPbeta02 + OPsigma2u2/2)
@@ -261,7 +261,126 @@ OPvpc1m2.csv <-read_csv(file = "OPvpc1m2.csv")
 fwrite(OPvpc1m2, here::here("output", "os_reports", "WP3", "OPOPvpc1m2.csv"))
 
 ###############################################################################
-Two-level random-intercept negative binomial model 
+#Two-level random-intercept negative binomial model 
+# fully adjusted model 
+
+fm3 <- glmmTMB(opapp_1m ~ 1 + sex + age_band + Ethnicity_2 + imd_quintile + (1|strata), data = OP_MAIHDA, family = poisson)
+summary(fm3)
+
+# Linear predictor
+df$xb <- predict(fm3)
+head(df)
+
+# Cluster variance
+str(summary(fm3))
+OPsigma2u3 <- summary(fm3)$varcor$cond$strata[1,1]
+OPsigma2u3
+
+write.csv(OPsigma2u3, file = 'OPsigma2u3.csv', row.names = FALSE)
+OPsigma2u3 <-read_csv(file = "OPsigma2u3.csv")
+fwrite(OPsigma2u3, here::here("output", "os_reports", "WP3", "OPsigma2u3.csv"))
+
+# Overdispersion parameter
+str(summary(fm3))
+OPalpha3 <- 1/(summary(fm3)$sigma)
+OPalpha3
+
+write.csv(OPalpha3, file = 'OPalpha3.csv', row.names = FALSE)
+OPalpha3 <-read_csv(file = "OPalpha3.csv")
+fwrite(OPalpha3, here::here("output", "os_reports", "WP3", "OPalpha3.csv"))
+
+#############################add saves##################################### ------------------------
+# Marginal expectation
+df$OPexpectation3 <- exp(df$xb + OPsigma2u3/2)
+head(df)
+
+# Marginal variance
+df$OPvariance3 <- df$OPexpectation3 + 
+  df$OPexpectation3^2*(exp(OPsigma2u3)*(1 + OPalpha3) - 1)
+head(df)
+
+# Marginal variance: Level-2 component
+df$OPvariance2m3 <- df$OPexpectation3^2*(exp(OPsigma2u3) - 1)
+head(df)
+
+# Marginal variance: Level-1 component
+df$OPvariance1m3 <- df$OPexpectation3 + 
+  df$OPexpectation3^2*exp(OPsigma2u3)*OPalpha3
+head(df)
+
+# Level-2 VPC
+df$OPvpc2m3 <- df$OPvariance2m3/(df$OPvariance3 + df$OPvariance1m3)
+head(df)
+
+# Level-1 VPC
+df$OPvpc1m3 <- df$OPvariance1m3/(df$OPvariance2m3 + df$OPvariance1m3)
+head(df)
+
+# Summarize marginal statistics------------------------------# clarification on this code?
+colnames(df)
+sapply(df[7:12], mean)
+
+#Figures -------------------------------
+# Line plot of Level-2 VPC against the marginal expectation
+lineplot <- ggplot(data = df, mapping = aes(x = OPexpectation3, y = OPvpc2m3)) + geom_line()
+
+ggsave(lineplot, dpi = 600, width = 20, height = 10, unit = "cm"
+       , filename = "lineplot.png"
+       , path = here::here("output", "os_reports", "WP3"))
+
+# Spikeplot of marginal expectation
+histogram <- ggplot(data = df, mapping = aes(x = OPexpectation3)) + 
+  geom_histogram(binwidth=1)
+
+ggsave(histogram, dpi = 600, width = 20, height = 10, unit = "cm"
+       , filename = "histogram.png"
+       , path = here::here("output", "os_reports", "WP3"))
+
+# Predict cluster random intercept effects 
+fm3u <- ranef(fm3)
+str(fm3u)
+head(fm3u$cond$strata)
+
+fm1u <- ranef(fm1)
+fm1u
+
+# Scatterplot of model 3 vs. model 1 predicted cluster random effects
+fm3vsfm1 <- cbind(fm1u$cond$strata,fm3u$cond$strata)
+colnames(fm3vsfm1)
+colnames(fm3vsfm1) <- c("fm1u", "fm3u")
+colnames(fm3vsfm1)
+head(fm3vsfm1)
+
+scatterplot <- ggplot(data = fm3vsfm1, mapping = aes(x = fm1u, y = fm3u)) + geom_point()
+cor(fm3vsfm1)
+
+ggsave(scatterplot, dpi = 600, width = 20, height = 10, unit = "cm"
+       , filename = "scatterplot.png"
+       , path = here::here("output", "os_reports", "WP3"))
+
+# Rank the model 1 predicted cluster random effects
+fm3vsfm1$fm1urank <- rank(fm3vsfm1$fm1u)
+head(fm3vsfm1)
+
+# Rank the model 3 predicted cluster random effects
+fm3vsfm1$fm3urank <- rank(fm3vsfm1$fm3u)
+head(fm3vsfm1)
+
+# Figure 4: Scatterplot of ranks of model 3 vs. model 1 predicted effects
+rankscatterplot <- ggplot(data = fm3vsfm1, mapping = aes(x = fm1urank, y = fm3urank)) + 
+geom_point()
+colnames(fm3vsfm1)
+cor(fm3vsfm1[,3:4])
+
+ggsave(rankscatterplot, dpi = 600, width = 20, height = 10, unit = "cm"
+       , filename = "rankscatterplot.png"
+       , path = here::here("output", "os_reports", "WP3"))
+
+
+
+
+
+############################################################################
 
 # Predict cluster random intercept effects
 fm2u <- ranef(fm2)
