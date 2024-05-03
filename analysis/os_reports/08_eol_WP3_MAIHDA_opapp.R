@@ -88,57 +88,6 @@ GLM_age_band <- df %>%
 
 fwrite(GLM_age_band, here::here("output", "os_reports", "WP3", "OP_GLM_age.csv"))
 
-#previous analysis ----------
-#define strata-
-
-df$strata <- ifelse(
-  is.na(df$sex) | is.na(df$age_band) | is.na(df$Ethnicity_2) | is.na(df$imd_quintile),
-  NA_character_,
-  paste0(df$sex,",",df$age_band,",",df$Ethnicity_2,",",df$imd_quintile)
-)
-
-df$strata <- factor(df$strata)
-
-#Null model
-
-# Model_null <- glmmTMB(opapp_1m ~ 1 +(1 | strata), data = df) 
-# model_parameters(Model_null)
-
-# icc(Model_null)
-
-# #fwrite(print(icc(Model_null)), here::here("output", "os_reports", "WP3", "OPnull.csv"))
-
-
-# # Partially adjusted intersectional model 
-
-# model_sex <- glmmTMB(opapp_1m ~ sex + (1|strata), data = df)
-# model_age <- glmmTMB(opapp_1m ~ age_band + (1|strata), data = df)
-# model_ethnicity <- glmmTMB(opapp_1m ~ Ethnicity_2 + (1|strata), data = df)
-# model_IMD <- glmmTMB(opapp_1m ~ imd_quintile + (1|strata), data = df)
-
-# compare_parameters(model_sex, model_age, model_ethnicity, model_IMD)  
-
-# #fwrite(print(compare_parameters(model_sex, model_age, model_ethnicity, model_IMD)
-#              #, here::here("output", "os_reports", "WP3", "OPparameters.csv")))
-
-# icc(model_sex)$ICC_adjusted
-# icc(model_age)$ICC_adjusted #singularity 
-# icc(model_ethnicity)$ICC_adjusted
-# icc(model_IMD)$ICC_adjusted 
-
-# ###############################
-# #fwrite(icc(model_sex)$ICC_adjusted, here::here("output", "os_reports", "WP3", "OPsexICC.csv"))
-
-
-# #PCV -
-# # random effects 
-
-# variance_null <- get_variance(Model_null)
-# variance_sex <- get_variance(model_sex)
-# variance_age <- get_variance(model_age) #singularity again
-# variance_ethnicity <- get_variance(model_ethnicity)
-# variance_imd <- get_variance(model_IMD)
-
 #new analysis------------
 #define strata----
 # Form intersectional strata (80 strata in total)
@@ -237,42 +186,82 @@ summary(fm2)
 
 # Intercept
 str(summary(fm2))
-OPbeta0 <- summary(fm2)$coefficients$cond[1,1]
-OPbeta0
+OPbeta02 <- summary(fm2)$coefficients$cond[1,1]
+OPbeta02
+
+
+write.csv (OPbeta02, file = 'OPbeta02.csv', row.names = FALSE)
+OPbeta02 <- read_csv(file =  "OPbeta02.csv")
+fwrite(OPbeta02, here::here("output", "os_reports", "WP3", "OPbeta02.csv"))
 
 # Cluster variance
 str(summary(fm2))
-OPsigma2u <- summary(fm2)$varcor$cond$strata[1,1]
-OPsigma2u
+OPsigma2u2 <- summary(fm2)$varcor$cond$strata[1,1]
+OPsigma2u2
+
+write.csv(OPsigma2u2, file = 'OPsigma2u2.csv', row.names = FALSE)
+OPsigma2u2 <-read_csv(file = "OPsigma2u2.csv")
+fwrite(OPsigma2u2, here::here("output", "os_reports", "WP3", "OPsigma2u2.csv"))
 
 # Overdispersion parameter
 str(summary(fm2))
-alpha <- 1/(summary(fm2)$sigma)
-alpha
+alpha2 <- 1/(summary(fm2)$sigma)
+alpha2
+
+write.csv(alpha2, file = 'alpha2.csv', row.names = FALSE)
+alpha2 <-read_csv(file = "alpha2.csv")
+fwrite(alpha2, here::here("output", "os_reports", "WP3", "alpha2.csv"))
 
 # Marginal expectation
-OPexpectation <- exp(OPbeta0 + OPsigma2u/2)
-OPexpectation
+OPexpectation2 <- exp(OPbeta02 + OPsigma2u2/2)
+OPexpectation2
+
+write.csv(OPexpectation2, file = 'OPexpectation2.csv', row.names = FALSE)
+OPexpectation2 <-read_csv(file = "OPexpectation2.csv")
+fwrite(OPexpectation2, here::here("output", "os_reports", "WP3", "OPexpectation2.csv"))
 
 # Marginal variance
-variance <- OPexpectation + OPexpectation^2*(exp(OPsigma2u)*(1 + alpha) - 1)
-variance
+OPvariancem2 <- OPexpectation2 + OPexpectation2^2*(exp(OPsigma2u2)*(1 + alpha2) - 1)
+OPvariancem2
+
+write.csv(OPvariancem2, file = 'OPvariancem2.csv', row.names = FALSE)
+OPvariance <-read_csv(file = "OPvariancem2.csv")
+fwrite(OPvariancem2, here::here("output", "os_reports", "WP3", "OPvariancem2.csv"))
 
 # Marginal variance: Level-2 component
-OPvariance2 <- OPexpectation^2*(exp(OPsigma2u) - 1)
+OPvariance2m2 <- OPexpectation2^2*(exp(OPsigma2u2) - 1)
 OPvariance2
 
+write.csv(OPvariance2m2, file = 'OPvariance2m2.csv', row.names = FALSE)
+OPvariance2m2 <-read_csv(file = "OPvariance2m2.csv")
+fwrite(OPvariance2m2, here::here("output", "os_reports", "WP3", "OPvariance2m2.csv"))
+
 # Marginal variance: Level-1 component
-OPvariance1 <- OPexpectation + OPexpectation^2*exp(OPsigma2u)*alpha
-OPvariance1
+OPvariance1m2 <- OPexpectation2 + OPexpectation2^2*exp(OPsigma2u2)*alpha2
+OPvariance1m2
+
+write.csv(OPvariance1m2, file = 'OPvariance1m2.csv', row.names = FALSE)
+Ovariance1m2 <-read_csv(file = "OPvariance1m2.csv")
+fwrite(OPvariance1m2, here::here("output", "os_reports", "WP3", "OPvariance1m2.csv"))
 
 # Level-2 VPC
-OPvpc2 <- OPvariance2/(OPvariance2 + OPvariance1)
-OPvpc2
+OPvpc2m2 <- OPvariance2m2/(OPvariance2m2 + OPvariance1m2)
+OPvpc2m2
+
+write.csv(OPvpc2m2, file = 'OPvpc2m2.csv')
+OPvpc2m2.csv <-read_csv(file = "OPvpc2m2.csv")
+fwrite(OPvpc2m2, here::here("output", "os_reports", "WP3", "OPOPvpc2m2.csv"))
 
 # Level-1 VPC
-OPvpc1 <- OPvariance1/(OPvariance2 + OPvariance1)
+OPvpc1m2 <- OPvariance1m2/(OPvariance2m2 + OPvariance1m2)
 OPvpc1
+
+write.csv(OPvpc1m2, file = 'OPvpc1m2.csv')
+OPvpc1m2.csv <-read_csv(file = "OPvpc1m2.csv")
+fwrite(OPvpc1m2, here::here("output", "os_reports", "WP3", "OPOPvpc1m2.csv"))
+
+###############################################################################
+Two-level random-intercept negative binomial model 
 
 # Predict cluster random intercept effects
 fm2u <- ranef(fm2)
