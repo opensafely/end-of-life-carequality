@@ -44,6 +44,8 @@ df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.g
                     age_band == "90+" ~ 4)
          , Ethnicity_2 = case_when(ethnicity_Combined == "White" ~ "White"
                                    , ethnicity_Combined == "Asian or Asian British" | ethnicity_Combined == "Black or Black British" | ethnicity_Combined == "Mixed" | ethnicity_Combined == "Chinese or Other Ethnic Groups" | ethnicity_Combined == "Not stated" ~ "All other ethnic groups")
+         , Ethnicity_R = case_when(Ethnicity_2 == "White" ~ 0, Ethnicity_2 == "All other ethnic groups" ~ 1)
+         , Sex_R = case_when(sex == "male" ~ 0, sex == "female" ~ 1)
          , study_month = floor_date(dod_ons, unit = "month")
          , pod_ons_new = case_when(pod_ons == "Elsewhere" 
                                    | pod_ons == "Other communal establishment" ~ "Elsewhere/other"
@@ -70,10 +72,11 @@ table(df$GP_R)
 # Change IMD to be considered categorical
 
 df$rank <- factor(df$imd_quintile)
+df$rank <- factor(df$age_R)
 
 # Logistic regression with GP interactions as the outcome variable
 
-GPLog <- glm(GP_R ~ sex + age_R + Ethnicity_2 + imd_quintile, data = df, family = "binomial")
+GPLog <- glm(GP_R ~ Sex_R + age_R + Ethnicity_R + imd_quintile, data = df, family = "binomial")
 
 summary(GPLog)
 
