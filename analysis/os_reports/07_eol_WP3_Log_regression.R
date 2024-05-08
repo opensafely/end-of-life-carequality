@@ -2,7 +2,7 @@
 # Logistic regression to explore factors influencing GP interactions and A&E attendances
 # Author: Miranda & Sophie 
 # Date: 08/05/24 
-# Initial aim: To develop code to run logistic regression to explore the relationship between patient demographic characteristics and no. of GP interactions/A&E attendances in the last 90-days of life. 
+# Initial aim: To develop code to run logistic regression to explore the relationship between patient demographic characteristics and no. of GP interactions/A&E attendances in the last 30-days of life. 
 ##############################################################
 
 # Note: Patients with no IMD are excluded from the analysis as are patients aged 0-24. 
@@ -61,15 +61,16 @@ df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.g
                               , TRUE ~ "All other causes")) %>%
   filter(study_month >= startdate & study_month <= enddate & imd_quintile >=1 & age_band != "0-24" & codgrp == "Cancer" & pod_ons_new == "Home")
 
+# Outcome variable - GP interactions
+
 # Create a binary variable for GP interactions
 
 df$GP_R <- as.numeric(df$gp_1m >= 1)
 
-
 # Examine the new variable
 table(df$GP_R)
 
-# Change IMD to be considered categorical
+# Change IMD/age to be considered categorical
 
 df$rank <- factor(df$imd_quintile)
 df$rank <- factor(df$age_R)
@@ -79,6 +80,21 @@ df$rank <- factor(df$age_R)
 GPLog <- glm(GP_R ~ Sex_R + age_R + Ethnicity_R + imd_quintile, data = df, family = "binomial")
 
 summary(GPLog)
+
+# Outcome variable - A&E attendances
+
+# Create a binary variable for GP interactions
+
+df$AE_R <- as.numeric(df$aevis_1m >= 1)
+
+# Examine the new variable
+table(df$AE_R)
+
+# Logistic regression with A&E attendances as the outcome variable
+
+AELog <- glm(AE_R ~ Sex_R + age_R + Ethnicity_R + imd_quintile, data = df, family = "binomial")
+
+summary(AELog)
 
 
 
