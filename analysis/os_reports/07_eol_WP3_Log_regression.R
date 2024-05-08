@@ -9,7 +9,6 @@
 # Analysis focuses on patients who die at home, with a cancer diagnosis. 
 # Ethnicity is considered as two groups for the purpose of MAIHDA, but more detailed analysis of ethnicity will be conducted separately.
 # Analysis over a two calendar year period (2022/2023)
-# Code developed referring to Leckie et al. (2020) Partitioning Variation in Multilevel Models for Count Data
 
 # Install packages
 
@@ -39,6 +38,10 @@ enddate <- dmy("31-12-2023")
 
 df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.gz")) %>%
   mutate(dod_ons = as_date(dod_ons)
+         , age_R = case_when(age_band == "25-69" ~ 1,
+                    age_band == "70-79" ~ 2,
+                    age_band == "80-89" ~ 3,
+                    age_band == "90+" ~ 4)
          , Ethnicity_2 = case_when(ethnicity_Combined == "White" ~ "White"
                                    , ethnicity_Combined == "Asian or Asian British" | ethnicity_Combined == "Black or Black British" | ethnicity_Combined == "Mixed" | ethnicity_Combined == "Chinese or Other Ethnic Groups" | ethnicity_Combined == "Not stated" ~ "All other ethnic groups")
          , study_month = floor_date(dod_ons, unit = "month")
@@ -55,3 +58,26 @@ df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.g
                               , cod_ons_3 >= "C00" & cod_ons_3 <= "C99" ~ "Cancer"
                               , TRUE ~ "All other causes")) %>%
   filter(study_month >= startdate & study_month <= enddate & imd_quintile >=1 & age_band != "0-24" & codgrp == "Cancer" & pod_ons_new == "Home")
+
+# Create a binary variable for GP interactions
+
+df$GP_R <- as.numeric(df$gp_1m >= 1)
+
+
+# Examine the new variable
+table(df$GP_R)
+
+# Change IMD to be considered categorical
+
+df$rank <- factor(df$imd_quintile)
+
+# Logistic regression with GP interactions as the outcome variable
+
+GPLog <- glm(GP_R ~ sex + age_R + Ethnicity_2 + imd_quintile, data = df, family = "binomial")
+
+summary(GPLog)
+
+
+
+
+
