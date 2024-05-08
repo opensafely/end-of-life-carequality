@@ -271,6 +271,10 @@ summary(fm3)
 df$xb <- predict(fm3)
 head(df)
 
+write.csv(df$xb, file = 'OPpredict.csv', row.names = FALSE)
+OPpredict <-read_csv(file = "OPpredict.csv")
+fwrite(OPpredict, here::here("output", "os_reports", "WP3", "OPpredict.csv"))
+
 # Cluster variance
 str(summary(fm3))
 OPsigma2u3 <- summary(fm3)$varcor$cond$strata[1,1]
@@ -289,57 +293,87 @@ write.csv(OPalpha3, file = 'OPalpha3.csv', row.names = FALSE)
 OPalpha3 <-read_csv(file = "OPalpha3.csv")
 fwrite(OPalpha3, here::here("output", "os_reports", "WP3", "OPalpha3.csv"))
 
-#############################add saves##################################### ------------------------
+#############################check saving##################################### ------------------------
 # Marginal expectation
 df$OPexpectation3 <- exp(df$xb + OPsigma2u3/2)
 head(df)
+
+write.csv(df$OPexpectation3, file = 'OPmarginalexpectation.csv', row.names = FALSE)
+df$OPexpectation3 <-read_csv(file = "OPmarginalexpectation.csv")
+fwrite(df$OPexpectation3, here::here("output", "os_reports", "WP3", "OPmarginalexpectation.csv"))
 
 # Marginal variance
 df$OPvariance3 <- df$OPexpectation3 + 
   df$OPexpectation3^2*(exp(OPsigma2u3)*(1 + OPalpha3) - 1)
 head(df)
 
+write.csv(df$OPexpectation3, file = 'OPmarginalexpectation.csv', row.names = FALSE)
+df$OPexpectation3 <-read_csv(file = "OPmarginalexpectation.csv")
+fwrite(df$OPexpectation3, here::here("output", "os_reports", "WP3", "OPmarginalexpectation.csv"))
+
 # Marginal variance: Level-2 component
 df$OPvariance2m3 <- df$OPexpectation3^2*(exp(OPsigma2u3) - 1)
 head(df)
+
+write.csv(df$OPexpectation3, file = 'OPmarginalexpectation.csv', row.names = FALSE)
+df$OPexpectation3 <-read_csv(file = "OPmarginalexpectation.csv")
+fwrite(df$OPexpectation3, here::here("output", "os_reports", "WP3", "OPmarginalexpectation.csv"))
 
 # Marginal variance: Level-1 component
 df$OPvariance1m3 <- df$OPexpectation3 + 
   df$OPexpectation3^2*exp(OPsigma2u3)*OPalpha3
 head(df)
 
+write.csv(df$OPvariance1m3, file = 'OPmarginalvariance.csv', row.names = FALSE)
+df$OPvariance1m3 <-read_csv(file = "OPmarginalvariance.csv")
+fwrite(df$OPvariance1m3, here::here("output", "os_reports", "WP3", "OPmarginalvariance.csv"))
+
 # Level-2 VPC
 df$OPvpc2m3 <- df$OPvariance2m3/(df$OPvariance3 + df$OPvariance1m3)
 head(df)
+
+write.csv(df$OPvpc2m3, file = 'OPVPC2m3.csv', row.names = FALSE)
+df$OPvpc2m3 <-read_csv(file = "OPVPC2m3.csv")
+fwrite(df$OPvpc2m3, here::here("output", "os_reports", "WP3", "OPVPC2m3.csv"))
+
 
 # Level-1 VPC
 df$OPvpc1m3 <- df$OPvariance1m3/(df$OPvariance2m3 + df$OPvariance1m3)
 head(df)
 
-# Summarize marginal statistics------------------------------# clarification on this code?
+write.csv(df$OPvpc1m3, file = 'OPVPC1m3.csv', row.names = FALSE)
+df$OPvpc1m3 <-read_csv(file = "OPVPC1m3.csv")
+fwrite(df$OPvpc1m3, here::here("output", "os_reports", "WP3", "OPVPC1m3.csv"))
+
+# Summarise marginal statistics------------------------------# clarification on this code?
 colnames(df)
 sapply(df[7:12], mean)
 
 #Figures -------------------------------
 # Line plot of Level-2 VPC against the marginal expectation
-lineplot <- ggplot(data = df, mapping = aes(x = OPexpectation3, y = OPvpc2m3)) + geom_line()
-
-ggsave(lineplot, dpi = 600, width = 20, height = 10, unit = "cm"
-       , filename = "lineplot.png"
-       , path = here::here("output", "os_reports", "WP3"))
-
-# Spikeplot of marginal expectation
-histogram <- ggplot(data = df, mapping = aes(x = OPexpectation3)) + 
-  geom_histogram(binwidth=1)
-
-ggsave(histogram, dpi = 600, width = 20, height = 10, unit = "cm"
-       , filename = "histogram.png"
-       , path = here::here("output", "os_reports", "WP3"))
+# lineplot <- ggplot(data = df, mapping = aes(x = OPexpectation3, y = OPvpc2m3)) + geom_line()
+# print(lineplot)
+# 
+# ggsave(lineplot, dpi = 600, width = 20, height = 10, unit = "cm"
+#        , filename = "lineplot.png"
+#        , path = here::here("output", "os_reports", "WP3"))
+# 
+# # Spikeplot of marginal expectation
+# histogram <- ggplot(data = df, mapping = aes(x = OPexpectation3)) + 
+#   geom_histogram(binwidth=1)
+# 
+# ggsave(histogram, dpi = 600, width = 20, height = 10, unit = "cm"
+#        , filename = "histogram.png"
+#        , path = here::here("output", "os_reports", "WP3"))
 
 # Predict cluster random intercept effects 
 fm3u <- ranef(fm3)
 str(fm3u)
 head(fm3u$cond$strata)
+
+write.csv(fm3u$cond$strata, file = 'OPclusterintercept3.csv', row.names = FALSE)
+fm3u$cond$strata <-read_csv(file = "OPclusterintercept3.csv")
+fwrite(fm3u$cond$strata, here::here("output", "os_reports", "WP3", "OPclusterintercept3.csv"))
 
 fm1u <- ranef(fm1)
 fm1u
@@ -350,6 +384,11 @@ colnames(fm3vsfm1)
 colnames(fm3vsfm1) <- c("fm1u", "fm3u")
 colnames(fm3vsfm1)
 head(fm3vsfm1)
+
+write.csv(fm3vsfm1, file = 'OPfm3vsfm1.csv', row.names = FALSE, show_col_types = FALSE)
+fm3vsfm1 <-read_csv(file = "OPfm3vsfm1.csv")
+fwrite(fm3vsfm1, here::here("output", "os_reports", "WP3", "OPfm3vsfm1.csv"))
+
 
 scatterplot <- ggplot(data = fm3vsfm1, mapping = aes(x = fm1u, y = fm3u)) + geom_point()
 cor(fm3vsfm1)
