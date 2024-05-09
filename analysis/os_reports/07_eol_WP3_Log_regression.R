@@ -72,14 +72,36 @@ table(df$GP_R)
 
 # Change IMD/age to be considered categorical
 
-df$rank <- factor(df$imd_quintile)
-df$rank <- factor(df$age_R)
+df$imd_quintile <- factor(df$imd_quintile)
+df$age_R <- factor(df$age_R)
 
 # Logistic regression with GP interactions as the outcome variable
 
 GPLog <- glm(GP_R ~ Sex_R + age_R + Ethnicity_R + imd_quintile, data = df, family = "binomial")
 
 summary(GPLog)
+
+# Estimate tells us for each unit change in the characteristic, the log odds of GP interaction versus no GP interaction. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # Outcome variable - A&E attendances
 
