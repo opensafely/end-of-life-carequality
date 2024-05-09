@@ -45,8 +45,8 @@ df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.g
                               , cod_ons_3 %in% c("F01", "F03", "G30") ~ "Dementia and Alzheimer's disease"
                               , cod_ons_3 >= "I00" & cod_ons_3 <= "I99" ~ "Circulatory diseases"
                               , cod_ons_3 >= "C00" & cod_ons_3 <= "C99" ~ "Cancer"
-                              , TRUE ~ "All other causes")) %>%
-filter(study_month >= startdate & study_month <= enddate & imd_quintile >=1 & age_band != "0-24" & codgrp == "Cancer" & pod_ons_new == "Home")
+                              , TRUE ~ "All other causes")) #%>%
+#filter(study_month >= startdate & study_month <= enddate & imd_quintile >=1 & age_band != "0-24" & codgrp == "Cancer" & pod_ons_new == "Home")
 
 #produce means and SD for each group ----------------
 cols_of_interest <- c("count");
@@ -130,7 +130,7 @@ write.csv(OPexpectation, file = 'OPexpectation.csv', row.names = FALSE)
 OPexpectation <-read_csv(file = "OPexpectation.csv")
 fwrite(OPexpectation, here::here("output", "os_reports", "WP3", "OPexpectation.csv"))
 
-# Marginal variance
+#Marginal variance
 OPvariance <- OPexpectation + OPexpectation^2*(exp(OPsigma2u) - 1)
 OPvariance
 
@@ -205,11 +205,11 @@ fwrite(OPsigma2u2, here::here("output", "os_reports", "WP3", "OPsigma2u2.csv"))
 
 # Overdispersion parameter
 str(summary(fm2))
-OPalpha2 <- 1/(summary(fm2)$sigma)
+OPalpha2 <- 1/(summary(fm2)$OPsigma2u)
 OPalpha2
 
 write.csv(OPalpha2, file = 'OPalpha2.csv', row.names = FALSE)
-alpha2 <-read_csv(file = "OPalpha2.csv")
+OPalpha2 <-read_csv(file = "OPalpha2.csv")
 fwrite(OPalpha2, here::here("output", "os_reports", "WP3", "OPalpha2.csv"))
 
 # Marginal expectation
@@ -221,11 +221,11 @@ OPexpectation2 <-read_csv(file = "OPexpectation2.csv")
 fwrite(OPexpectation2, here::here("output", "os_reports", "WP3", "OPexpectation2.csv"))
 
 # Marginal variance
-OPvariancem2 <- OPexpectation2 + OPexpectation2^2*(exp(OPsigma2u2)*(1 + alpha2) - 1)
+OPvariancem2 <- OPexpectation2 + OPexpectation2^2*(exp(OPsigma2u2)*(1 + OPalpha2) - 1)
 OPvariancem2
 
 write.csv(OPvariancem2, file = 'OPvariancem2.csv', row.names = FALSE)
-OPvariance <-read_csv(file = "OPvariancem2.csv")
+OPvariancem2 <-read_csv(file = "OPvariancem2.csv")
 fwrite(OPvariancem2, here::here("output", "os_reports", "WP3", "OPvariancem2.csv"))
 
 # Marginal variance: Level-2 component
@@ -237,11 +237,11 @@ OPvariance2m2 <-read_csv(file = "OPvariance2m2.csv")
 fwrite(OPvariance2m2, here::here("output", "os_reports", "WP3", "OPvariance2m2.csv"))
 
 # Marginal variance: Level-1 component
-OPvariance1m2 <- OPexpectation2 + OPexpectation2^2*exp(OPsigma2u2)*alpha2
+OPvariance1m2 <- OPexpectation2 + OPexpectation2^2*exp(OPsigma2u2)*OPalpha2
 OPvariance1m2
 
 write.csv(OPvariance1m2, file = 'OPvariance1m2.csv', row.names = FALSE)
-Ovariance1m2 <-read_csv(file = "OPvariance1m2.csv")
+OPvariance1m2 <-read_csv(file = "OPvariance1m2.csv")
 fwrite(OPvariance1m2, here::here("output", "os_reports", "WP3", "OPvariance1m2.csv"))
 
 # Level-2 VPC
@@ -303,30 +303,29 @@ df$OPexpectation3 <-read_csv(file = "OPmarginalexpectation.csv")
 fwrite(df$OPexpectation3, here::here("output", "os_reports", "WP3", "OPmarginalexpectation.csv"))
 
 # Marginal variance
-df$OPvariance3 <- df$OPexpectation3 + 
-  df$OPexpectation3^2*(exp(OPsigma2u3)*(1 + OPalpha3) - 1)
+df$OPvariance3 <- df$OPexpectation3 + df$OPexpectation3^2*(exp(OPsigma2u3)*(1 + OPalpha3) - 1)
 head(df)
 
-write.csv(df$OPexpectation3, file = 'OPmarginalexpectation.csv', row.names = FALSE)
-df$OPexpectation3 <-read_csv(file = "OPmarginalexpectation.csv")
-fwrite(df$OPexpectation3, here::here("output", "os_reports", "WP3", "OPmarginalexpectation.csv"))
+write.csv(df$OPvariance3, file = 'OPmarginalvariance.csv', row.names = FALSE)
+df$OPvariance3 <-read_csv(file = "OPmarginalvariance.csv")
+fwrite(df$OPvariance3, here::here("output", "os_reports", "WP3", "OPmarginalvariance.csv"))
 
 # Marginal variance: Level-2 component
 df$OPvariance2m3 <- df$OPexpectation3^2*(exp(OPsigma2u3) - 1)
 head(df)
 
-write.csv(df$OPexpectation3, file = 'OPmarginalexpectation.csv', row.names = FALSE)
-df$OPexpectation3 <-read_csv(file = "OPmarginalexpectation.csv")
-fwrite(df$OPexpectation3, here::here("output", "os_reports", "WP3", "OPmarginalexpectation.csv"))
+write.csv(df$OPvariance2m3, file = 'OPmarginalvariance2.csv', row.names = FALSE)
+df$OPvariance2m3 <-read_csv(file = "OPmarginalvariance2.csv")
+fwrite(df$OPvariance2m3, here::here("output", "os_reports", "WP3", "OPmarginalvariance2.csv"))
 
 # Marginal variance: Level-1 component
 df$OPvariance1m3 <- df$OPexpectation3 + 
   df$OPexpectation3^2*exp(OPsigma2u3)*OPalpha3
 head(df)
 
-write.csv(df$OPvariance1m3, file = 'OPmarginalvariance.csv', row.names = FALSE)
-df$OPvariance1m3 <-read_csv(file = "OPmarginalvariance.csv")
-fwrite(df$OPvariance1m3, here::here("output", "os_reports", "WP3", "OPmarginalvariance.csv"))
+write.csv(df$OPvariance1m3, file = 'OPmarginalvarianceL1.csv', row.names = FALSE)
+df$OPvariance1m3 <-read_csv(file = "OPmarginalvarianceL!.csv")
+fwrite(df$OPvariance1m3, here::here("output", "os_reports", "WP3", "OPmarginalvarianceL1.csv"))
 
 # Level-2 VPC
 df$OPvpc2m3 <- df$OPvariance2m3/(df$OPvariance3 + df$OPvariance1m3)
@@ -431,85 +430,85 @@ fm2u
 # Variance-component models quantify the proportion of variation in the response due to systematic differences between clusters.
 
 # Fit model
-fm3 <- glmmTMB(opapp_1m ~ 1 + (1|sex) + (1|age_band) + (1|Ethnicity_2) + (1|imd_quintile), 
-               data = OP_MAIHDA, family = nbinom2)
-summary(fm3)
-
-# Intercept
-str(summary(fm3))
-OPbeta0 <- summary(fm3)$coefficients$cond[1,1]
-OPbeta0
-
-# Cluster variance - sex
-str(summary(fm3))
-OPsigma2u <- summary(fm3)$varcor$cond$sex[1,1]
-OPsigma2u
-
-# Cluster variance - imd_quintile
-str(summary(fm3))
-sigma2v <- summary(fm3)$varcor$cond$imd_quintile[1,1]
-sigma2v
-
-str(summary(fm3))
-sigma2w <- summary(fm3)$varcor$cond$Ethnicity_2[1,1]
-sigma2w
-
-str(summary(fm3))
-sigma2x <- summary(fm3)$varcor$cond$age_band[1,1]
-sigma2x
-
-# Overdispersion parameter
-str(summary(fm3))
-alpha <- 1/(summary(fm3)$sigma)
-alpha
-
-# Marginal expectation
-OPexpectation <- exp(OPbeta0 + OPsigma2u/2 + sigma2v/2 + sigma2w/2 + sigma2x/2)
-OPexpectation
-
-# Marginal variance
-variance <- OPexpectation + 
-  OPexpectation^2*(exp(OPsigma2u + sigma2v + sigma2w + sigma2x)*(1 + alpha) - 1)
-variance
-
-# Marginal variance: Level-5 component
-variance5 <- (OPexpectation^2*(exp(OPsigma2u) - 1))
-variance5
-
-# Marginal variance: Level-4 component
-variance4 <- OPexpectation^2*exp(OPsigma2u)*(exp(sigma2v) - 1)
-variance4
-
-# Marginal variance: Level-3 component
-variance3 <- OPexpectation^2*exp(OPsigma2u)*(exp(sigma2v)*(exp(sigma2w) - 1))
-variance3
-
-# Marginal variance: Level-2 component
-OPvariance2 <- OPexpectation^2*exp(OPsigma2u)*(exp(sigma2v)*(exp(sigma2w)*(exp(sigma2x) - 1)))
-OPvariance2
-
-# Marginal variance: Level-1 component
-OPvariance1 <- OPexpectation + OPexpectation^2*exp(OPsigma2u + sigma2v + sigma2w + sigma2x)*alpha
-OPvariance1
-
-# Should the different level VPC be interpreted as the proportion of variance in outcome explained by each characteristic? 
-
-# Level-5 VPC
-vpc5 <- variance5/(variance5 + variance4 + variance3 + OPvariance2 + OPvariance1)
-vpc5
-
-# Level-4 VPC
-vpc4 <- variance4/(variance5 + variance4 + variance3 + OPvariance2 + OPvariance1)
-vpc4
-
-# Level-3 VPC
-vpc3 <- variance3/(variance5 + variance4 + variance3 + OPvariance2 + OPvariance1)
-vpc3
-
-# Level-2 VPC
-OPvpc2 <- OPvariance2/(variance5 + variance4 + variance3 + OPvariance2 + OPvariance1)
-OPvpc2
-
-# Level-1 VPC
-OPvpc1 <- OPvariance1/(variance5 + variance4 + variance3 + OPvariance2 + OPvariance1)
-OPvpc1
+# fm3 <- glmmTMB(opapp_1m ~ 1 + (1|sex) + (1|age_band) + (1|Ethnicity_2) + (1|imd_quintile), 
+#                data = OP_MAIHDA, family = nbinom2)
+# summary(fm3)
+# 
+# # Intercept
+# str(summary(fm3))
+# OPbeta0 <- summary(fm3)$coefficients$cond[1,1]
+# OPbeta0
+# 
+# # Cluster variance - sex
+# str(summary(fm3))
+# OPsigma2u <- summary(fm3)$varcor$cond$sex[1,1]
+# OPsigma2u
+# 
+# # Cluster variance - imd_quintile
+# str(summary(fm3))
+# sigma2v <- summary(fm3)$varcor$cond$imd_quintile[1,1]
+# sigma2v
+# 
+# str(summary(fm3))
+# sigma2w <- summary(fm3)$varcor$cond$Ethnicity_2[1,1]
+# sigma2w
+# 
+# str(summary(fm3))
+# sigma2x <- summary(fm3)$varcor$cond$age_band[1,1]
+# sigma2x
+# 
+# # Overdispersion parameter
+# str(summary(fm3))
+# alpha <- 1/(summary(fm3)$sigma)
+# alpha
+# 
+# # Marginal expectation
+# OPexpectation <- exp(OPbeta0 + OPsigma2u/2 + sigma2v/2 + sigma2w/2 + sigma2x/2)
+# OPexpectation
+# 
+# # Marginal variance
+# variance <- OPexpectation + 
+#   OPexpectation^2*(exp(OPsigma2u + sigma2v + sigma2w + sigma2x)*(1 + alpha) - 1)
+# variance
+# 
+# # Marginal variance: Level-5 component
+# variance5 <- (OPexpectation^2*(exp(OPsigma2u) - 1))
+# variance5
+# 
+# # Marginal variance: Level-4 component
+# variance4 <- OPexpectation^2*exp(OPsigma2u)*(exp(sigma2v) - 1)
+# variance4
+# 
+# # Marginal variance: Level-3 component
+# variance3 <- OPexpectation^2*exp(OPsigma2u)*(exp(sigma2v)*(exp(sigma2w) - 1))
+# variance3
+# 
+# # Marginal variance: Level-2 component
+# OPvariance2 <- OPexpectation^2*exp(OPsigma2u)*(exp(sigma2v)*(exp(sigma2w)*(exp(sigma2x) - 1)))
+# OPvariance2
+# 
+# # Marginal variance: Level-1 component
+# OPvariance1 <- OPexpectation + OPexpectation^2*exp(OPsigma2u + sigma2v + sigma2w + sigma2x)*alpha
+# OPvariance1
+# 
+# # Should the different level VPC be interpreted as the proportion of variance in outcome explained by each characteristic? 
+# 
+# # Level-5 VPC
+# vpc5 <- variance5/(variance5 + variance4 + variance3 + OPvariance2 + OPvariance1)
+# vpc5
+# 
+# # Level-4 VPC
+# vpc4 <- variance4/(variance5 + variance4 + variance3 + OPvariance2 + OPvariance1)
+# vpc4
+# 
+# # Level-3 VPC
+# vpc3 <- variance3/(variance5 + variance4 + variance3 + OPvariance2 + OPvariance1)
+# vpc3
+# 
+# # Level-2 VPC
+# OPvpc2 <- OPvariance2/(variance5 + variance4 + variance3 + OPvariance2 + OPvariance1)
+# OPvpc2
+# 
+# # Level-1 VPC
+# OPvpc1 <- OPvariance1/(variance5 + variance4 + variance3 + OPvariance2 + OPvariance1)
+# OPvpc1
