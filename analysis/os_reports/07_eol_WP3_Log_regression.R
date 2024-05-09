@@ -14,7 +14,7 @@
 
 #install.packages("TMB", type = "source")
 
-install.packages("aod", type = "source")
+install.packages('lme4')
 
 # Load packages
 
@@ -26,7 +26,7 @@ library(glmmTMB)# multilevel modelling
 library(dplyr)
 library(data.table)
 library(broom)
-library(aod)
+library(lme4)
 
 # Create folder structure
 
@@ -65,6 +65,64 @@ df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.g
   filter(study_month >= startdate & study_month <= enddate & imd_quintile >=1 & age_band != "0-24" & codgrp == "Cancer" & pod_ons_new == "Home")
 
 # Outcome variable - GP interactions
+
+# Create a binary variable for GP interactions
+
+df$GP_R <- as.numeric(df$gp_1m >= 1)
+
+GP_MAIHDA <-df %>%
+  group_by(sex, age_band, Ethnicity_2, imd_quintile) %>% 
+  dplyr::mutate(strata = cur_group_id(), na.rm = TRUE)
+
+# Binomial model with binary outcome variable for GP interactions 
+
+GPfm1 <- glmmTMB(GP_R ~ 1 + (1|strata), data = GP_MAIHDA, family = binomial)
+summary(GPfm1)
+
+# Get the estimates as Odds ratios (and SEs on the odds scale)
+tab_model(GPfm1, show.se=T)
+
+# Predict the fitted linear predictor (on the probability scale)
+GP_MAIHDA$gp_prob <- predict(GPfm1,GP_MAIHDA, type="response")
+
+
+# Predict the linear predictor for the fixed portion of the model only
+# (only the intercept, so this is just the weighted grand mean probability)
+GP_MAIHDA$gp_Probfix <- predict(GPfm1,GP_MAIHDA, type="response", re.form=NA)
+
+
+# Store the intercepts variance (theta is stored as the sd, so square it)
+var_k <- as.numeric(getME(GPfm1, "theta")[2]^2)  # Level 3 variance
+var_j <- as.numeric(getME(GPfm1, "theta")[1]^2)  # Level 2 variance
+
+# Store the alpha value (lme4 stores as theta = 1/alpha)
+alpha <- 1 / getME(GPfm1, "theta")
+
+# ICC for level 2
+ICC_l2 <- (var_k + var_j) / (var_k + var_j + alpha)
+
+# ICC for level 3
+ICC_l3 <- var_k / (var_k + var_j + alpha)
+
+
+
+
+
+
+
+
+
+# to-do: calculate VPC for binary model 
+
+# Calculate adjusted model including all covariates
+
+# Calculate VPC for adjusted
+
+
+
+###################################################################################################################################
+
+# Standard logistic regression 
 
 # Create a binary variable for GP interactions
 
