@@ -104,6 +104,10 @@ ICC_l2 <- (var_k + var_j) / (var_k + var_j + alpha)
 # ICC for level 3
 ICC_l3 <- var_k / (var_k + var_j + alpha)
 
+# ICC formula
+
+\rho = \frac{\sigma_j2}{\sigma_j2 + \alpha} 
+
 
 
 
