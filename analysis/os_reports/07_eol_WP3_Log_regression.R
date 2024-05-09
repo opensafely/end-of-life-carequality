@@ -14,6 +14,8 @@
 
 #install.packages("TMB", type = "source")
 
+install.packages("aod", type = "source")
+
 # Load packages
 
 library(tidyverse)
@@ -24,6 +26,7 @@ library(glmmTMB)# multilevel modelling
 library(dplyr)
 library(data.table)
 library(broom)
+library(aod)
 
 # Create folder structure
 
@@ -89,11 +92,21 @@ summary(GPLog)
 
 confint(GPLog)
 
+## Confidence intervals using standard errors
 
+confint.default(GPLog)
 
+# Test for an overall effect of IMD (wald test)
 
+wald.test(b=coef(GPLog), Sigma = vcov(GPLog), Terms =1:5)
 
+# Odds ratios
 
+exp(coef(GPLog))
+
+# Odds ratios and 95% CI
+
+exp(cbind(OR = coef(GPLog), confint(GPLog)))
 
 
 
