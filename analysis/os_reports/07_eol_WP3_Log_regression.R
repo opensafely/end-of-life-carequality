@@ -81,11 +81,13 @@ GPLog <- glm(GP_R ~ Sex_R + age_R + Ethnicity_R + imd_quintile, data = df, famil
 
 summary(GPLog)
 
-# Estimate tells us for each unit change in the characteristic, the log odds of GP interaction versus no GP interaction. 
+# Estimate tells us for each unit change in the indicator variables, the log odds of GP interaction versus no GP interaction. 
+# For ranked variables such as IMD & age, interpretation is versus a single rank, e.g the lowest age bank or IMD 1. 
 
 
+## Confidence intervals using profiled log-likelihood
 
-
+confint(GPLog)
 
 
 
