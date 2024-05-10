@@ -230,7 +230,7 @@ fwrite(OPvariancem2, here::here("output", "os_reports", "WP3", "OPvariancem2.csv
 
 # Marginal variance: Level-2 component
 OPvariance2m2 <- OPexpectation2^2*(exp(OPsigma2u2) - 1)
-OPvariance2
+OPvariancem2
 
 write.csv(OPvariance2m2, file = 'OPvariance2m2.csv', row.names = FALSE)
 OPvariance2m2 <-read_csv(file = "OPvariance2m2.csv")
@@ -286,7 +286,7 @@ fwrite(OPsigma2u3, here::here("output", "os_reports", "WP3", "OPsigma2u3.csv"))
 
 # Overdispersion parameter
 str(summary(fm3))
-OPalpha3 <- 1/(summary(fm3)$sigma)
+OPalpha3 <- 1/(summary(fm3)$OPsigma2u3)
 OPalpha3
 
 write.csv(OPalpha3, file = 'OPalpha3.csv', row.names = FALSE)
@@ -303,7 +303,8 @@ df$OPexpectation3 <-read_csv(file = "OPmarginalexpectation.csv")
 fwrite(df$OPexpectation3, here::here("output", "os_reports", "WP3", "OPmarginalexpectation.csv"))
 
 # Marginal variance
-df$OPvariance3 <- df$OPexpectation3 + df$OPexpectation3^2*(exp(OPsigma2u3)*(1 + OPalpha3) - 1)
+df$OPvariance3 <- df$OPexpectation3 +
+  df$OPexpectation3^2*(exp(OPsigma2u3)*(1 + OPalpha3) - 1)
 head(df)
 
 write.csv(df$OPvariance3, file = 'OPmarginalvariance.csv', row.names = FALSE)
