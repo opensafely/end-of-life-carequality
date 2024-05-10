@@ -14,7 +14,7 @@
 
 #install.packages("TMB", type = "source")
 
-install.packages('lme4')
+install.packages('brms')
 
 # Load packages
 
@@ -26,7 +26,14 @@ library(glmmTMB)# multilevel modelling
 library(dplyr)
 library(data.table)
 library(broom)
-library(lme4)
+
+
+#install.packages("performance")
+library(performance)
+
+install.packages("parameters")
+
+library(parameters)
 
 # Create folder structure
 
@@ -70,57 +77,53 @@ df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.g
 
 df$GP_R <- as.numeric(df$gp_1m >= 1)
 
+# Change IMD/age to be considered categorical
+
+df$imd_quintile <- factor(df$imd_quintile)
+df$age_R <- factor(df$age_R)
+
 GP_MAIHDA <-df %>%
   group_by(sex, age_band, Ethnicity_2, imd_quintile) %>% 
   dplyr::mutate(strata = cur_group_id(), na.rm = TRUE)
 
-# Binomial model with binary outcome variable for GP interactions 
+# Binomial model with binary outcome variable for GP interactions (null model)
 
 GPfm1 <- glmmTMB(GP_R ~ 1 + (1|strata), data = GP_MAIHDA, family = binomial)
-summary(GPfm1)
+model_parameters(GPfm1, exponential=TRUE) 
+icc(GPfm1)
 
-# Get the estimates as Odds ratios (and SEs on the odds scale)
-tab_model(GPfm1, show.se=T)
+# options(tolerance = 1e-15) # tbc - add this to address singularity? 
 
-# Predict the fitted linear predictor (on the probability scale)
-GP_MAIHDA$gp_prob <- predict(GPfm1,GP_MAIHDA, type="response")
+# Adjusted model 
 
+GPfm2 <- glmmTMB(GP_R ~ 1 + Sex_R + age_R + Ethnicity_R + imd_quintile + (1|strata), data = GP_MAIHDA, family = binomial)
+model_parameters(GPfm2, exponential=TRUE) 
+icc(GPfm2)
 
-# Predict the linear predictor for the fixed portion of the model only
-# (only the intercept, so this is just the weighted grand mean probability)
-GP_MAIHDA$gp_Probfix <- predict(GPfm1,GP_MAIHDA, type="response", re.form=NA)
+# Now calculate the PCV
+v_null <- get_variance(GPfm1)
+v_adj <- get_variance(GPfm2)
+pcv <- (v_null$var.random - v_adj$var.random) / v_null$var.random
+pcv
 
+# Get the random effects
+ref<-ranef(GPfm2)
+print(ref)
+rr<-as.data.frame(ref) # Convert to obtain SD
+rr$lcl <- rr$ctaondval - 1.96*rr$condsd
+rr$ucl <- rr$condval + 1.96*rr$condsd
+rr$rnk <- rank(rr$condval)
+rr <- rr[order(rr$rnk),] # Sort for plot
 
-# Store the intercepts variance (theta is stored as the sd, so square it)
-var_k <- as.numeric(getME(GPfm1, "theta")[2]^2)  # Level 3 variance
-var_j <- as.numeric(getME(GPfm1, "theta")[1]^2)  # Level 2 variance
-
-# Store the alpha value (lme4 stores as theta = 1/alpha)
-alpha <- 1 / getME(GPfm1, "theta")
-
-# ICC for level 2
-ICC_l2 <- (var_k + var_j) / (var_k + var_j + alpha)
-
-# ICC for level 3
-ICC_l3 <- var_k / (var_k + var_j + alpha)
-
-# ICC formula
-
-\rho = \frac{\sigma_j2}{\sigma_j2 + \alpha} 
-
-
-
+# Very simple plot
+ggplot(rr, aes(rnk, condval)) +
+  geom_errorbar(aes(ymin = lcl, ymax = ucl,width = 0.1)) +
+  geom_point(size = 2)+
+  labs(x="Strata rank", y="Condional log odds")
 
 
 
 
-
-
-# to-do: calculate VPC for binary model 
-
-# Calculate adjusted model including all covariates
-
-# Calculate VPC for adjusted
 
 
 
