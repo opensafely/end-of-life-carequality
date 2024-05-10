@@ -11,10 +11,9 @@
 # Analysis over a two calendar year period (2022/2023)
 
 # Install packages
+#install.packages("performance")
+#install.packages("parameters")
 
-#install.packages("TMB", type = "source")
-
-install.packages('brms')
 
 # Load packages
 
@@ -26,13 +25,7 @@ library(glmmTMB)# multilevel modelling
 library(dplyr)
 library(data.table)
 library(broom)
-
-
-#install.packages("performance")
 library(performance)
-
-install.packages("parameters")
-
 library(parameters)
 
 # Create folder structure
