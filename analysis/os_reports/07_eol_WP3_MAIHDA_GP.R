@@ -12,11 +12,6 @@
 
 # Install packages
 
-install.packages('lme4') # needed for glmer
-install.packages('dplyr')# needed for summary
-install.packages('randomForest') #needed for predict
-install.packages('ggplot2')
-
 # Load packages
 
 library(tidyverse)
@@ -25,10 +20,6 @@ library(haven)#enables R to read and write various data formats used by other st
 library(ggplot2)
 library(glmmTMB)# multilevel modelling
 library(data.table)
-library(lme4)
-library(dplyr)
-#library(randomForest)
-#library(ggplot2)
 library(parameters)  # model summaries
 library(performance) # model fit indices, ICC
 library(insight) # variance
