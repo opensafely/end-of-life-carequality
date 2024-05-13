@@ -22,7 +22,6 @@ library(haven)#enables R to read and write various data formats used by other st
 library(ggplot2)
 library(glmmTMB)# multilevel modelling
 library(data.table)
-library(dplyr)
 library(parameters)  # model summaries
 library(performance) # model fit indices, ICC
 library(insight) # variance
