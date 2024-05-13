@@ -46,7 +46,7 @@ df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.g
                               , cod_ons_3 >= "I00" & cod_ons_3 <= "I99" ~ "Circulatory diseases"
                               , cod_ons_3 >= "C00" & cod_ons_3 <= "C99" ~ "Cancer"
                               , TRUE ~ "All other causes")) %>%
-  filter(study_month >= startdate & study_month <= enddate & imd_quintile >=1 & age_band != "0-24" & codgrp == "Cancer" & pod_ons_new == "Home")
+filter(study_month >= startdate & study_month <= enddate & imd_quintile >=1 & age_band != "0-24" & codgrp == "Cancer" & pod_ons_new == "Home")
 
 #produce means and SD for each group ----------------
 cols_of_interest <- c("count");
@@ -252,9 +252,9 @@ summ
 
 var_adj <- summ[3]
 
-write.csv(summ, file = 'summVPC.csv', row.names = FALSE)
-summVPC <-read_csv(file = "summVPC.csv")
-fwrite(summVPC, here::here("output", "os_reports", "WP3", "sumVPC.csv"))
+write.csv(summ, file = 'OPsummVPC.csv', row.names = FALSE)
+summVPC <-read_csv(file = "OPsummVPC.csv")
+fwrite(summVPC, here::here("output", "os_reports", "WP3", "OPsumVPC.csv"))
 
 OPpcv <- (var_null - var_adj)/var_null
 
@@ -269,7 +269,7 @@ lineplot <- ggplot(data = df, mapping = aes(x = OPexpectation3, y = OPvpc2m3)) +
 print(lineplot)
 
 ggsave(lineplot, dpi = 600, width = 20, height = 10, unit = "cm"
-       , filename = "lineplot.png"
+       , filename = "OPlineplot.png"
        , path = here::here("output", "os_reports", "WP3"))
 
 # Spikeplot of marginal expectation
@@ -277,7 +277,7 @@ histogram <- ggplot(data = df, mapping = aes(x = OPexpectation3)) +
   geom_histogram(binwidth=1)
 
 ggsave(histogram, dpi = 600, width = 20, height = 10, unit = "cm"
-       , filename = "histogram.png"
+       , filename = "OPhistogram.png"
        , path = here::here("output", "os_reports", "WP3"))
 
 # Predict cluster random intercept effects 
@@ -299,22 +299,30 @@ colnames(fm3vsfm1) <- c("fm1u", "fm3u")
 colnames(fm3vsfm1)
 head(fm3vsfm1)
 
-write.csv(fm3vsfm1, file = 'OPfm3vsfm1.csv', row.names = FALSE, show_col_types = FALSE)
+write.csv(fm3vsfm1, file = 'OPfm3vsfm1.csv')
 fm3vsfm1 <-read_csv(file = "OPfm3vsfm1.csv")
 fwrite(fm3vsfm1, here::here("output", "os_reports", "WP3", "OPfm3vsfm1.csv"))
 
 
 ggsave(scatterplot, dpi = 600, width = 20, height = 10, unit = "cm"
-       , filename = "scatterplot.png"
+       , filename = "OPscatterplot.png"
        , path = here::here("output", "os_reports", "WP3"))
 
 # Rank the model 1 predicted cluster random effects
 fm3vsfm1$fm1urank <- rank(fm3vsfm1$fm1u)
 head(fm3vsfm1)
 
+write.csv(fm3vsfm1$fm1urank, file = 'OPrank1.csv')
+fm3vsfm1$fm1urank <-read_csv(file = "OPrank1.csv")
+fwrite(fm3vsfm1$fm1urank, here::here("output", "os_reports", "WP3", "OPrank1.csv"))
+
 # Rank the model 3 predicted cluster random effects
 fm3vsfm1$fm3urank <- rank(fm3vsfm1$fm3u)
 head(fm3vsfm1)
+
+write.csv(fm3vsfm1$fm3urank, file = 'OPrank3.csv')
+fm3vsfm1$fm3urank <-read_csv(file = "OPrank3.csv")
+fwrite(fm3vsfm1$fm3urank, here::here("output", "os_reports", "WP3", "OPrank3.csv"))
 
 # Figure 4: Scatterplot of ranks of model 3 vs. model 1 predicted effects
 rankscatterplot <- ggplot(data = fm3vsfm1, mapping = aes(x = fm1urank, y = fm3urank)) + 
@@ -323,7 +331,7 @@ colnames(fm3vsfm1)
 cor(fm3vsfm1[,3:4])
 
 ggsave(rankscatterplot, dpi = 600, width = 20, height = 10, unit = "cm"
-       , filename = "rankscatterplot.png"
+       , filename = "OPrankscatterplot.png"
        , path = here::here("output", "os_reports", "WP3"))
 
 
