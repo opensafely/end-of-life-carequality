@@ -1,8 +1,8 @@
 ##########################################################
-# Logistic regression to explore factors influencing GP interactions and A&E attendances
+# Logistic regression to explore factors influencing A&E attendances
 # Author: Miranda & Sophie 
 # Date: 08/05/24 
-# Initial aim: To develop code to run logistic regression to explore the relationship between patient demographic characteristics and no. of GP interactions/A&E attendances in the last 30-days of life. 
+# Initial aim: To develop code to run logistic regression to explore the relationship between patient demographic characteristics and A&E attendances in the last 90-days of life. 
 ##############################################################
 
 # Note: Patients with no IMD are excluded from the analysis as are patients aged 0-24. 
@@ -60,30 +60,30 @@ df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.g
                               , TRUE ~ "All other causes")) %>%
   filter(study_month >= startdate & study_month <= enddate & imd_quintile >=1 & age_band != "0-24" & codgrp == "Cancer" & pod_ons_new == "Home")
 
-# Outcome variable - GP interactions
+# Outcome variable - A&E attendances
 
-# Create a binary variable for GP interactions
+# Create a binary variable for A&E attendances over 3-months 
 
-df$GP_R <- as.numeric(df$gp_1m >= 1)
+df$AE_R <- as.numeric(df$aevis_3m >= 1)
 
 # Change IMD/age to be considered categorical
 
 df$imd_quintile <- factor(df$imd_quintile)
 df$age_R <- factor(df$age_R)
 
-GP_MAIHDA <-df %>%
+AE_MAIHDA <-df %>%
   group_by(sex, age_band, Ethnicity_2, imd_quintile) %>% 
   dplyr::mutate(strata = cur_group_id(), na.rm = TRUE)
 
-# Binomial model with binary outcome variable for GP interactions (null model)
+# Binomial model with binary outcome variable for A&E attendances (null model)
 
-m_null <- glmmTMB(GP_R ~ 1 + (1|strata), data = GP_MAIHDA, family = binomial)
+m_null <- glmmTMB(AE_R ~ 1 + (1|strata), data = AE_MAIHDA, family = binomial)
 model_parameters(m_null, exponentiate=TRUE)
 icc(m_null)
 
 # Adjusted model
 
-m_adj <- glmmTMB(GP_R ~ 1 + Sex_R + age_R + Ethnicity_R + imd_quintile + (1|strata), data = GP_MAIHDA, family = "binomial")
+m_adj <- glmmTMB(AE_R ~ 1 + Sex_R + age_R + Ethnicity_R + imd_quintile + (1|strata), data = AE_MAIHDA, family = "binomial")
 model_parameters(m_adj,exponentiate=TRUE)
 icc(m_adj)
 
@@ -92,11 +92,6 @@ v_null <- get_variance(m_null)
 v_adj <- get_variance(m_adj)
 pcv <- (v_null$var.random - v_adj$var.random) / v_null$var.random
 pcv
-
-write.csv (pcv, file = 'pcv.csv', row.names = FALSE)
-pcv <- read_csv(file =  "pcv.csv")
-fwrite(pcv, here::here("output", "os_reports", "WP3", "GPpcv.csv"))
-
 
 # Get the random effects
 ref<-ranef(m_adj)
