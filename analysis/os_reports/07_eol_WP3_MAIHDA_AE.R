@@ -1,8 +1,8 @@
 ##########################################################
-# Logistic regression to explore factors influencing GP interactions and A&E attendances
+# Logistic regression to explore factors influencing A&E attendances
 # Author: Miranda & Sophie 
 # Date: 08/05/24 
-# Initial aim: To develop code to run logistic regression to explore the relationship between patient demographic characteristics and no. of GP interactions/A&E attendances in the last 30-days of life. 
+# Initial aim: To develop code to run logistic regression to explore the relationship between patient demographic characteristics and A&E attendances in the last 90-days of life. 
 ##############################################################
 
 # Note: Patients with no IMD are excluded from the analysis as are patients aged 0-24. 
