@@ -11,9 +11,11 @@
 # Analysis over a two calendar year period (2022/2023)
 
 # Install packages
-#install.packages("performance")
-#install.packages("parameters")
 
+install.packages('lme4') # needed for glmer
+install.packages('dplyr')# needed for summary
+install.packages('randomForest') #needed for predict
+install.packages('ggplot2')
 
 # Load packages
 
@@ -22,11 +24,14 @@ library(lubridate)
 library(haven)#enables R to read and write various data formats used by other statistical packages, such as SAS so might not need this
 library(ggplot2)
 library(glmmTMB)# multilevel modelling
-library(dplyr)
 library(data.table)
-library(broom)
-library(performance)
-library(parameters)
+library(lme4)
+library(dplyr)
+#library(randomForest)
+#library(ggplot2)
+library(parameters)  # model summaries
+library(performance) # model fit indices, ICC
+library(insight) # variance
 
 # Create folder structure
 
@@ -81,29 +86,32 @@ GP_MAIHDA <-df %>%
 
 # Binomial model with binary outcome variable for GP interactions (null model)
 
-GPfm1 <- glmmTMB(GP_R ~ 1 + (1|strata), data = GP_MAIHDA, family = binomial)
-model_parameters(GPfm1, exponential=TRUE) 
-icc(GPfm1)
+m_null <- glmmTMB(GP_R ~ 1 + (1|strata), data = GP_MAIHDA, family = binomial)
+model_parameters(m_null, exponentiate=TRUE)
+icc(m_null)
 
-# options(tolerance = 1e-15) # tbc - add this to address singularity? 
+# Adjusted model
 
-# Adjusted model 
-
-GPfm2 <- glmmTMB(GP_R ~ 1 + Sex_R + age_R + Ethnicity_R + imd_quintile + (1|strata), data = GP_MAIHDA, family = binomial)
-model_parameters(GPfm2, exponential=TRUE) 
-icc(GPfm2)
+m_adj <- glmmTMB(GP_R ~ 1 + Sex_R + age_R + Ethnicity_R + imd_quintile + (1|strata), data = GP_MAIHDA, family = "binomial")
+model_parameters(m_adj,exponentiate=TRUE)
+icc(m_adj)
 
 # Now calculate the PCV
-v_null <- get_variance(GPfm1)
-v_adj <- get_variance(GPfm2)
+v_null <- get_variance(m_null)
+v_adj <- get_variance(m_adj)
 pcv <- (v_null$var.random - v_adj$var.random) / v_null$var.random
 pcv
 
+write.csv (pcv, file = 'pcv.csv', row.names = FALSE)
+pcv <- read_csv(file =  "pcv.csv")
+fwrite(pcv, here::here("output", "os_reports", "WP3", "GPpcv.csv"))
+
+
 # Get the random effects
-ref<-ranef(GPfm2)
+ref<-ranef(m_adj)
 print(ref)
 rr<-as.data.frame(ref) # Convert to obtain SD
-rr$lcl <- rr$ctaondval - 1.96*rr$condsd
+rr$lcl <- rr$condval - 1.96*rr$condsd
 rr$ucl <- rr$condval + 1.96*rr$condsd
 rr$rnk <- rank(rr$condval)
 rr <- rr[order(rr$rnk),] # Sort for plot
@@ -112,7 +120,17 @@ rr <- rr[order(rr$rnk),] # Sort for plot
 ggplot(rr, aes(rnk, condval)) +
   geom_errorbar(aes(ymin = lcl, ymax = ucl,width = 0.1)) +
   geom_point(size = 2)+
-  labs(x="Strata rank", y="Condional log odds")
+  labs(x="Stratum rank", y="Condional log odds")
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -126,21 +144,21 @@ ggplot(rr, aes(rnk, condval)) +
 
 # Create a binary variable for GP interactions
 
-df$GP_R <- as.numeric(df$gp_1m >= 1)
+#df$GP_R <- as.numeric(df$gp_1m >= 1)
 
 # Examine the new variable
-table(df$GP_R)
+#table(df$GP_R)
 
 # Change IMD/age to be considered categorical
 
-df$imd_quintile <- factor(df$imd_quintile)
-df$age_R <- factor(df$age_R)
+#df$imd_quintile <- factor(df$imd_quintile)
+#df$age_R <- factor(df$age_R)
 
 # Logistic regression with GP interactions as the outcome variable
 
-GPLog <- glm(GP_R ~ Sex_R + age_R + Ethnicity_R + imd_quintile, data = df, family = "binomial")
+#GPLog <- glmer(GP_R ~ Sex_R + age_R + Ethnicity_R + imd_quintile, data = df, family = "binomial")
 
-summary(GPLog)
+#summary(GPLog)
 
 # Estimate tells us for each unit change in the indicator variables, the log odds of GP interaction versus no GP interaction. 
 # For ranked variables such as IMD & age, interpretation is versus a single rank, e.g the lowest age bank or IMD 1. 
@@ -148,23 +166,23 @@ summary(GPLog)
 
 ## Confidence intervals using profiled log-likelihood
 
-confint(GPLog)
+#confint(GPLog)
 
 ## Confidence intervals using standard errors
 
-confint.default(GPLog)
+#confint.default(GPLog)
 
 # Test for an overall effect of IMD (wald test)
 
-wald.test(b=coef(GPLog), Sigma = vcov(GPLog), Terms =1:5)
+#wald.test(b=coef(GPLog), Sigma = vcov(GPLog), Terms =1:5)
 
 # Odds ratios
 
-exp(coef(GPLog))
+#exp(coef(GPLog))
 
 # Odds ratios and 95% CI
 
-exp(cbind(OR = coef(GPLog), confint(GPLog)))
+#exp(cbind(OR = coef(GPLog), confint(GPLog)))
 
 
 
@@ -176,20 +194,6 @@ exp(cbind(OR = coef(GPLog), confint(GPLog)))
 
 
 
-# Outcome variable - A&E attendances
-
-# Create a binary variable for GP interactions
-
-df$AE_R <- as.numeric(df$aevis_1m >= 1)
-
-# Examine the new variable
-table(df$AE_R)
-
-# Logistic regression with A&E attendances as the outcome variable
-
-AELog <- glm(AE_R ~ Sex_R + age_R + Ethnicity_R + imd_quintile, data = df, family = "binomial")
-
-summary(AELog)
 
 
 
