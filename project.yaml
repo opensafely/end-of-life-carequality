@@ -78,11 +78,11 @@ actions:
   #       acpdur_code: output/os_reports/WP2_quality_indicators/acpdur*.csv
 
   WP3_MAIHDA_outputs_GP:
-    run: r:latest analysis/os_reports/07_eol_WP3_MAIHDA_GP.R
+    run: r:latest analysis/os_reports/07_eol_WP3_MAIHDA_AE.R
     needs: [generate_study_population_os_reports]
     outputs:
       moderately_sensitive:
-        descriptive_LogMAIHDA_GP: output/os_reports/WP3/GP*.csv
+        descriptive_LogMAIHDA_AE: output/os_reports/WP3/AE*.csv
 
 # WP3_ethnicity_outputs:
 #   run: r:latest analysis/os_reports/09_eol_Ethnicity_breakdown.R
