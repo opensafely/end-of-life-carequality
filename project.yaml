@@ -96,5 +96,6 @@ actions:
     needs: [generate_study_population_os_reports]
     outputs:
       moderately_sensitive:
-        descriptive_beta0: output/os_reports/WP3/OP*.csv
+        model_outputs: output/os_reports/WP3/OP*.csv
+        model_graph_outputs: output/os_reports/WP3/OP*.png
         
