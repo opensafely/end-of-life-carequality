@@ -72,8 +72,9 @@ df$imd_quintile <- factor(df$imd_quintile)
 df$age_R <- factor(df$age_R)
 
 AE_MAIHDA <-df %>%
-  group_by(sex, age_band, Ethnicity_2, imd_quintile) %>% 
+  group_by(Sex_R, age_R, Ethnicity_R, imd_quintile) %>% 
   dplyr::mutate(strata = cur_group_id(), na.rm = TRUE)
+
 
 # Binomial model with binary outcome variable for A&E attendances (null model)
 
@@ -83,7 +84,7 @@ icc(m_null)
 
 # Adjusted model
 
-m_adj <- glmmTMB(AE_R ~ 1 + Sex_R + age_R + Ethnicity_R + imd_quintile + (1|strata), data = AE_MAIHDA, family = "binomial")
+m_adj <- glmmTMB(AE_R ~ 1 + Sex_R + age_R + Ethnicity_R + imd_quintile + (1|strata), data = AE_MAIHDA, family = binomial)
 model_parameters(m_adj,exponentiate=TRUE)
 icc(m_adj)
 
