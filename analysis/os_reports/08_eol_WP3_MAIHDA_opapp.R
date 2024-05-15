@@ -45,8 +45,8 @@ df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.g
                               , cod_ons_3 %in% c("F01", "F03", "G30") ~ "Dementia and Alzheimer's disease"
                               , cod_ons_3 >= "I00" & cod_ons_3 <= "I99" ~ "Circulatory diseases"
                               , cod_ons_3 >= "C00" & cod_ons_3 <= "C99" ~ "Cancer"
-                              , TRUE ~ "All other causes")) %>%
-filter(study_month >= startdate & study_month <= enddate & imd_quintile >=1 & age_band != "0-24" & codgrp == "Cancer" & pod_ons_new == "Home")
+                              , TRUE ~ "All other causes")) #%>%
+#filter(study_month >= startdate & study_month <= enddate & imd_quintile >=1 & age_band != "0-24" & codgrp == "Cancer" & pod_ons_new == "Home")
 
 #produce means and SD for each group ----------------
 cols_of_interest <- c("count");
@@ -192,6 +192,8 @@ str(summary(fm3))
 OPsigma2u3 <- summary(fm3)$varcor$cond$strata[1,1]
 OPsigma2u3
 
+#OPsigma2u3 <- OPsigma2u3$x
+
 write.csv(OPsigma2u3, file = 'OPsigma2u3.csv', row.names = FALSE)
 OPsigma2u3 <-read_csv(file = "OPsigma2u3.csv")
 fwrite(OPsigma2u3, here::here("output", "os_reports", "WP3", "OPsigma2u3.csv"))
@@ -205,7 +207,8 @@ head(df)
 # fwrite(df$OPexpectation3, here::here("output", "os_reports", "WP3", "OPmarginalexpectation.csv"))
 
 # Marginal variance
-df$OPvariance3 <- df$OPexpectation3 + df$OPexpectation3^2 * (exp(OPsigma2u3) - 1)
+#df$OPvariance3 <- df$OPexpectation3 + df$OPexpectation3^2 * (exp(OPsigma2u3) - 1)
+df$OPvariance3 <- df$OPexpectation3 + df$OPexpectation3^2 * (exp(OPsigma2u3$x) - 1)
 head(df)
 
 # write.csv(df$OPvariance3, file = 'OPmarginalvariance.csv', row.names = FALSE)
@@ -213,7 +216,7 @@ head(df)
 # fwrite(df$OPvariance3, here::here("output", "os_reports", "WP3", "OPmarginalvariance.csv"))
 
 # Marginal variance: Level-2 component
-df$OPvariance2m3 <- df$OPexpectation3^2*(exp(OPsigma2u3) - 1)
+df$OPvariance2m3 <- df$OPexpectation3^2*(exp(OPsigma2u3$x) - 1)
 head(df)
 
 # write.csv(df$OPvariance2m3, file = 'OPmarginalvariance2.csv', row.names = FALSE)
@@ -225,7 +228,7 @@ df$OPvariance1m3 <- df$OPexpectation3
 head(df)
 
 # write.csv(df$OPvariance1m3, file = 'OPmarginalvarianceL1.csv', row.names = FALSE)
-# df$OPvariance1m3 <-read_csv(file = "OPmarginalvarianceL!.csv")
+# df$OPvariance1m3 <-read_csv(file = "OPmarginalvarianceL1.csv")
 # fwrite(df$OPvariance1m3, here::here("output", "os_reports", "WP3", "OPmarginalvarianceL1.csv"))
 
 # Level-2 VPC
