@@ -7,6 +7,8 @@
 
 # Functions from ehrQL
 
+dataset.configure_dummy_data(population_size=10000) # Increase size of dummy data to help test WP3
+
 from ehrql import (Dataset, days, case, when)
 
 from ehrql.tables.beta.tpp import (
