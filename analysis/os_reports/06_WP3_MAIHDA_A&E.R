@@ -66,10 +66,14 @@ df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.g
 
 df$AE_R <- as.numeric(df$aevis_3m >= 1)
 
-# Change IMD/age to be considered categorical
+# Change IMD/age to be considered categorical. Reorder age so that 4 (90+) is the comparison
+
 
 df$imd_quintile <- factor(df$imd_quintile)
 df$age_R <- factor(df$age_R)
+
+df$age_R <- relevel(df$age_R,
+ref = '4')
 
 AE_MAIHDA <-df %>%
   group_by(Sex_R, age_R, Ethnicity_R, imd_quintile) %>% 
@@ -109,51 +113,7 @@ ggplot(rr, aes(rnk, condval)) +
   geom_point(size = 2)+
   labs(x="Stratum rank", y="Condional log odds")
 
-###################################################################################################################################
 
-# Standard logistic regression 
-
-# Create a binary variable for GP interactions
-
-#df$GP_R <- as.numeric(df$gp_1m >= 1)
-
-# Examine the new variable
-#table(df$GP_R)
-
-# Change IMD/age to be considered categorical
-
-#df$imd_quintile <- factor(df$imd_quintile)
-#df$age_R <- factor(df$age_R)
-
-# Logistic regression with GP interactions as the outcome variable
-
-#GPLog <- glmer(GP_R ~ Sex_R + age_R + Ethnicity_R + imd_quintile, data = df, family = "binomial")
-
-#summary(GPLog)
-
-# Estimate tells us for each unit change in the indicator variables, the log odds of GP interaction versus no GP interaction. 
-# For ranked variables such as IMD & age, interpretation is versus a single rank, e.g the lowest age bank or IMD 1. 
-
-
-## Confidence intervals using profiled log-likelihood
-
-#confint(GPLog)
-
-## Confidence intervals using standard errors
-
-#confint.default(GPLog)
-
-# Test for an overall effect of IMD (wald test)
-
-#wald.test(b=coef(GPLog), Sigma = vcov(GPLog), Terms =1:5)
-
-# Odds ratios
-
-#exp(coef(GPLog))
-
-# Odds ratios and 95% CI
-
-#exp(cbind(OR = coef(GPLog), confint(GPLog)))
 
 
 
