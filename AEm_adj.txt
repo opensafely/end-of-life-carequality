@@ -1,0 +1,29 @@
+ Family: binomial  ( logit )
+Formula:          AE_R ~ 1 + Sex_R + age_R + Ethnicity_R + imd_quintile + (1 |      strata)
+Data: AE_MAIHDA
+
+     AIC      BIC   logLik deviance df.resid 
+   419.7    464.3   -197.9    395.7      291 
+
+Random effects:
+
+Conditional model:
+ Groups Name        Variance Std.Dev. 
+ strata (Intercept) 1.76e-09 4.195e-05
+Number of obs: 303, groups:  strata, 65
+
+Conditional model:
+              Estimate Std. Error z value Pr(>|z|)   
+(Intercept)   -0.01789    0.54822  -0.033  0.97396   
+Sex_R          0.02781    0.24447   0.114  0.90941   
+age_R1        -0.29780    0.47732  -0.624  0.53269   
+age_R2        -0.73445    0.63736  -1.152  0.24918   
+age_R3         0.05062    0.61425   0.082  0.93432   
+Ethnicity_R   -0.54744    0.30634  -1.787  0.07393 . 
+imd_quintile1  0.40020    0.39445   1.015  0.31030   
+imd_quintile2  1.27737    0.40150   3.181  0.00147 **
+imd_quintile3  0.81205    0.35199   2.307  0.02106 * 
+imd_quintile4  1.06132    0.42319   2.508  0.01215 * 
+imd_quintile5  0.24625    0.40371   0.610  0.54189   
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1

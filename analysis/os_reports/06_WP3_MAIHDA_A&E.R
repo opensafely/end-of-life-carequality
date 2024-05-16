@@ -92,6 +92,53 @@ m_adj <- glmmTMB(AE_R ~ 1 + Sex_R + age_R + Ethnicity_R + imd_quintile + (1|stra
 model_parameters(m_adj,exponentiate=TRUE)
 icc(m_adj)
 
+AEm_adj <- summary(m_adj)
+
+AEm_adj <- table(m_adj)
+
+capture.output(AEm_adj, file = 'AEm_adj.txt')
+fwrite(AEm_adj, here::here("output", "os_reports", "WP3", "AEm_adj.txt"))
+
+print(AEm_adj)
+
+write.csv (AEm_adj, file = 'AEm_adj.csv', row.names = FALSE)
+AEm_adj <- read_csv(file =  "AEm_adj.csv")
+
+
+
+
+
+
+
+
+
+
+
+Temp_df <- data.frame(m_adj$residuals, m_adj$fitted.values)
+
+
+write.csv(Temp_df, file='m_adjAE.csv')
+
+
+
+
+
+
+
+
+
+
+
+rr <- ranef(m_adj)
+rr$cond$Sex_R
+
+
+write.csv(Temp_df, file = 'glmmTMB_AEOutput.csv')
+
+
+
+
+
 # Now calculate the PCV
 v_null <- get_variance(m_null)
 v_adj <- get_variance(m_adj)
