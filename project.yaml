@@ -82,7 +82,7 @@ actions:
     needs: [generate_study_population_os_reports]
     outputs:
       moderately_sensitive:
-        descriptive_codeGP: output/os_reports/WP3/GP*.csv
+        descriptive_codeGP: output/os_reports/WP3/gp*.csv
         descriptive_codeAE: output/os_reports/WP3/aevis*.csv
 
 # WP3_ethnicity_outputs:
