@@ -88,7 +88,7 @@ gp_count_pod_cod_RAW <- df %>%
   bind_rows(df %>%
               group_by(study_month) %>%
               summarise(count = sum(gp_1m >= 1, na.rm = TRUE), total = n()) %>%
-              mutate(pod_ons_new = "All") %>%%
+              mutate(pod_ons_new = "All") %>%
               mutate(proportion = round(count / total*100,1)))
 
 fwrite(gp_count_pod_cod_RAW, here::here("output", "os_reports", "WP3", "gp_count_pod_cod_RAW.csv"))
