@@ -72,7 +72,7 @@ gp_pod_cod_TOTAL <- df %>%
   bind_rows(df %>%
               group_by(study_month) %>%
               summarise(sum = sum(gp_1m, na.rm=TRUE)) %>%
-              mutate(codgrp = "All")) %>%
+              mutate(pod_ons_new = "All")) %>%
               mutate(codgrp = "All") %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
