@@ -73,7 +73,6 @@ gp_pod_cod_TOTAL <- df %>%
               group_by(study_month) %>%
               summarise(sum = sum(gp_1m, na.rm=TRUE)) %>%
               mutate(pod_ons_new = "All")) %>%
-              mutate(codgrp = "All") %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
 
@@ -89,8 +88,7 @@ gp_count_pod_cod_RAW <- df %>%
   bind_rows(df %>%
               group_by(study_month) %>%
               summarise(count = sum(gp_1m >= 1, na.rm = TRUE), total = n()) %>%
-              mutate(pod_ons_new = "All") %>%
-              mutate(codgrp = "All") %>%
+              mutate(pod_ons_new = "All") %>%%
               mutate(proportion = round(count / total*100,1)))
 
 fwrite(gp_count_pod_cod_RAW, here::here("output", "os_reports", "WP3", "gp_count_pod_cod_RAW.csv"))
@@ -102,7 +100,6 @@ gp_count_pod_cod_ROUND <- df %>%
               group_by(study_month) %>%
               summarise(count = sum(gp_1m >= 1, na.rm = TRUE), total = n()) %>%
               mutate(pod_ons_new = "All")) %>%
-              mutate(codgrp = "All")
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
   mutate(proportion = round(count / total*100,1))
@@ -123,7 +120,6 @@ gp_pod_cod_MEAN_RAW <- df %>%
                         mean = mean(gp_1m, na.rm = TRUE),
                         sd = sd(gp_1m, na.rm = TRUE)) %>%
               mutate(pod_ons_new = "All")) %>%
-              mutate(codgrp = "All") %>%
   mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ )))
 
 fwrite(gp_pod_cod_MEAN_RAW, here::here("output", "os_reports", "WP3", "gp_pod_cod_MEAN_RAW.csv"))
@@ -141,7 +137,6 @@ gp_pod_cod_MEAN <- df %>%
                         mean = mean(gp_1m, na.rm = TRUE),
                         sd = sd(gp_1m, na.rm = TRUE)) %>%
               mutate(pod_ons_new = "All")) %>%
-              mutate(codgrp = "All") %>%
   mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
   select(-c(count))
 
@@ -160,7 +155,6 @@ aevis_pod_cod_TOTAL <- df %>%
               group_by(study_month) %>%
               summarise(sum = sum(aevis_1m, na.rm=TRUE)) %>%
               mutate(pod_ons_new = "All")) %>%
-              mutate(codgrp = "All") %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)); 
 
@@ -177,7 +171,6 @@ aevis_count_pod_cod_RAW <- df %>%
               group_by(study_month) %>%
               summarise(count = sum(aevis_1m >= 1, na.rm = TRUE), total = n()) %>%
               mutate(pod_ons_new = "All") %>%
-              mutate(codgrp = "All") %>%
               mutate(proportion = round(count / total*100,1)))
 
 fwrite(aevis_count_pod_cod_RAW, here::here("output", "os_reports", "WP3", "aevis_count_pod_cod_RAW.csv"))
@@ -189,7 +182,6 @@ aevis_count_pod_cod_ROUND <- df %>%
               group_by(study_month) %>%
               summarise(count = sum(aevis_1m >= 1, na.rm = TRUE), total = n()) %>%
               mutate(pod_ons_new = "All")) %>%
-              mutate(codgrp = "All") %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
   mutate(proportion = round(count/total*100,1))
@@ -210,7 +202,6 @@ aevis_pod_cod_MEAN_RAW <- df %>%
                         mean = mean(aevis_1m, na.rm = TRUE),
                         sd = sd(aevis_1m, na.rm = TRUE)) %>%
               mutate(pod_ons_new = "All")) %>%
-              mutate(codgrp = "All") %>%
   mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) 
 
 fwrite(aevis_pod_cod_MEAN_RAW, here::here("output", "os_reports", "WP3", "aevis_pod_cod_MEAN_RAW.csv"))
@@ -228,7 +219,6 @@ aevis_pod_cod_MEAN <- df %>%
                         mean = mean(aevis_1m, na.rm = TRUE),
                         sd = sd(aevis_1m, na.rm = TRUE)) %>%
               mutate(pod_ons_new = "All")) %>%
-              mutate(codgrp = "All")
   mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
   select(-c(count))
 
