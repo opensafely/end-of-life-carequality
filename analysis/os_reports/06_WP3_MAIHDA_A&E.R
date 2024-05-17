@@ -12,6 +12,8 @@
 
 # Install packages
 
+install.packages("sjPlot")
+
 # Load packages
 
 library(tidyverse)
@@ -23,6 +25,8 @@ library(data.table)
 library(parameters)  # model summaries
 library(performance) # model fit indices, ICC
 library(insight) # variance
+library(sjPlot)
+
 
 # Create folder structure
 
@@ -42,7 +46,7 @@ df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.g
                     age_band == "80-89" ~ 3,
                     age_band == "90+" ~ 4)
          , Ethnicity_2 = case_when(ethnicity_Combined == "White" ~ "White"
-                                   , ethnicity_Combined == "Asian or Asian British" | ethnicity_Combined == "Black or Black British" | ethnicity_Combined == "Mixed" | ethnicity_Combined == "Chinese or Other Ethnic Groups" | ethnicity_Combined == "Not stated" ~ "All other ethnic groups")
+                                  , ethnicity_Combined == "Asian or Asian British" | ethnicity_Combined == "Black or Black British" | ethnicity_Combined == "Mixed" | ethnicity_Combined == "Chinese or Other Ethnic Groups" | ethnicity_Combined == "Not stated" ~ "All other ethnic groups")
          , Ethnicity_R = case_when(Ethnicity_2 == "White" ~ 0, Ethnicity_2 == "All other ethnic groups" ~ 1)
          , Sex_R = case_when(sex == "male" ~ 0, sex == "female" ~ 1)
          , study_month = floor_date(dod_ons, unit = "month")
@@ -66,14 +70,19 @@ df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.g
 
 df$AE_R <- as.numeric(df$aevis_3m >= 1)
 
-# Change IMD/age to be considered categorical
+# Change IMD/age to be considered categorical. Reorder age so that 4 (90+) is the comparison
+
 
 df$imd_quintile <- factor(df$imd_quintile)
 df$age_R <- factor(df$age_R)
 
+df$age_R <- relevel(df$age_R,
+ref = '4')
+
 AE_MAIHDA <-df %>%
-  group_by(sex, age_band, Ethnicity_2, imd_quintile) %>% 
+  group_by(Sex_R, age_R, Ethnicity_R, imd_quintile) %>% 
   dplyr::mutate(strata = cur_group_id(), na.rm = TRUE)
+
 
 # Binomial model with binary outcome variable for A&E attendances (null model)
 
@@ -83,92 +92,32 @@ icc(m_null)
 
 # Adjusted model
 
-m_adj <- glmmTMB(AE_R ~ 1 + Sex_R + age_R + Ethnicity_R + imd_quintile + (1|strata), data = AE_MAIHDA, family = "binomial")
+m_adj <- glmmTMB(AE_R ~ 1 + Sex_R + age_R + Ethnicity_R + imd_quintile + (1|strata), data = AE_MAIHDA, family = binomial)
 model_parameters(m_adj,exponentiate=TRUE)
 icc(m_adj)
 
 # Now calculate the PCV
-v_null <- get_variance(m_null)
-v_adj <- get_variance(m_adj)
-pcv <- (v_null$var.random - v_adj$var.random) / v_null$var.random
-pcv
+#v_null <- get_variance(m_null)
+#v_adj <- get_variance(m_adj)
+#pcv <- (v_null$var.random - v_adj$var.random) / v_null$var.random
+#pcv
 
 # Get the random effects
-ref<-ranef(m_adj)
-print(ref)
-rr<-as.data.frame(ref) # Convert to obtain SD
-rr$lcl <- rr$condval - 1.96*rr$condsd
-rr$ucl <- rr$condval + 1.96*rr$condsd
-rr$rnk <- rank(rr$condval)
-rr <- rr[order(rr$rnk),] # Sort for plot
+#ref<-ranef(m_adj)
+#print(ref)
+#rr<-as.data.frame(ref) # Convert to obtain SD
+#rr$lcl <- rr$condval - 1.96*rr$condsd
+#rr$ucl <- rr$condval + 1.96*rr$condsd
+#rr$rnk <- rank(rr$condval)
+#rr <- rr[order(rr$rnk),] # Sort for plot
 
 # Very simple plot
-ggplot(rr, aes(rnk, condval)) +
-  geom_errorbar(aes(ymin = lcl, ymax = ucl,width = 0.1)) +
-  geom_point(size = 2)+
-  labs(x="Stratum rank", y="Condional log odds")
+#ggplot(rr, aes(rnk, condval)) +
+#  geom_errorbar(aes(ymin = lcl, ymax = ucl,width = 0.1)) +
+#  geom_point(size = 2)+
+#  labs(x="Stratum rank", y="Condional log odds")
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-###################################################################################################################################
-
-# Standard logistic regression 
-
-# Create a binary variable for GP interactions
-
-#df$GP_R <- as.numeric(df$gp_1m >= 1)
-
-# Examine the new variable
-#table(df$GP_R)
-
-# Change IMD/age to be considered categorical
-
-#df$imd_quintile <- factor(df$imd_quintile)
-#df$age_R <- factor(df$age_R)
-
-# Logistic regression with GP interactions as the outcome variable
-
-#GPLog <- glmer(GP_R ~ Sex_R + age_R + Ethnicity_R + imd_quintile, data = df, family = "binomial")
-
-#summary(GPLog)
-
-# Estimate tells us for each unit change in the indicator variables, the log odds of GP interaction versus no GP interaction. 
-# For ranked variables such as IMD & age, interpretation is versus a single rank, e.g the lowest age bank or IMD 1. 
-
-
-## Confidence intervals using profiled log-likelihood
-
-#confint(GPLog)
-
-## Confidence intervals using standard errors
-
-#confint.default(GPLog)
-
-# Test for an overall effect of IMD (wald test)
-
-#wald.test(b=coef(GPLog), Sigma = vcov(GPLog), Terms =1:5)
-
-# Odds ratios
-
-#exp(coef(GPLog))
-
-# Odds ratios and 95% CI
-
-#exp(cbind(OR = coef(GPLog), confint(GPLog)))
 
 
 
