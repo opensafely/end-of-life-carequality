@@ -45,8 +45,8 @@ df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.g
                               , cod_ons_3 %in% c("F01", "F03", "G30") ~ "Dementia and Alzheimer's disease"
                               , cod_ons_3 >= "I00" & cod_ons_3 <= "I99" ~ "Circulatory diseases"
                               , cod_ons_3 >= "C00" & cod_ons_3 <= "C99" ~ "Cancer"
-                              , TRUE ~ "All other causes")) #%>%
-#filter(study_month >= startdate & study_month <= enddate & imd_quintile >=1 & age_band != "0-24" & codgrp == "Cancer" & pod_ons_new == "Home")
+                              , TRUE ~ "All other causes")) %>%
+  filter(study_month >= startdate & study_month <= enddate & imd_quintile >=1 & age_band != "0-24" & codgrp == "Cancer" & pod_ons_new == "Home")
 
 #produce means and SD for each group ----------------
 cols_of_interest <- c("count");
@@ -151,7 +151,7 @@ OPvariance1 <- OPexpectation
 OPvariance1
 
 write.csv(OPvariance1, file = 'OPvariance1.csv', row.names = FALSE)
-Ovariance1 <-read_csv(file = "OPvariance1.csv")
+OPvariance1 <-read_csv(file = "OPvariance1.csv")
 fwrite(OPvariance1, here::here("output", "os_reports", "WP3", "OPvariance1.csv"))
 
 # Level-2 VPC (variance partition coefficient)
@@ -183,6 +183,7 @@ summary(fm3)
 df$xb <- predict(fm3)
 head(df)
 
+
 # write.csv(df$xb, file = 'OPpredict.csv', row.names = FALSE)
 # OPpredict <-read_csv(file = "OPpredict.csv")
 # fwrite(OPpredict, here::here("output", "os_reports", "WP3", "OPpredict.csv"))
@@ -192,22 +193,21 @@ str(summary(fm3))
 OPsigma2u3 <- summary(fm3)$varcor$cond$strata[1,1]
 OPsigma2u3
 
-#OPsigma2u3 <- OPsigma2u3$x
 
 write.csv(OPsigma2u3, file = 'OPsigma2u3.csv', row.names = FALSE)
 OPsigma2u3 <-read_csv(file = "OPsigma2u3.csv")
 fwrite(OPsigma2u3, here::here("output", "os_reports", "WP3", "OPsigma2u3.csv"))
 
 # Marginal expectation
-df$OPexpectation3 <- exp(df$xb + OPsigma2u3/2)
+df$OPexpectation3 <- exp(df$xb + OPsigma2u3$x/2)
 head(df)
+
 
 # write.csv(df$OPexpectation3, file = 'OPmarginalexpectation.csv', row.names = FALSE)
 # df$OPexpectation3 <-read_csv(file = "OPmarginalexpectation.csv")
 # fwrite(df$OPexpectation3, here::here("output", "os_reports", "WP3", "OPmarginalexpectation.csv"))
 
 # Marginal variance
-#df$OPvariance3 <- df$OPexpectation3 + df$OPexpectation3^2 * (exp(OPsigma2u3) - 1)
 df$OPvariance3 <- df$OPexpectation3 + df$OPexpectation3^2 * (exp(OPsigma2u3$x) - 1)
 head(df)
 
@@ -239,7 +239,6 @@ head(df)
 # df$OPvpc2m3 <-read_csv(file = "OPVPC2m3.csv")
 # fwrite(df$OPvpc2m3, here::here("output", "os_reports", "WP3", "OPVPC2m3.csv"))
 
-
 # Level-1 VPC
 df$OPvpc1m3 <- df$OPvariance1m3/(df$OPvariance2m3 + df$OPvariance1m3)
 head(df)
@@ -250,14 +249,14 @@ head(df)
 
 # Summarise marginal statistics------------------------------
 colnames(df)
-summ <- sapply(df[29:35], mean)
+summ <- colMeans(df[29:35])
 summ
 
 var_adj <- summ[3]
 
 write.csv(summ, file = 'OPsummVPC.csv', row.names = FALSE)
-summVPC <-read_csv(file = "OPsummVPC.csv")
-fwrite(summVPC, here::here("output", "os_reports", "WP3", "OPsumVPC.csv"))
+summ <-read_csv(file = "OPsummVPC.csv")
+fwrite(summ, here::here("output", "os_reports", "WP3", "OPsumVPC.csv"))
 
 OPpcv <- (var_null - var_adj)/var_null
 
@@ -268,12 +267,12 @@ fwrite(OPpcv, here::here("output", "os_reports", "WP3", "OPpcv.csv"))
 
 #Figures -------------------------------
 #Line plot of Level-2 VPC against the marginal expectation
-lineplot <- ggplot(data = df, mapping = aes(x = OPexpectation3, y = OPvpc2m3)) + geom_line()
-print(lineplot)
-
-ggsave(lineplot, dpi = 600, width = 20, height = 10, unit = "cm"
-       , filename = "OPlineplot.png"
-       , path = here::here("output", "os_reports", "WP3"))
+# lineplot <- ggplot(data = df, mapping = aes(x = OPexpectation3$x, y = OPvpc2m3$x)) + geom_line()
+# print(lineplot)
+# 
+# ggsave(lineplot, dpi = 600, width = 20, height = 10, unit = "cm"
+#        , filename = "OPlineplot.png"
+#        , path = here::here("output", "os_reports", "WP3"))
 
 # Spikeplot of marginal expectation
 histogram <- ggplot(data = df, mapping = aes(x = OPexpectation3)) +
@@ -306,6 +305,9 @@ write.csv(fm3vsfm1, file = 'OPfm3vsfm1.csv')
 fm3vsfm1 <-read_csv(file = "OPfm3vsfm1.csv")
 fwrite(fm3vsfm1, here::here("output", "os_reports", "WP3", "OPfm3vsfm1.csv"))
 
+scatterplot <- ggplot(data = fm3vsfm1, mapping = aes(x = fm1u, y = fm3u)) + geom_point()
+cor(fm3vsfm1)
+
 
 ggsave(scatterplot, dpi = 600, width = 20, height = 10, unit = "cm"
        , filename = "OPscatterplot.png"
@@ -328,14 +330,18 @@ fm3vsfm1$fm3urank <-read_csv(file = "OPrank3.csv")
 fwrite(fm3vsfm1$fm3urank, here::here("output", "os_reports", "WP3", "OPrank3.csv"))
 
 # Figure 4: Scatterplot of ranks of model 3 vs. model 1 predicted effects
-rankscatterplot <- ggplot(data = fm3vsfm1, mapping = aes(x = fm1urank, y = fm3urank)) + 
-geom_point()
-colnames(fm3vsfm1)
-cor(fm3vsfm1[,3:4])
-
-ggsave(rankscatterplot, dpi = 600, width = 20, height = 10, unit = "cm"
-       , filename = "OPrankscatterplot.png"
-       , path = here::here("output", "os_reports", "WP3"))
+# rankscatterplot <- ggplot(data = fm3vsfm1$fm1urank$fm3urank, mapping = aes(x = fm1urank, y = fm3urank)) + geom_point()
+# colnames(fm3vsfm1)
+# cor(fm3vsfm1[,3:4])
+# 
+# # write.csv(cor(fm3vsfm1[,3:4]), file = 'OPvarrank.csv')
+# # cor(fm3vsfm1[,3:4]) <-read_csv(file = "OPvarrank.csv")
+# # fwrite(cor(fm3vsfm1[,3:4]), here::here("output", "os_reports", "WP3", "OPvarrank.csv"))
+# 
+# 
+# ggsave(rankscatterplot, dpi = 600, width = 20, height = 10, unit = "cm"
+#        , filename = "OPrankscatterplot.png"
+#        , path = here::here("output", "os_reports", "WP3"))
 
 
 
@@ -344,86 +350,86 @@ ggsave(rankscatterplot, dpi = 600, width = 20, height = 10, unit = "cm"
 # Model 2: Two-level variance-components negative binomial model
 # To test fit
 
-# Fit model
-fm2 <- glmmTMB(opapp_1m ~ 1 + (1|strata), data = OP_MAIHDA, family = nbinom2)
-summary(fm2)
-
-# Intercept
-str(summary(fm2))
-OPbeta02 <- summary(fm2)$coefficients$cond[1,1]
-OPbeta02
-
-
-write.csv (OPbeta02, file = 'OPbeta02.csv', row.names = FALSE)
-OPbeta02 <- read_csv(file =  "OPbeta02.csv")
-fwrite(OPbeta02, here::here("output", "os_reports", "WP3", "OPbeta02.csv"))
-
-# Cluster variance
-str(summary(fm2))
-OPsigma2u2 <- summary(fm2)$varcor$cond$strata[1,1]
-OPsigma2u2
-
-write.csv(OPsigma2u2, file = 'OPsigma2u2.csv', row.names = FALSE)
-OPsigma2u2 <-read_csv(file = "OPsigma2u2.csv")
-fwrite(OPsigma2u2, here::here("output", "os_reports", "WP3", "OPsigma2u2.csv"))
-
-# Overdispersion parameter
-str(summary(fm2))
-OPalpha2 <- 1/(summary(fm2)$OPsigma2u)
-OPalpha2
-
-write.csv(OPalpha2, file = 'OPalpha2.csv', row.names = FALSE)
-OPalpha2 <-read_csv(file = "OPalpha2.csv")
-fwrite(OPalpha2, here::here("output", "os_reports", "WP3", "OPalpha2.csv"))
-
-# Marginal expectation
-OPexpectation2 <- exp(OPbeta02 + OPsigma2u2/2)
-OPexpectation2
-
-write.csv(OPexpectation2, file = 'OPexpectation2.csv', row.names = FALSE)
-OPexpectation2 <-read_csv(file = "OPexpectation2.csv")
-fwrite(OPexpectation2, here::here("output", "os_reports", "WP3", "OPexpectation2.csv"))
-
-# Marginal variance
-OPvariancem2 <- OPexpectation2 + OPexpectation2^2*(exp(OPsigma2u2)*(1 + OPalpha2) - 1)
-OPvariancem2
-
-write.csv(OPvariancem2, file = 'OPvariancem2.csv', row.names = FALSE)
-OPvariancem2 <-read_csv(file = "OPvariancem2.csv")
-fwrite(OPvariancem2, here::here("output", "os_reports", "WP3", "OPvariancem2.csv"))
-
-# Marginal variance: Level-2 component
-OPvariance2m2 <- OPexpectation2^2*(exp(OPsigma2u2) - 1)
-OPvariancem2
-
-write.csv(OPvariance2m2, file = 'OPvariance2m2.csv', row.names = FALSE)
-OPvariance2m2 <-read_csv(file = "OPvariance2m2.csv")
-fwrite(OPvariance2m2, here::here("output", "os_reports", "WP3", "OPvariance2m2.csv"))
-
-# Marginal variance: Level-1 component
-OPvariance1m2 <- OPexpectation2 + OPexpectation2^2*exp(OPsigma2u2)*OPalpha2
-OPvariance1m2
-
-write.csv(OPvariance1m2, file = 'OPvariance1m2.csv', row.names = FALSE)
-OPvariance1m2 <-read_csv(file = "OPvariance1m2.csv")
-fwrite(OPvariance1m2, here::here("output", "os_reports", "WP3", "OPvariance1m2.csv"))
-
-# Level-2 VPC
-OPvpc2m2 <- OPvariance2m2/(OPvariance2m2 + OPvariance1m2)
-OPvpc2m2
-
-write.csv(OPvpc2m2, file = 'OPvpc2m2.csv')
-OPvpc2m2.csv <-read_csv(file = "OPvpc2m2.csv")
-fwrite(OPvpc2m2, here::here("output", "os_reports", "WP3", "OPOPvpc2m2.csv"))
-
-# Level-1 VPC
-OPvpc1m2 <- OPvariance1m2/(OPvariance2m2 + OPvariance1m2)
-OPvpc1
-
-write.csv(OPvpc1m2, file = 'OPvpc1m2.csv')
-OPvpc1m2.csv <-read_csv(file = "OPvpc1m2.csv")
-fwrite(OPvpc1m2, here::here("output", "os_reports", "WP3", "OPOPvpc1m2.csv"))
-
-###############################################################################
-
-
+# # Fit model
+# fm2 <- glmmTMB(opapp_1m ~ 1 + (1|strata), data = OP_MAIHDA, family = nbinom2)
+# summary(fm2)
+# 
+# # Intercept
+# str(summary(fm2))
+# OPbeta02 <- summary(fm2)$coefficients$cond[1,1]
+# OPbeta02
+# 
+# 
+# write.csv (OPbeta02, file = 'OPbeta02.csv', row.names = FALSE)
+# OPbeta02 <- read_csv(file =  "OPbeta02.csv")
+# fwrite(OPbeta02, here::here("output", "os_reports", "WP3", "OPbeta02.csv"))
+# 
+# # Cluster variance
+# str(summary(fm2))
+# OPsigma2u2 <- summary(fm2)$varcor$cond$strata[1,1]
+# OPsigma2u2
+# 
+# write.csv(OPsigma2u2, file = 'OPsigma2u2.csv', row.names = FALSE)
+# OPsigma2u2 <-read_csv(file = "OPsigma2u2.csv")
+# fwrite(OPsigma2u2, here::here("output", "os_reports", "WP3", "OPsigma2u2.csv"))
+# 
+# # Overdispersion parameter
+# str(summary(fm2))
+# OPalpha2 <- 1/(summary(fm2)$OPsigma2u)
+# OPalpha2
+# 
+# write.csv(OPalpha2, file = 'OPalpha2.csv', row.names = FALSE)
+# OPalpha2 <-read_csv(file = "OPalpha2.csv")
+# fwrite(OPalpha2, here::here("output", "os_reports", "WP3", "OPalpha2.csv"))
+# 
+# # Marginal expectation
+# OPexpectation2 <- exp(OPbeta02 + OPsigma2u2/2)
+# OPexpectation2
+# 
+# write.csv(OPexpectation2, file = 'OPexpectation2.csv', row.names = FALSE)
+# OPexpectation2 <-read_csv(file = "OPexpectation2.csv")
+# fwrite(OPexpectation2, here::here("output", "os_reports", "WP3", "OPexpectation2.csv"))
+# 
+# # Marginal variance
+# OPvariancem2 <- OPexpectation2 + OPexpectation2^2*(exp(OPsigma2u2)*(1 + OPalpha2) - 1)
+# OPvariancem2
+# 
+# write.csv(OPvariancem2, file = 'OPvariancem2.csv', row.names = FALSE)
+# OPvariancem2 <-read_csv(file = "OPvariancem2.csv")
+# fwrite(OPvariancem2, here::here("output", "os_reports", "WP3", "OPvariancem2.csv"))
+# 
+# # Marginal variance: Level-2 component
+# OPvariance2m2 <- OPexpectation2^2*(exp(OPsigma2u2) - 1)
+# OPvariancem2
+# 
+# write.csv(OPvariance2m2, file = 'OPvariance2m2.csv', row.names = FALSE)
+# OPvariance2m2 <-read_csv(file = "OPvariance2m2.csv")
+# fwrite(OPvariance2m2, here::here("output", "os_reports", "WP3", "OPvariance2m2.csv"))
+# 
+# # Marginal variance: Level-1 component
+# OPvariance1m2 <- OPexpectation2 + OPexpectation2^2*exp(OPsigma2u2)*OPalpha2
+# OPvariance1m2
+# 
+# write.csv(OPvariance1m2, file = 'OPvariance1m2.csv', row.names = FALSE)
+# OPvariance1m2 <-read_csv(file = "OPvariance1m2.csv")
+# fwrite(OPvariance1m2, here::here("output", "os_reports", "WP3", "OPvariance1m2.csv"))
+# 
+# # Level-2 VPC
+# OPvpc2m2 <- OPvariance2m2/(OPvariance2m2 + OPvariance1m2)
+# OPvpc2m2
+# 
+# write.csv(OPvpc2m2, file = 'OPvpc2m2.csv')
+# OPvpc2m2.csv <-read_csv(file = "OPvpc2m2.csv")
+# fwrite(OPvpc2m2, here::here("output", "os_reports", "WP3", "OPOPvpc2m2.csv"))
+# 
+# # Level-1 VPC
+# OPvpc1m2 <- OPvariance1m2/(OPvariance2m2 + OPvariance1m2)
+# OPvpc1
+# 
+# write.csv(OPvpc1m2, file = 'OPvpc1m2.csv')
+# OPvpc1m2.csv <-read_csv(file = "OPvpc1m2.csv")
+# fwrite(OPvpc1m2, here::here("output", "os_reports", "WP3", "OPOPvpc1m2.csv"))
+# 
+# ###############################################################################
+# 
+# 
