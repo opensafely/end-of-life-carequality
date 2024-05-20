@@ -96,6 +96,25 @@ m_adj <- glmmTMB(AE_R ~ 1 + Sex_R + age_R + Ethnicity_R + imd_quintile + (1|stra
 model_parameters(m_adj,exponentiate=TRUE)
 icc(m_adj)
 
+summary(m_adj)
+
+# Saving output from the adjusted model 
+
+Adj_output <-capture.output(print(m_adj, print_trivials = TRUE))
+
+Output_file <- here::here("output", "os_reports", "WP3", "Adj_model_AE2.txt")
+
+writeLines(Adj_output, con = Output_file)
+
+cat("Output saved to", Output_file, "\n")
+
+## You can use fixedf(m_adj) to save just the fixed effects. 
+
+# Still need to get it to save Std. Error, z value and Pr. 
+
+
+
+
 # Now calculate the PCV
 #v_null <- get_variance(m_null)
 #v_adj <- get_variance(m_adj)
