@@ -107,4 +107,5 @@ actions:
       moderately_sensitive:
         model_outputs: output/os_reports/WP3/OP*.csv
         model_graph_outputs: output/os_reports/WP3/OP*.png
+        model_breakdown_outputs: output/os_reports/WP3/OP*.txt 
         

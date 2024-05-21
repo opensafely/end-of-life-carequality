@@ -92,8 +92,10 @@ fwrite(GLM_age_band, here::here("output", "os_reports", "WP3", "OP_GLM_age.csv")
 #define strata----
 # Form intersectional strata (80 strata in total)
 
+df$imd_quintile_R <- factor(df$imd_quintile)
+
 OP_MAIHDA <-df %>%
-  group_by(sex, age_band, Ethnicity_2, imd_quintile) %>% 
+  group_by(sex, age_band, Ethnicity_2, imd_quintile_R) %>% 
   mutate(strata = cur_group_id())
 
 # Model 1  - includes a strata random intercept to account for clustering by strata #
@@ -102,6 +104,15 @@ OP_MAIHDA <-df %>%
 
 fm1 <- glmmTMB(opapp_1m ~ 1 + (1|strata), data = OP_MAIHDA, family = poisson)
 summary(fm1)
+
+
+OP_model1 <-capture.output(summary(fm1, print_trivials = TRUE))
+
+Output_file <- here::here("output", "os_reports", "WP3", "OP_model1.txt")
+
+writeLines(OP_model1, con = Output_file)
+
+cat("Output saved to", Output_file, "\n")
 
 # Intercept (mean no. of outpatient attendances when all predictors = 0)
 str(summary(fm1))
@@ -176,8 +187,17 @@ var_null <- OPvariance2
 #Model 3::: adjusted model Poisson ---------------
 # fully adjusted model 
 
-fm3 <- glmmTMB(opapp_1m ~ 1 + sex + age_band + Ethnicity_2 + imd_quintile + (1|strata), data = OP_MAIHDA, family = poisson)
+fm3 <- glmmTMB(opapp_1m ~ 1 + sex + age_band + Ethnicity_2 + imd_quintile_R + (1|strata), data = OP_MAIHDA, family = poisson)
 summary(fm3)
+
+
+OP_model3 <-capture.output(summary(fm3, print_trivials = TRUE))
+
+Output_file <- here::here("output", "os_reports", "WP3", "OP_model3.txt")
+
+writeLines(OP_model3, con = Output_file)
+
+cat("Output saved to", Output_file, "\n")
 
 # Linear predictor
 df$xb <- predict(fm3)
@@ -249,10 +269,10 @@ head(df)
 
 # Summarise marginal statistics------------------------------
 colnames(df)
-summ <- colMeans(df[30:36])
+summ <- colMeans(df[31:37])
 summ
 
-var_adj <- summ[3]
+var_adj <- summ[4]
 
 write.csv(summ, file = 'OPsummVPC.csv', row.names = FALSE)
 summ <-read_csv(file = "OPsummVPC.csv")
