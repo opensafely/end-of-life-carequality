@@ -146,41 +146,41 @@ fwrite(gp_pod_cod_MEAN, here::here("output", "os_reports", "WP3", "gp_pod_cod_ME
 
 cols_of_interest <- c("sum");
 
-# Total number of A&E visits by month, place of death and cause of death - including all deaths
+# Total number of A&E visits in the last 90-days by month, place of death and cause of death - including all deaths
 
 aevis_pod_cod_TOTAL <- df %>%
   group_by(study_month, pod_ons_new, codgrp) %>%
-  summarise(sum = sum(aevis_1m, na.rm=TRUE)) %>%
+  summarise(sum = sum(aevis_3m, na.rm=TRUE)) %>%
   bind_rows(df %>%
               group_by(study_month) %>%
-              summarise(sum = sum(aevis_1m, na.rm=TRUE)) %>%
+              summarise(sum = sum(aevis_3m, na.rm=TRUE)) %>%
               mutate(pod_ons_new = "All")) %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)); 
 
 fwrite(aevis_pod_cod_TOTAL, here::here("output", "os_reports", "WP3", "aevis_pod_cod_TOTAL.csv"))
 
-# Number of people with at least one A&E visit in the last month of life by month and place of death - all deaths
+# Number of people with at least one A&E visit in the 90-days of life by month and place of death - all deaths
 
 cols_of_interest <- c("count", "total");
 
 aevis_count_pod_cod_RAW <- df %>%
-  group_by(study_month, pod_ons_new) %>%
-  summarise(count = sum(aevis_1m >= 1, na.rm = TRUE), total = n()) %>%
+  group_by(study_month, pod_ons_new, codgrp) %>%
+  summarise(count = sum(aevis_3m >= 1, na.rm = TRUE), total = n()) %>%
   bind_rows(df %>%
               group_by(study_month) %>%
-              summarise(count = sum(aevis_1m >= 1, na.rm = TRUE), total = n()) %>%
+              summarise(count = sum(aevis_3m >= 1, na.rm = TRUE), total = n()) %>%
               mutate(pod_ons_new = "All") %>%
               mutate(proportion = round(count / total*100,1)))
 
 fwrite(aevis_count_pod_cod_RAW, here::here("output", "os_reports", "WP3", "aevis_count_pod_cod_RAW.csv"))
 
 aevis_count_pod_cod_ROUND <- df %>%
-  group_by(study_month, pod_ons_new) %>%
-  summarise(count = sum(aevis_1m >= 1, na.rm = TRUE), total = n()) %>%
+  group_by(study_month, pod_ons_new, codgrp) %>%
+  summarise(count = sum(aevis_3m >= 1, na.rm = TRUE), total = n()) %>%
   bind_rows(df %>%
               group_by(study_month) %>%
-              summarise(count = sum(aevis_1m >= 1, na.rm = TRUE), total = n()) %>%
+              summarise(count = sum(aevis_3m >= 1, na.rm = TRUE), total = n()) %>%
               mutate(pod_ons_new = "All")) %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA))) %>% 
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5)) %>%
@@ -188,19 +188,19 @@ aevis_count_pod_cod_ROUND <- df %>%
 
 fwrite(aevis_count_pod_cod_ROUND, here::here("output", "os_reports", "WP3", "aevis_count_pod_cod_ROUND.csv"))
 
-# mean A&E visits in month leading up to death, by month, place of death and cause of death (version including count not for release)
+# mean A&E visits in 90-days leading up to death, by month, place of death and cause of death (version including count not for release)
 
 aevis_pod_cod_MEAN_RAW <- df %>% 
-  group_by(study_month, pod_ons_new) %>%
+  group_by(study_month, pod_ons_new, codgrp) %>%
   summarise(count = n(),
-            mean = mean(aevis_1m, na.rm = TRUE)
-            , sd = sd(aevis_1m, na.rm = TRUE)) %>%
+            mean = mean(aevis_3m, na.rm = TRUE)
+            , sd = sd(aevis_3m, na.rm = TRUE)) %>%
   mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
   bind_rows(df %>%
               group_by(study_month) %>%
               summarise(count = n(),
-                        mean = mean(aevis_1m, na.rm = TRUE),
-                        sd = sd(aevis_1m, na.rm = TRUE)) %>%
+                        mean = mean(aevis_3m, na.rm = TRUE),
+                        sd = sd(aevis_3m, na.rm = TRUE)) %>%
               mutate(pod_ons_new = "All")) %>%
   mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) 
 
@@ -208,16 +208,16 @@ fwrite(aevis_pod_cod_MEAN_RAW, here::here("output", "os_reports", "WP3", "aevis_
 
 
 aevis_pod_cod_MEAN <- df %>% 
-  group_by(study_month, pod_ons_new) %>%
+  group_by(study_month, pod_ons_new, codgrp) %>%
   summarise(count = n(),
-            mean = mean(aevis_1m, na.rm = TRUE)
-            , sd = sd(aevis_1m, na.rm = TRUE)) %>%
+            mean = mean(aevis_3m, na.rm = TRUE)
+            , sd = sd(aevis_3m, na.rm = TRUE)) %>%
   mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
   bind_rows(df %>%
               group_by(study_month) %>%
               summarise(count = n(),
-                        mean = mean(aevis_1m, na.rm = TRUE),
-                        sd = sd(aevis_1m, na.rm = TRUE)) %>%
+                        mean = mean(aevis_3m, na.rm = TRUE),
+                        sd = sd(aevis_3m, na.rm = TRUE)) %>%
               mutate(pod_ons_new = "All")) %>%
   mutate(across(c(mean, sd), ~case_when(count> 7 ~ .x, count ==0 ~ 0, TRUE ~ NA_real_ ))) %>%
   select(-c(count))
