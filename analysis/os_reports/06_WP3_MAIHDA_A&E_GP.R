@@ -66,15 +66,14 @@ df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.g
 
 df$AE_R <- as.numeric(df$aevis_3m >= 1)
 
-# Change IMD/age to be considered categorical. Reorder age so that 4 (90+) is the comparison
-
+# Change IMD/age to be considered categorical. Reorder age so that 4 (90+) is the comparison. Reorder to that male is the comparison. 
 
 df$imd_quintile_R <- factor(df$imd_quintile)
 
 df$age_R <- factor(df$age_R, levels = c('4', '1', '2', '3'))
 
 AE_MAIHDA <-df %>%
-  group_by(Sex_R, age_R, Ethnicity_R, imd_quintile_R) %>% 
+  group_by(sex, age_R, Ethnicity_2, imd_quintile_R) %>% 
   dplyr::mutate(strata = cur_group_id(), na.rm = TRUE)
 
 
@@ -97,7 +96,7 @@ cat("Output saved to", Output_file, "\n")
 
 # Adjusted model
 
-m_adj <- glmmTMB(AE_R ~ 1 + Sex_R + age_R + Ethnicity_R + imd_quintile_R + (1|strata), data = AE_MAIHDA, family = binomial)
+m_adj <- glmmTMB(AE_R ~ 1 + sex + age_R + Ethnicity_2 + imd_quintile_R + (1|strata), data = AE_MAIHDA, family = binomial)
 model_parameters(m_adj,exponentiate=TRUE)
 icc(m_adj)
 
@@ -148,7 +147,7 @@ df$imd_quintile_R <- factor(df$imd_quintile)
 df$age_R <- factor(df$age_R, levels = c('4', '1', '2', '3'))
 
 GP_MAIHDA <-df %>%
-  group_by(Sex_R, age_R, Ethnicity_R, imd_quintile_R) %>% 
+  group_by(sex, age_R, Ethnicity_2, imd_quintile_R) %>% 
   dplyr::mutate(strata = cur_group_id(), na.rm = TRUE)
 
 
@@ -171,7 +170,7 @@ cat("Output saved to", Output_file, "\n")
 
 # Adjusted model
 
-m_adj <- glmmTMB(GP_R ~ 1 + Sex_R + age_R + Ethnicity_R + imd_quintile_R + (1|strata), data = GP_MAIHDA, family = binomial)
+m_adj <- glmmTMB(GP_R ~ 1 + sex + age_R + Ethnicity_2 + imd_quintile_R + (1|strata), data = GP_MAIHDA, family = binomial)
 model_parameters(m_adj,exponentiate=TRUE)
 icc(m_adj)
 
