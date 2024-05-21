@@ -10,10 +10,6 @@
 # Ethnicity is considered as two groups for the purpose of MAIHDA, but more detailed analysis of ethnicity will be conducted separately.
 # Analysis over a two calendar year period (2022/2023)
 
-# Install packages
-
-install.packages("sjPlot")
-
 # Load packages
 
 library(tidyverse)
@@ -25,7 +21,7 @@ library(data.table)
 library(parameters)  # model summaries
 library(performance) # model fit indices, ICC
 library(insight) # variance
-library(sjPlot)
+
 
 
 # Create folder structure
