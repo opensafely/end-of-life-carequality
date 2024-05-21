@@ -86,6 +86,17 @@ m_null <- glmmTMB(AE_R ~ 1 + (1|strata), data = AE_MAIHDA, family = binomial)
 model_parameters(m_null, exponentiate=TRUE)
 icc(m_null)
 
+# Saving output from the null model 
+
+Null_output <-capture.output(summary(m_null, print_trivials = TRUE))
+
+Output_file <- here::here("output", "os_reports", "WP3", "AE_null_model.txt")
+
+writeLines(Null_output, con = Output_file)
+
+cat("Output saved to", Output_file, "\n")
+
+
 # Adjusted model
 
 m_adj <- glmmTMB(AE_R ~ 1 + Sex_R + age_R + Ethnicity_R + imd_quintile + (1|strata), data = AE_MAIHDA, family = binomial)
@@ -96,20 +107,16 @@ summary(m_adj)
 
 # Saving output from the adjusted model 
 
-Adj_output <-capture.output(print(m_adj, print_trivials = TRUE))
+Adj_output <-capture.output(summary(m_adj, print_trivials = TRUE))
 
-Output_file <- here::here("output", "os_reports", "WP3", "Adj_model_AE2.txt")
+Output_file <- here::here("output", "os_reports", "WP3", "AE_adj_model.txt")
 
 writeLines(Adj_output, con = Output_file)
 
 cat("Output saved to", Output_file, "\n")
 
+
 ## You can use fixedf(m_adj) to save just the fixed effects. 
-
-# Still need to get it to save Std. Error, z value and Pr. 
-
-
-
 
 # Now calculate the PCV
 #v_null <- get_variance(m_null)
