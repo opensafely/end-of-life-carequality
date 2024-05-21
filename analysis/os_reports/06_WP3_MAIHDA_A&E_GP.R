@@ -97,7 +97,7 @@ cat("Output saved to", Output_file, "\n")
 
 # Adjusted model
 
-m_adj <- glmmTMB(AE_R ~ 1 + Sex_R + age_R + Ethnicity_R + imd_quintile + (1|strata), data = AE_MAIHDA, family = binomial)
+m_adj <- glmmTMB(AE_R ~ 1 + Sex_R + age_R + Ethnicity_R + imd_quintile_R + (1|strata), data = AE_MAIHDA, family = binomial)
 model_parameters(m_adj,exponentiate=TRUE)
 icc(m_adj)
 
@@ -171,7 +171,7 @@ cat("Output saved to", Output_file, "\n")
 
 # Adjusted model
 
-m_adj <- glmmTMB(GP_R ~ 1 + Sex_R + age_R + Ethnicity_R + imd_quintile + (1|strata), data = GP_MAIHDA, family = binomial)
+m_adj <- glmmTMB(GP_R ~ 1 + Sex_R + age_R + Ethnicity_R + imd_quintile_R + (1|strata), data = GP_MAIHDA, family = binomial)
 model_parameters(m_adj,exponentiate=TRUE)
 icc(m_adj)
 
