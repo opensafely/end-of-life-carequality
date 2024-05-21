@@ -66,8 +66,7 @@ df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.g
 
 df$AE_R <- as.numeric(df$aevis_3m >= 1)
 
-# Change IMD/age to be considered categorical. Reorder age so that 4 (90+) is the comparison
-
+# Change IMD/age to be considered categorical. Reorder age so that 4 (90+) is the comparison. Reorder to that male is the comparison. 
 
 df$imd_quintile_R <- factor(df$imd_quintile)
 
