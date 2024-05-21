@@ -69,13 +69,12 @@ df$AE_R <- as.numeric(df$aevis_3m >= 1)
 # Change IMD/age to be considered categorical. Reorder age so that 4 (90+) is the comparison
 
 
-#df$imd_quintile_R <- factor(df$imd_quintile)
-#df$age_RF <- factor(df$age_R)
+df$imd_quintile_R <- factor(df$imd_quintile)
 
 df$age_R <- factor(df$age_R, levels = c('4', '1', '2', '3'))
 
 AE_MAIHDA <-df %>%
-  group_by(Sex_R, age_R, Ethnicity_R, imd_quintile) %>% 
+  group_by(Sex_R, age_R, Ethnicity_R, imd_quintile_R) %>% 
   dplyr::mutate(strata = cur_group_id(), na.rm = TRUE)
 
 
@@ -140,18 +139,16 @@ cat("Output saved to", Output_file, "\n")
 
 # Outcome variable - GP interactions
 
-# Create a binary variable for A&E attendances over 3-months 
+# Create a binary variable for GP interactions over 3-months 
 
 df$GP_R <- as.numeric(df$gp_1m >= 1)
 
-#df$imd_quintile_R <- factor(df$imd_quintile)
-#df$age_RF <- factor(df$age_R)
+df$imd_quintile_R <- factor(df$imd_quintile)
 
-df$age_R <- relevel(df$age_R,
-                    ref = '4')
+df$age_R <- factor(df$age_R, levels = c('4', '1', '2', '3'))
 
 GP_MAIHDA <-df %>%
-  group_by(Sex_R, age_R, Ethnicity_R, imd_quintile) %>% 
+  group_by(Sex_R, age_R, Ethnicity_R, imd_quintile_R) %>% 
   dplyr::mutate(strata = cur_group_id(), na.rm = TRUE)
 
 
