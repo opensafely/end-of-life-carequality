@@ -139,6 +139,51 @@ cat("Output saved to", Output_file, "\n")
 #  geom_point(size = 2)+
 #  labs(x="Stratum rank", y="Condional log odds")
 
+# Outcome variable - GP interactions
+
+# Create a binary variable for A&E attendances over 3-months 
+
+df$GP_R <- as.numeric(df$gp_1m >= 1)
+
+GP_MAIHDA <-df %>%
+  group_by(Sex_R, age_R, Ethnicity_R, imd_quintile) %>% 
+  dplyr::mutate(strata = cur_group_id(), na.rm = TRUE)
+
+
+# Binomial model with binary outcome variable for A&E attendances (null model)
+
+m_null <- glmmTMB(GP_R ~ 1 + (1|strata), data = GP_MAIHDA, family = binomial)
+model_parameters(m_null, exponentiate=TRUE)
+icc(m_null)
+
+# Saving output from the null model 
+
+Null_output <-capture.output(summary(m_null, print_trivials = TRUE))
+
+Output_file <- here::here("output", "os_reports", "WP3", "GP_null_model.txt")
+
+writeLines(Null_output, con = Output_file)
+
+cat("Output saved to", Output_file, "\n")
+
+
+# Adjusted model
+
+m_adj <- glmmTMB(GP_R ~ 1 + Sex_R + age_R + Ethnicity_R + imd_quintile + (1|strata), data = GP_MAIHDA, family = binomial)
+model_parameters(m_adj,exponentiate=TRUE)
+icc(m_adj)
+
+summary(m_adj)
+
+# Saving output from the adjusted model 
+
+Adj_output <-capture.output(summary(m_adj, print_trivials = TRUE))
+
+Output_file <- here::here("output", "os_reports", "WP3", "GP_adj_model.txt")
+
+writeLines(Adj_output, con = Output_file)
+
+cat("Output saved to", Output_file, "\n")
 
 
 
