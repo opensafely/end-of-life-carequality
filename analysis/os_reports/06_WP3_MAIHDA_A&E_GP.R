@@ -72,9 +72,7 @@ df$AE_R <- as.numeric(df$aevis_3m >= 1)
 #df$imd_quintile_R <- factor(df$imd_quintile)
 #df$age_RF <- factor(df$age_R)
 
-as.factor(df$age_R)
-
-df$age_R <- relevel(df$age_R, ref = "4")
+df$age_R <- factor(df$age_R, levels = c('4', '1', '2', '3'))
 
 AE_MAIHDA <-df %>%
   group_by(Sex_R, age_R, Ethnicity_R, imd_quintile) %>% 
