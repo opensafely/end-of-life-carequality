@@ -106,7 +106,7 @@ fm1 <- glmmTMB(opapp_1m ~ 1 + (1|strata), data = OP_MAIHDA, family = poisson)
 summary(fm1)
 
 
-OP_model1 <-capture.output(summary(fm1, print_trivials = TRUE))
+OP_model1 <-capture.output(model_parameters(fm1, print_trivials = TRUE))
 
 Output_file <- here::here("output", "os_reports", "WP3", "OP_model1.txt")
 
@@ -191,7 +191,7 @@ fm3 <- glmmTMB(opapp_1m ~ 1 + sex + age_band + Ethnicity_2 + imd_quintile_R + (1
 summary(fm3)
 
 
-OP_model3 <-capture.output(summary(fm3, print_trivials = TRUE))
+OP_model3 <-capture.output(model_parameters(fm3, print_trivials = TRUE))
 
 Output_file <- here::here("output", "os_reports", "WP3", "OP_model3.txt")
 
@@ -200,8 +200,8 @@ writeLines(OP_model3, con = Output_file)
 cat("Output saved to", Output_file, "\n")
 
 # Linear predictor
-df$xb <- predict(fm3)
-head(df)
+OP_MAIHDA$xb <- predict(fm3)
+head(OP_MAIHDA)
 
 
 # write.csv(df$xb, file = 'OPpredict.csv', row.names = FALSE)
@@ -219,8 +219,8 @@ OPsigma2u3 <-read_csv(file = "OPsigma2u3.csv")
 fwrite(OPsigma2u3, here::here("output", "os_reports", "WP3", "OPsigma2u3.csv"))
 
 # Marginal expectation
-df$OPexpectation3 <- exp(df$xb + OPsigma2u3$x/2)
-head(df)
+OP_MAIHDA$OPexpectation3 <- exp(OP_MAIHDA$xb + OPsigma2u3$x/2)
+head(OP_MAIHDA)
 
 
 # write.csv(df$OPexpectation3, file = 'OPmarginalexpectation.csv', row.names = FALSE)
@@ -228,48 +228,48 @@ head(df)
 # fwrite(df$OPexpectation3, here::here("output", "os_reports", "WP3", "OPmarginalexpectation.csv"))
 
 # Marginal variance
-df$OPvariance3 <- df$OPexpectation3 + df$OPexpectation3^2 * (exp(OPsigma2u3$x) - 1)
-head(df)
+OP_MAIHDA$OPvariance3 <- OP_MAIHDA$OPexpectation3 + OP_MAIHDA$OPexpectation3^2 * (exp(OPsigma2u3$x) - 1)
+head(OP_MAIHDA)
 
 # write.csv(df$OPvariance3, file = 'OPmarginalvariance.csv', row.names = FALSE)
 # df$OPvariance3 <-read_csv(file = "OPmarginalvariance.csv")
 # fwrite(df$OPvariance3, here::here("output", "os_reports", "WP3", "OPmarginalvariance.csv"))
 
 # Marginal variance: Level-2 component
-df$OPvariance2m3 <- df$OPexpectation3^2*(exp(OPsigma2u3$x) - 1)
-head(df)
+OP_MAIHDA$OPvariance2m3 <- OP_MAIHDA$OPexpectation3^2*(exp(OPsigma2u3$x) - 1)
+head(OP_MAIHDA)
 
 # write.csv(df$OPvariance2m3, file = 'OPmarginalvariance2.csv', row.names = FALSE)
 # df$OPvariance2m3 <-read_csv(file = "OPmarginalvariance2.csv")
 # fwrite(df$OPvariance2m3, here::here("output", "os_reports", "WP3", "OPmarginalvariance2.csv"))
 
 # Marginal variance: Level-1 component
-df$OPvariance1m3 <- df$OPexpectation3
-head(df)
+OP_MAIHDA$OPvariance1m3 <- OP_MAIHDA$OPexpectation3
+head(OP_MAIHDA)
 
 # write.csv(df$OPvariance1m3, file = 'OPmarginalvarianceL1.csv', row.names = FALSE)
 # df$OPvariance1m3 <-read_csv(file = "OPmarginalvarianceL1.csv")
 # fwrite(df$OPvariance1m3, here::here("output", "os_reports", "WP3", "OPmarginalvarianceL1.csv"))
 
 # Level-2 VPC
-df$OPvpc2m3 <- df$OPvariance2m3/(df$OPvariance2m3 + df$OPvariance1m3)
-head(df)
+OP_MAIHDA$OPvpc2m3 <- OP_MAIHDA$OPvariance2m3/(OP_MAIHDA$OPvariance2m3 + OP_MAIHDA$OPvariance1m3)
+head(OP_MAIHDA)
 
 # write.csv(df$OPvpc2m3, file = 'OPVPC2m3.csv', row.names = FALSE)
 # df$OPvpc2m3 <-read_csv(file = "OPVPC2m3.csv")
 # fwrite(df$OPvpc2m3, here::here("output", "os_reports", "WP3", "OPVPC2m3.csv"))
 
 # Level-1 VPC
-df$OPvpc1m3 <- df$OPvariance1m3/(df$OPvariance2m3 + df$OPvariance1m3)
-head(df)
+OP_MAIHDA$OPvpc1m3 <- OP_MAIHDA$OPvariance1m3/(OP_MAIHDA$OPvariance2m3 + OP_MAIHDA$OPvariance1m3)
+head(OP_MAIHDA)
 
 # write.csv(df$OPvpc1m3, file = 'OPVPC1m3.csv', row.names = FALSE)
 # df$OPvpc1m3 <-read_csv(file = "OPVPC1m3.csv")
 # fwrite(df$OPvpc1m3, here::here("output", "os_reports", "WP3", "OPVPC1m3.csv"))
 
 # Summarise marginal statistics------------------------------
-colnames(df)
-summ <- colMeans(df[31:37])
+colnames(OP_MAIHDA)
+summ <- colMeans(OP_MAIHDA[32:38])
 summ
 
 var_adj <- summ[4]
@@ -287,7 +287,7 @@ fwrite(OPpcv, here::here("output", "os_reports", "WP3", "OPpcv.csv"))
 
 #Figures -------------------------------
 #Line plot of Level-2 VPC against the marginal expectation
-# lineplot <- ggplot(data = df, mapping = aes(x = OPexpectation3$x, y = OPvpc2m3$x)) + geom_line()
+# lineplot <- ggplot(data = OP_MAIHDA, mapping = aes(x = OPexpectation3$x, y = OPvpc2m3$x)) + geom_line()
 # print(lineplot)
 # 
 # ggsave(lineplot, dpi = 600, width = 20, height = 10, unit = "cm"
@@ -295,7 +295,7 @@ fwrite(OPpcv, here::here("output", "os_reports", "WP3", "OPpcv.csv"))
 #        , path = here::here("output", "os_reports", "WP3"))
 
 # Spikeplot of marginal expectation
-histogram <- ggplot(data = df, mapping = aes(x = OPexpectation3)) +
+histogram <- ggplot(data = OP_MAIHDA, mapping = aes(x = OPexpectation3)) +
   geom_histogram(binwidth=1)
 
 ggsave(histogram, dpi = 600, width = 20, height = 10, unit = "cm"
@@ -320,6 +320,7 @@ colnames(fm3vsfm1)
 colnames(fm3vsfm1) <- c("fm1u", "fm3u")
 colnames(fm3vsfm1)
 head(fm3vsfm1)
+
 
 write.csv(fm3vsfm1, file = 'OPfm3vsfm1.csv')
 fm3vsfm1 <-read_csv(file = "OPfm3vsfm1.csv")
