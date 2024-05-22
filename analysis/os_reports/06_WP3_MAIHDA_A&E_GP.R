@@ -84,9 +84,11 @@ m_null <- glmmTMB(AE_R ~ 1 + (1|strata), data = AE_MAIHDA, family = binomial)
 model_parameters(m_null, exponentiate=TRUE)
 icc(m_null)
 
+summary(m_null)
+
 # Saving output from the null model 
 
-Null_output <-capture.output(summary(m_null, print_trivials = TRUE))
+Null_output <-capture.output(model_parameters(m_null, print_trivials = TRUE))
 
 Output_file <- here::here("output", "os_reports", "WP3", "AE_null_model.txt")
 
@@ -105,7 +107,7 @@ summary(m_adj)
 
 # Saving output from the adjusted model 
 
-Adj_output <-capture.output(summary(m_adj, print_trivials = TRUE))
+Adj_output <-capture.output(model_parameters(m_adj, print_trivials = TRUE))
 
 Output_file <- here::here("output", "os_reports", "WP3", "AE_adj_model.txt")
 
@@ -160,7 +162,7 @@ icc(m_null)
 
 # Saving output from the null model 
 
-Null_output <-capture.output(summary(m_null, print_trivials = TRUE))
+Null_output <-capture.output(model_parameters(m_null, print_trivials = TRUE))
 
 Output_file <- here::here("output", "os_reports", "WP3", "GP_null_model.txt")
 
@@ -179,7 +181,7 @@ summary(m_adj)
 
 # Saving output from the adjusted model 
 
-Adj_output <-capture.output(summary(m_adj, print_trivials = TRUE))
+Adj_output <-capture.output(model_parameters(m_adj, print_trivials = TRUE))
 
 Output_file <- here::here("output", "os_reports", "WP3", "GP_adj_model.txt")
 
