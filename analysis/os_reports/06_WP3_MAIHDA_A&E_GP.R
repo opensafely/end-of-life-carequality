@@ -2,7 +2,7 @@
 # Logistic regression to explore factors influencing A&E attendances
 # Author: Miranda & Sophie 
 # Date: 08/05/24 
-# Initial aim: To develop code to run logistic regression to explore the relationship between patient demographic characteristics and A&E attendances in the last 90-days of life. 
+# Initial aim: To develop code to run logistic regression to explore the relationship between patient demographic characteristics and A&E attendances in the last 90-days of life. & GP interactions in the last 30-days of life 
 ##############################################################
 
 # Note: Patients with no IMD are excluded from the analysis as are patients aged 0-24. 
@@ -44,7 +44,6 @@ df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.g
          , Ethnicity_2 = case_when(ethnicity_Combined == "White" ~ "White"
                                   , ethnicity_Combined == "Asian or Asian British" | ethnicity_Combined == "Black or Black British" | ethnicity_Combined == "Mixed" | ethnicity_Combined == "Chinese or Other Ethnic Groups" | ethnicity_Combined == "Not stated" ~ "All other ethnic groups")
          , Ethnicity_R = case_when(Ethnicity_2 == "White" ~ 0, Ethnicity_2 == "All other ethnic groups" ~ 1)
-         , Sex_R = case_when(sex == "male" ~ 0, sex == "female" ~ 1)
          , study_month = floor_date(dod_ons, unit = "month")
          , pod_ons_new = case_when(pod_ons == "Elsewhere" 
                                    | pod_ons == "Other communal establishment" ~ "Elsewhere/other"
@@ -59,6 +58,88 @@ df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.g
                               , cod_ons_3 >= "C00" & cod_ons_3 <= "C99" ~ "Cancer"
                               , TRUE ~ "All other causes")) %>%
   filter(study_month >= startdate & study_month <= enddate & imd_quintile >=1 & age_band != "0-24" & codgrp == "Cancer" & pod_ons_new == "Home")
+
+#produce means and SD for each group (A&E attendances over 3-months = outcome--------------
+
+cols_of_interest <- c("count");
+GLM_sex <- df %>%
+  group_by(sex) %>%
+  summarise(count = n(),
+            mean = mean(aevis_3m, na.rm = TRUE)
+            , sd = sd(aevis_3m, na.rm = TRUE)) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+
+fwrite(GLM_sex, here::here("output", "os_reports", "WP3", "AE_GLM_sex.csv"))
+
+
+GLM_Ethnicity_2 <- df %>%
+  group_by(Ethnicity_2) %>%
+  summarise(count = n(),
+            mean = mean(aevis_3m, na.rm = TRUE)
+            , sd = sd(aevis_3m, na.rm = TRUE)) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+
+fwrite(GLM_Ethnicity_2, here::here("output", "os_reports", "WP3", "AE_GLM_ethnicity.csv"))
+
+
+GLM_imd_quintile <- df %>%
+  group_by(imd_quintile) %>%
+  summarise(count = n(),
+            mean = mean(aevis_3m, na.rm = TRUE)
+            , sd = sd(aevis_3m, na.rm = TRUE)) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+
+fwrite(GLM_imd_quintile, here::here("output", "os_reports", "WP3", "AE_GLM_IMD.csv"))
+
+GLM_age_band <- df %>%
+  group_by(age_band) %>%
+  summarise(count = n(),
+            mean = mean(aevis_3m, na.rm = TRUE)
+            , sd = sd(aevis_3m, na.rm = TRUE)) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+
+fwrite(GLM_age_band, here::here("output", "os_reports", "WP3", "AE_GLM_age.csv"))
+
+#produce means and SD for each group (GP interactions over 1-month  = outcome----------------
+
+cols_of_interest <- c("count");
+GLM_sex <- df %>%
+  group_by(sex) %>%
+  summarise(count = n(),
+            mean = mean(gp_1m, na.rm = TRUE)
+            , sd = sd(gp_1m, na.rm = TRUE)) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+
+fwrite(GLM_sex, here::here("output", "os_reports", "WP3", "GP_GLM_sex.csv"))
+
+
+GLM_Ethnicity_2 <- df %>%
+  group_by(Ethnicity_2) %>%
+  summarise(count = n(),
+            mean = mean(gp_1m, na.rm = TRUE)
+            , sd = sd(gp_1m, na.rm = TRUE)) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+
+fwrite(GLM_Ethnicity_2, here::here("output", "os_reports", "WP3", "GP_GLM_ethnicity.csv"))
+
+
+GLM_imd_quintile <- df %>%
+  group_by(imd_quintile) %>%
+  summarise(count = n(),
+            mean = mean(gp_1m, na.rm = TRUE)
+            , sd = sd(gp_1m, na.rm = TRUE)) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+
+fwrite(GLM_imd_quintile, here::here("output", "os_reports", "WP3", "GP_GLM_IMD.csv"))
+
+GLM_age_band <- df %>%
+  group_by(age_band) %>%
+  summarise(count = n(),
+            mean = mean(gp_1m, na.rm = TRUE)
+            , sd = sd(gp_1m, na.rm = TRUE)) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+
+fwrite(GLM_age_band, here::here("output", "os_reports", "WP3", "GP_GLM_age.csv"))
 
 # Outcome variable - A&E attendances
 
