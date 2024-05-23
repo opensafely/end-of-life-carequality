@@ -61,11 +61,35 @@ df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.g
 
 # Descriptive statistics for the df population
 
+cols_of_interest <- c("count");
 
+count_Sex <- df %>%
+  group_by(sex)%>%
+  summarise(count = n()) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
 
+fwrite(count_Sex, here::here("output", "os_reports", "WP3", "count_sex.csv"))
 
+count_age <- df %>%
+  group_by(age_band)%>%
+  summarise(count = n()) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
 
+fwrite(count_age, here::here("output", "os_reports", "WP3", "count_age.csv"))
 
+count_ethnicity <- df %>%
+  group_by(ethnicity_2)%>%
+  summarise(count = n()) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+
+fwrite(count_ethnicity, here::here("output", "os_reports", "WP3", "count_ethnicity.csv"))
+
+count_imd <- df %>%
+  group_by(imd_quintile)%>%
+  summarise(count = n()) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+
+fwrite(count_imd, here::here("output", "os_reports", "WP3", "count_imd.csv"))
 
 #produce means and SD for each group (A&E attendances over 3-months = outcome--------------
 
