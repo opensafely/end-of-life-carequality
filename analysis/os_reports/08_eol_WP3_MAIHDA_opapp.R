@@ -98,6 +98,13 @@ OP_MAIHDA <-df %>%
   group_by(sex, age_band, Ethnicity_2, imd_quintile_R) %>% 
   mutate(strata = cur_group_id())
 
+strata_df <- OP_MAIHDA %>%
+  select(strata, sex, age_band, Ethnicity_2, imd_quintile_R) 
+
+write.csv(strata_df, file = 'OPstrata_df.csv', row.names = FALSE)
+OPstrata_df <-read_csv(file = "OPstrata_df.csv")
+fwrite(OPstrata_df, here::here("output", "os_reports", "WP3", "OPstrata_df.csv"))
+
 # Model 1  - includes a strata random intercept to account for clustering by strata #
 # Calculate simple intersectional model (Null model - Captures variation without considering the impact of any specific predictor)
 # Poisson model = model for count data
@@ -119,9 +126,9 @@ str(summary(fm1))
 OPbeta0 <- summary(fm1)$coefficients$cond[1,1]
 OPbeta0
 
-write.csv (OPbeta0, file = 'OPbeta0.csv', row.names = FALSE)
-OPbeta0 <- read_csv(file =  "OPbeta0.csv")
-fwrite(OPbeta0, here::here("output", "os_reports", "WP3", "OPbeta0.csv"))
+# write.csv (OPbeta0, file = 'OPbeta0.csv', row.names = FALSE)
+# OPbeta0 <- read_csv(file =  "OPbeta0.csv")
+# fwrite(OPbeta0, here::here("output", "os_reports", "WP3", "OPbeta0.csv"))
 
 
 # Cluster variance
@@ -129,59 +136,77 @@ str(summary(fm1))
 OPsigma2u <- summary(fm1)$varcor$cond$strata[1,1]
 OPsigma2u
 
-write.csv(OPsigma2u, file = 'OPsigma2u.csv', row.names = FALSE)
-OPsigma2u <-read_csv(file = "OPsigma2u.csv")
-fwrite(OPsigma2u, here::here("output", "os_reports", "WP3", "OPsigma2u.csv"))
+# write.csv(OPsigma2u, file = 'OPsigma2u.csv', row.names = FALSE)
+# OPsigma2u <-read_csv(file = "OPsigma2u.csv")
+# fwrite(OPsigma2u, here::here("output", "os_reports", "WP3", "OPsigma2u.csv"))
 
 # Marginal expectation (approximately = mean no. of outpatient attendances)
 OPexpectation <- exp(OPbeta0 + OPsigma2u/2)
 OPexpectation
 
-write.csv(OPexpectation, file = 'OPexpectation.csv', row.names = FALSE)
-OPexpectation <-read_csv(file = "OPexpectation.csv")
-fwrite(OPexpectation, here::here("output", "os_reports", "WP3", "OPexpectation.csv"))
+# write.csv(OPexpectation, file = 'OPexpectation.csv', row.names = FALSE)
+# OPexpectation <-read_csv(file = "OPexpectation.csv")
+# fwrite(OPexpectation, here::here("output", "os_reports", "WP3", "OPexpectation.csv"))
 
 #Marginal variance
 OPvariance <- OPexpectation + OPexpectation^2*(exp(OPsigma2u) - 1)
 OPvariance
 
-write.csv(OPvariance, file = 'OPvariance.csv', row.names = FALSE)
-OPvariance <-read_csv(file = "OPvariance.csv")
-fwrite(OPvariance, here::here("output", "os_reports", "WP3", "OPvariance.csv"))
+# write.csv(OPvariance, file = 'OPvariance.csv', row.names = FALSE)
+# OPvariance <-read_csv(file = "OPvariance.csv")
+# fwrite(OPvariance, here::here("output", "os_reports", "WP3", "OPvariance.csv"))
 
 # Marginal variance: Level-2 component (Variance between clusters - based on age groups, sex, etc)
 OPvariance2 <- OPexpectation^2*(exp(OPsigma2u) - 1)
 OPvariance2
 
-write.csv(OPvariance2, file = 'OPvariance2.csv', row.names = FALSE)
-OPvariance2 <-read_csv(file = "OPvariance2.csv")
-fwrite(OPvariance2, here::here("output", "os_reports", "WP3", "OPvariance2.csv"))
+# write.csv(OPvariance2, file = 'OPvariance2.csv', row.names = FALSE)
+# OPvariance2 <-read_csv(file = "OPvariance2.csv")
+# fwrite(OPvariance2, here::here("output", "os_reports", "WP3", "OPvariance2.csv"))
 
 # Marginal variance: Level-1 component (variance within clusters)
 OPvariance1 <- OPexpectation
 OPvariance1
 
-write.csv(OPvariance1, file = 'OPvariance1.csv', row.names = FALSE)
-OPvariance1 <-read_csv(file = "OPvariance1.csv")
-fwrite(OPvariance1, here::here("output", "os_reports", "WP3", "OPvariance1.csv"))
+# write.csv(OPvariance1, file = 'OPvariance1.csv', row.names = FALSE)
+# OPvariance1 <-read_csv(file = "OPvariance1.csv")
+# fwrite(OPvariance1, here::here("output", "os_reports", "WP3", "OPvariance1.csv"))
 
 # Level-2 VPC (variance partition coefficient)
 OPvpc2 <- OPvariance2/(OPvariance2 + OPvariance1)
 OPvpc2
 
-write.csv(OPvpc2, file = 'OPvpc2.csv')
-OPvpc2.csv <-read_csv(file = "OPvpc2.csv")
-fwrite(OPvpc2, here::here("output", "os_reports", "WP3", "OPOPvpc2.csv"))
+# write.csv(OPvpc2, file = 'OPvpc2.csv')
+# OPvpc2.csv <-read_csv(file = "OPvpc2.csv")
+# fwrite(OPvpc2, here::here("output", "os_reports", "WP3", "OPOPvpc2.csv"))
 
 # Level-1 VPC (variance partition coefficient - variance at the individual level)
 OPvpc1 <- OPvariance1/(OPvariance2 + OPvariance1)
 OPvpc1
 
-write.csv(OPvpc1, file = 'OPvpc1.csv')
-OPvpc1.csv <-read_csv(file = "OPvpc1.csv")
-fwrite(OPvpc1, here::here("output", "os_reports", "WP3", "OPOPvpc1.csv"))
+# write.csv(OPvpc1, file = 'OPvpc1.csv')
+# OPvpc1.csv <-read_csv(file = "OPvpc1.csv")
+# fwrite(OPvpc1, here::here("output", "os_reports", "WP3", "OPOPvpc1.csv"))
 
 var_null <- OPvariance2
+
+
+
+write.csv (OPbeta0, file = 'OPbeta0.csv', row.names ="OPbeta0")
+write.csv (OPsigma2u, file = 'OPsigma2u.csv', row.names = "OPsigma2u")
+write.csv (OPexpectation, file = 'OPexpectation.csv', row.names = "OPexpectation")
+write.csv (OPvariance, file = 'OPvariance.csv', row.names = "OPvariance")
+write.csv (OPvariance2, file = 'OPvariance2.csv', row.names = "OPvariance2")
+write.csv (OPvariance1, file = 'OPvariance1.csv', row.names = "OPvariance1")
+write.csv (OPvpc2, file = 'OPvpc2.csv', row.names = "OPvpc2")
+write.csv (OPvpc1, file = 'OPvpc1.csv', row.names = "OPvpc1")
+
+model1_output <- rbind(OPbeta0, OPsigma2u, OPexpectation, OPvariance, OPvariance2, OPvariance1, OPvpc2, OPvpc1)
+
+write.csv(model1_output, "model1_output.csv")
+model1_output <-read_csv(file = "model1_output.csv")
+fwrite(model1_output, here::here("output", "os_reports", "WP3", "model1_output.csv"))
+
 
 ##################################################################################################################################
 #Model 3::: adjusted model Poisson ---------------
@@ -271,12 +296,15 @@ head(OP_MAIHDA)
 colnames(OP_MAIHDA)
 summ <- colMeans(OP_MAIHDA[32:38])
 summ
+summ_df <- data.frame(summ) 
+rownames(summ_df) <- c("xb", "OPexpectation", "OPvariance", "OPvariance2", "OPvariance1", "OPvpc2", "OPvpc1")
+summ_df
 
 var_adj <- summ[4]
 
-write.csv(summ, file = 'OPsummVPC.csv', row.names = FALSE)
-summ <-read_csv(file = "OPsummVPC.csv")
-fwrite(summ, here::here("output", "os_reports", "WP3", "OPsumVPC.csv"))
+write.csv(summ_df, file = 'OPsummVPC.csv', row.names = TRUE)
+summ_df <-read_csv(file = "OPsummVPC.csv")
+fwrite(summ_df, here::here("output", "os_reports", "WP3", "OPsumVPC.csv"))
 
 OPpcv <- (var_null - var_adj)/var_null
 
@@ -320,7 +348,6 @@ colnames(fm3vsfm1)
 colnames(fm3vsfm1) <- c("fm1u", "fm3u")
 colnames(fm3vsfm1)
 head(fm3vsfm1)
-
 
 write.csv(fm3vsfm1, file = 'OPfm3vsfm1.csv')
 fm3vsfm1 <-read_csv(file = "OPfm3vsfm1.csv")
