@@ -78,7 +78,7 @@ count_age <- df %>%
 fwrite(count_age, here::here("output", "os_reports", "WP3", "count_age.csv"))
 
 count_ethnicity <- df %>%
-  group_by(ethnicity_2)%>%
+  group_by(Ethnicity_2)%>%
   summarise(count = n()) %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
 
