@@ -107,6 +107,7 @@ df_strata <- OP_MAIHDA %>%
   group_by(strata, sex, age_band, Ethnicity_2, imd_quintile_R) %>%
   summarise(total = n()) %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest2), .fns = ~ .x %>% `/`(5) %>% round()*5));
+  dplyr::mutate(across(.cols = all_of(cols_of_interest2), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA)))
   
 
 write.csv(df_strata, file = 'OPstrata_df.csv', row.names = FALSE)
@@ -239,15 +240,11 @@ head(OP_MAIHDA)
 #predictions for each strata
 # Calculates mean and se per strata using linear regression with no intercept
 # Calculates 95% CIs
-OP_MAIHDA$exb <-exp(OP_MAIHDA$xb) 
 OP_MAIHDA$strata <- as.factor(OP_MAIHDA$strata)
-strata_predictions <- lm(exb ~ 0 + strata, data = OP_MAIHDA) 
+strata_predictions <- lm(OPexpectation3 ~ 0 + strata, data = OP_MAIHDA) 
 
-strata_ci <- confint(strata_predictions, level=0.95) # obtain 95% CIs
-
-summary(strata_predictions)
-
-OP_strata_predictions <-capture.output(summary(strata_predictions, print_trivials = TRUE))
+model_parameters(strata_predictions)
+OP_strata_predictions <-capture.output(model_parameters(strata_predictions), print_trivials = TRUE)
 
 Output_file <- here::here("output", "os_reports", "WP3", "OP_strata_predictions.txt")
 
