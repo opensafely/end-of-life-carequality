@@ -45,8 +45,8 @@ df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.g
                               , cod_ons_3 %in% c("F01", "F03", "G30") ~ "Dementia and Alzheimer's disease"
                               , cod_ons_3 >= "I00" & cod_ons_3 <= "I99" ~ "Circulatory diseases"
                               , cod_ons_3 >= "C00" & cod_ons_3 <= "C99" ~ "Cancer"
-                              , TRUE ~ "All other causes")) %>%
-  filter(study_month >= startdate & study_month <= enddate & imd_quintile >=1 & age_band != "0-24" & codgrp == "Cancer" & pod_ons_new == "Home")
+                              , TRUE ~ "All other causes")) #%>%
+  #filter(study_month >= startdate & study_month <= enddate & imd_quintile >=1 & age_band != "0-24" & codgrp == "Cancer" & pod_ons_new == "Home")
 
 #produce means and SD for each group ----------------
 cols_of_interest <- c("count");
@@ -98,12 +98,20 @@ OP_MAIHDA <-df %>%
   group_by(sex, age_band, Ethnicity_2, imd_quintile_R) %>% 
   mutate(strata = cur_group_id())
 
-strata_df <- OP_MAIHDA %>%
-  select(strata, sex, age_band, Ethnicity_2, imd_quintile_R) 
 
-write.csv(strata_df, file = 'OPstrata_df.csv', row.names = FALSE)
-OPstrata_df <-read_csv(file = "OPstrata_df.csv")
-fwrite(OPstrata_df, here::here("output", "os_reports", "WP3", "OPstrata_df.csv"))
+#####Strata
+cols_of_interest2 <- "total"
+
+df_strata <- OP_MAIHDA %>%
+  select(strata, sex, age_band, Ethnicity_2, imd_quintile_R) %>%
+  group_by(strata, sex, age_band, Ethnicity_2, imd_quintile_R) %>%
+  summarise(total = n()) %>%
+  dplyr::mutate(across(.cols = all_of(cols_of_interest2), .fns = ~ .x %>% `/`(5) %>% round()*5));
+  
+
+write.csv(df_strata, file = 'OPstrata_df.csv', row.names = FALSE)
+df_strata <-read_csv(file = "OPstrata_df.csv")
+fwrite(df_strata, here::here("output", "os_reports", "WP3", "OPstrata_df.csv"))
 
 # Model 1  - includes a strata random intercept to account for clustering by strata #
 # Calculate simple intersectional model (Null model - Captures variation without considering the impact of any specific predictor)
@@ -203,9 +211,9 @@ write.csv (OPvpc1, file = 'OPvpc1.csv', row.names = "OPvpc1")
 
 model1_output <- rbind(OPbeta0, OPsigma2u, OPexpectation, OPvariance, OPvariance2, OPvariance1, OPvpc2, OPvpc1)
 
-write.csv(model1_output, "model1_output.csv")
-model1_output <-read_csv(file = "model1_output.csv")
-fwrite(model1_output, here::here("output", "os_reports", "WP3", "model1_output.csv"))
+write.csv(model1_output, "OPmodel1_output.csv")
+model1_output <-read_csv(file = "OPmodel1_output.csv")
+fwrite(model1_output, here::here("output", "os_reports", "WP3", "OPmodel1_output.csv"))
 
 
 ##################################################################################################################################
