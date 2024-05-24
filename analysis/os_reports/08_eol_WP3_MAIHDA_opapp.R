@@ -391,8 +391,9 @@ fwrite(fm3vsfm1$fm3urank, here::here("output", "os_reports", "WP3", "OPrank3.csv
 OP_MAIHDA$strata <- as.factor(OP_MAIHDA$strata)
 strata_predictions <- lm(OPexpectation3 ~ 0 + strata, data = OP_MAIHDA) 
 
-model_parameters(strata_predictions)
-OP_strata_predictions <-capture.output(model_parameters(strata_predictions), print_trivials = TRUE)
+coef(summary(strata_predictions))
+
+OP_strata_predictions <-capture.output(coef(summary(strata_predictions)))
 
 Output_file <- here::here("output", "os_reports", "WP3", "OP_strata_predictions.txt")
 
