@@ -45,8 +45,8 @@ df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.g
                               , cod_ons_3 %in% c("F01", "F03", "G30") ~ "Dementia and Alzheimer's disease"
                               , cod_ons_3 >= "I00" & cod_ons_3 <= "I99" ~ "Circulatory diseases"
                               , cod_ons_3 >= "C00" & cod_ons_3 <= "C99" ~ "Cancer"
-                              , TRUE ~ "All other causes")) #%>%
-  #filter(study_month >= startdate & study_month <= enddate & imd_quintile >=1 & age_band != "0-24" & codgrp == "Cancer" & pod_ons_new == "Home")
+                              , TRUE ~ "All other causes")) %>%
+  filter(study_month >= startdate & study_month <= enddate & imd_quintile >=1 & age_band != "0-24" & codgrp == "Cancer" & pod_ons_new == "Home")
 
 #produce means and SD for each group ----------------
 cols_of_interest <- c("count");
@@ -121,7 +121,7 @@ fm1 <- glmmTMB(opapp_1m ~ 1 + (1|strata), data = OP_MAIHDA, family = poisson)
 summary(fm1)
 
 
-OP_model1 <-capture.output(model_parameters(fm1, print_trivials = TRUE))
+OP_model1 <-capture.output(model_parameters(fm1, exponentiate = TRUE, print_trivials = TRUE))
 
 Output_file <- here::here("output", "os_reports", "WP3", "OP_model1.txt")
 
@@ -224,7 +224,7 @@ fm3 <- glmmTMB(opapp_1m ~ 1 + sex + age_band + Ethnicity_2 + imd_quintile_R + (1
 summary(fm3)
 
 
-OP_model3 <-capture.output(model_parameters(fm3, print_trivials = TRUE))
+OP_model3 <-capture.output(model_parameters(fm3, exponentiate = TRUE, print_trivials = TRUE))
 
 Output_file <- here::here("output", "os_reports", "WP3", "OP_model3.txt")
 
@@ -235,6 +235,29 @@ cat("Output saved to", Output_file, "\n")
 # Linear predictor
 OP_MAIHDA$xb <- predict(fm3)
 head(OP_MAIHDA)
+
+#predictions for each strata
+# Calculates mean and se per strata using linear regression with no intercept
+# Calculates 95% CIs
+OP_MAIHDA$exb <-exp(OP_MAIHDA$xb) 
+OP_MAIHDA$strata <- as.factor(OP_MAIHDA$strata)
+strata_predictions <- lm(exb ~ 0 + strata, data = OP_MAIHDA) 
+
+strata_ci <- confint(strata_predictions, level=0.95) # obtain 95% CIs
+
+summary(strata_predictions)
+
+OP_strata_predictions <-capture.output(summary(strata_predictions, print_trivials = TRUE))
+
+Output_file <- here::here("output", "os_reports", "WP3", "OP_strata_predictions.txt")
+
+writeLines(OP_strata_predictions, con = Output_file)
+
+cat("Output saved to", Output_file, "\n")
+
+write.csv(strata_ci, file = 'OPstrataCI.csv', row.names = TRUE)
+OPstrataCI <-read_csv(file = "OPstrataCI.csv")
+fwrite(OPstrataCI, here::here("output", "os_reports", "WP3", "OPstrataCI.csv"))
 
 
 # write.csv(df$xb, file = 'OPpredict.csv', row.names = FALSE)
