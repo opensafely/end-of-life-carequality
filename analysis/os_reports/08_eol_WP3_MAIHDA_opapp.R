@@ -107,8 +107,7 @@ df_strata <- OP_MAIHDA %>%
   group_by(strata, sex, age_band, Ethnicity_2, imd_quintile_R) %>%
   summarise(total = n()) %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest2), .fns = ~ .x %>% `/`(5) %>% round()*5));
-  dplyr::mutate(across(.cols = all_of(cols_of_interest2), .fns = ~ replace(.x, (. <= 7 & .  > 0), NA)))
-  
+
 
 write.csv(df_strata, file = 'OPstrata_df.csv', row.names = FALSE)
 df_strata <-read_csv(file = "OPstrata_df.csv")
@@ -236,26 +235,6 @@ cat("Output saved to", Output_file, "\n")
 # Linear predictor
 OP_MAIHDA$xb <- predict(fm3)
 head(OP_MAIHDA)
-
-#predictions for each strata
-# Calculates mean and se per strata using linear regression with no intercept
-# Calculates 95% CIs
-OP_MAIHDA$strata <- as.factor(OP_MAIHDA$strata)
-strata_predictions <- lm(OPexpectation3 ~ 0 + strata, data = OP_MAIHDA) 
-
-model_parameters(strata_predictions)
-OP_strata_predictions <-capture.output(model_parameters(strata_predictions), print_trivials = TRUE)
-
-Output_file <- here::here("output", "os_reports", "WP3", "OP_strata_predictions.txt")
-
-writeLines(OP_strata_predictions, con = Output_file)
-
-cat("Output saved to", Output_file, "\n")
-
-write.csv(strata_ci, file = 'OPstrataCI.csv', row.names = TRUE)
-OPstrataCI <-read_csv(file = "OPstrataCI.csv")
-fwrite(OPstrataCI, here::here("output", "os_reports", "WP3", "OPstrataCI.csv"))
-
 
 # write.csv(df$xb, file = 'OPpredict.csv', row.names = FALSE)
 # OPpredict <-read_csv(file = "OPpredict.csv")
@@ -404,6 +383,22 @@ head(fm3vsfm1)
 write.csv(fm3vsfm1$fm3urank, file = 'OPrank3.csv')
 fm3vsfm1$fm3urank <-read_csv(file = "OPrank3.csv")
 fwrite(fm3vsfm1$fm3urank, here::here("output", "os_reports", "WP3", "OPrank3.csv"))
+
+
+#predictions for each strata
+# Calculates mean and se per strata using linear regression with no intercept
+# Calculates 95% CIs
+OP_MAIHDA$strata <- as.factor(OP_MAIHDA$strata)
+strata_predictions <- lm(OPexpectation3 ~ 0 + strata, data = OP_MAIHDA) 
+
+model_parameters(strata_predictions)
+OP_strata_predictions <-capture.output(model_parameters(strata_predictions), print_trivials = TRUE)
+
+Output_file <- here::here("output", "os_reports", "WP3", "OP_strata_predictions.txt")
+
+writeLines(OP_strata_predictions, con = Output_file)
+
+cat("Output saved to", Output_file, "\n")
 
 # Figure 4: Scatterplot of ranks of model 3 vs. model 1 predicted effects
 # rankscatterplot <- ggplot(data = fm3vsfm1$fm1urank$fm3urank, mapping = aes(x = fm1urank, y = fm3urank)) + geom_point()
