@@ -284,15 +284,13 @@ cat("Output saved to", Output_file, "\n")
 
 # Adjusted model
 
-m_adj <- glmmTMB(GP_R ~ 1 + sex + age_R + Ethnicity_2 + imd_quintile_R + (1|strata), data = GP_MAIHDA, family = binomial)
+m_adjGP <- glmmTMB(GP_R ~ 1 + sex + age_R + Ethnicity_2 + imd_quintile_R + (1|strata), data = GP_MAIHDA, family = binomial)
 model_parameters(m_adj,exponentiate=TRUE)
-icc(m_adj)
-
-summary(m_adj)
+icc(m_adjGP)
 
 # Saving output from the adjusted model (model parameters)
 
-Adj_output <-capture.output(model_parameters(m_adj, exponentiate=TRUE))
+Adj_output <-capture.output(model_parameters(m_adjGP, exponentiate=TRUE))
 
 Output_file <- here::here("output", "os_reports", "WP3", "GP_adj_model.txt")
 
@@ -303,13 +301,16 @@ cat("Output saved to", Output_file, "\n")
 
 # Saving output from the adjusted model (summary)
 
-Adj_output_summary <-capture.output(summary(m_adj))
+Adj_output_summary <-capture.output(summary(m_adjGP))
 
-Output_file <- here::here("output", "os_reports", "WP3", "GP_adj_model_summary.txt")
+Output_file <- here::here("output", "os_reports", "WP3", "GP_adj_model_summary.csv")
 
 writeLines(Adj_output_summary, con = Output_file)
 
 cat("Output saved to", Output_file, "\n")
+
+
+
 
 
 
