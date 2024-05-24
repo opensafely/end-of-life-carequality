@@ -22,8 +22,6 @@ library(parameters)  # model summaries
 library(performance) # model fit indices, ICC
 library(insight) # variance
 
-
-
 # Create folder structure
 
 fs::dir_create("output", "os_reports", "WP3")
@@ -167,7 +165,7 @@ icc(m_null)
 
 summary(m_null)
 
-# Saving output from the null model 
+# Saving output from the null model (model parameters)
 
 Null_output <-capture.output(model_parameters(m_null, exponentiate=TRUE))
 
@@ -178,15 +176,25 @@ writeLines(Null_output, con = Output_file)
 cat("Output saved to", Output_file, "\n")
 
 
+
+# Saving output from the null model (model summary)
+
+Null_output_Summary <-capture.output(summary(m_null))
+
+Output_file <- here::here("output", "os_reports", "WP3", "AE_null_model_Summary.csv")
+
+writeLines(Null_output_Summary, con = Output_file)
+
+cat("Output saved to", Output_file, "\n")
+
+
 # Adjusted model
 
 m_adj <- glmmTMB(AE_R ~ 1 + sex + age_R + Ethnicity_2 + imd_quintile_R + (1|strata), data = AE_MAIHDA, family = binomial)
 model_parameters(m_adj,exponentiate=TRUE)
 icc(m_adj)
 
-summary(m_adj)
-
-# Saving output from the adjusted model 
+# Saving output from the adjusted model (Model parameters)
 
 Adj_output <-capture.output(model_parameters(m_adj, exponentiate=TRUE))
 
@@ -197,7 +205,17 @@ writeLines(Adj_output, con = Output_file)
 cat("Output saved to", Output_file, "\n")
 
 
-## You can use fixedf(m_adj) to save just the fixed effects. 
+# Saving output from the adjusted model (Model summary)
+
+Adj_output_Summary <-capture.output(summary(m_adj))
+
+Output_file <- here::here("output", "os_reports", "WP3", "AE_adj_model_Summary.csv")
+
+writeLines(Adj_output_Summary, con = Output_file)
+
+cat("Output saved to", Output_file, "\n")
+
+
 
 # Now calculate the PCV
 #v_null <- get_variance(m_null)
@@ -241,13 +259,25 @@ m_null <- glmmTMB(GP_R ~ 1 + (1|strata), data = GP_MAIHDA, family = binomial)
 model_parameters(m_null, exponentiate=TRUE)
 icc(m_null)
 
-# Saving output from the null model 
+# Saving output from the null model (model parameters)
 
 Null_output <-capture.output(model_parameters(m_null, exponentiate=TRUE))
 
 Output_file <- here::here("output", "os_reports", "WP3", "GP_null_model.txt")
 
 writeLines(Null_output, con = Output_file)
+
+cat("Output saved to", Output_file, "\n")
+
+
+
+# Saving output from the null model (model summary)
+
+Null_output_Summary <-capture.output(summary(m_null))
+
+Output_file <- here::here("output", "os_reports", "WP3", "GP_null_model_Summary.csv")
+
+writeLines(Null_output_Summary, con = Output_file)
 
 cat("Output saved to", Output_file, "\n")
 
@@ -260,7 +290,7 @@ icc(m_adj)
 
 summary(m_adj)
 
-# Saving output from the adjusted model 
+# Saving output from the adjusted model (model parameters)
 
 Adj_output <-capture.output(model_parameters(m_adj, exponentiate=TRUE))
 
@@ -270,6 +300,16 @@ writeLines(Adj_output, con = Output_file)
 
 cat("Output saved to", Output_file, "\n")
 
+
+# Saving output from the adjusted model (summary)
+
+Adj_output_summary <-capture.output(summary(m_adj))
+
+Output_file <- here::here("output", "os_reports", "WP3", "GP_adj_model_summary.txt")
+
+writeLines(Adj_output_summary, con = Output_file)
+
+cat("Output saved to", Output_file, "\n")
 
 
 
