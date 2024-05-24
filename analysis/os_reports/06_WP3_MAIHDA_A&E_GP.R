@@ -305,7 +305,7 @@ cat("Output saved to", Output_file, "\n")
 
 Adj_output_summary <-capture.output(summary(m_adj))
 
-Output_file <- here::here("output", "os_reports", "WP3", "GP_adj_model_summary.txt")
+Output_file <- here::here("output", "os_reports", "WP3", "GP_adj_model_summary.csv")
 
 writeLines(Adj_output_summary, con = Output_file)
 
