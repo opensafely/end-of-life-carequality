@@ -49,12 +49,15 @@ df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.g
   filter(study_month >= startdate & study_month <= enddate & imd_quintile >=1 & age_band != "0-24" & codgrp == "Cancer" & pod_ons_new == "Home")
 
 #produce means and SD for each group ----------------
-cols_of_interest <- c("count");
+cols_of_interest <- c("count", "total")
+
 GLM_sex <- df %>%
   group_by(sex) %>%
   summarise(count = n(),
             mean = mean(opapp_1m, na.rm = TRUE)
             , sd = sd(opapp_1m, na.rm = TRUE)) %>%
+  mutate(total = sum(count)) %>%
+  mutate(across(c("mean", "sd"), round, 3)) %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
 
 fwrite(GLM_sex, here::here("output", "os_reports", "WP3", "OP_GLM_sex.csv"))
@@ -65,6 +68,8 @@ GLM_Ethnicity_2 <- df %>%
   summarise(count = n(),
             mean = mean(opapp_1m, na.rm = TRUE)
             , sd = sd(opapp_1m, na.rm = TRUE)) %>%
+  mutate(total = sum(count)) %>%
+  mutate(across(c("mean", "sd"), round, 3)) %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
 
 fwrite(GLM_Ethnicity_2, here::here("output", "os_reports", "WP3", "OP_GLM_ethnicity.csv"))
@@ -75,6 +80,8 @@ GLM_imd_quintile <- df %>%
   summarise(count = n(),
             mean = mean(opapp_1m, na.rm = TRUE)
             , sd = sd(opapp_1m, na.rm = TRUE)) %>%
+  mutate(total = sum(count)) %>%
+  mutate(across(c("mean", "sd"), round, 3)) %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
 
 fwrite(GLM_imd_quintile, here::here("output", "os_reports", "WP3", "OP_GLM_IMD.csv"))
@@ -84,6 +91,8 @@ GLM_age_band <- df %>%
   summarise(count = n(),
             mean = mean(opapp_1m, na.rm = TRUE)
             , sd = sd(opapp_1m, na.rm = TRUE)) %>%
+  mutate(total = sum(count)) %>%
+  mutate(across(c("mean", "sd"), round, 3)) %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
 
 fwrite(GLM_age_band, here::here("output", "os_reports", "WP3", "OP_GLM_age.csv"))
