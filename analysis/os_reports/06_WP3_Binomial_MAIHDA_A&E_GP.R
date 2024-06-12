@@ -179,16 +179,26 @@ m_null <- glmmTMB(AE_R ~ 1 + (1|strata), data = AE_MAIHDA, family = binomial)
 model_parameters(m_null, exponentiate=TRUE)
 icc(m_null)
 
+# Saving output from the null model (model summary)
+
+Null_summary <-capture.output(summary(m_null, exponentiate=TRUE))
+
+Output_file <- here::here("output", "os_reports", "WP3", "AE_null_summary.csv")
+
+writeLines(Null_summary, con = Output_file)
+
+cat("Output saved to", Output_file, "\n")
+
 
 # Saving output from the null model (model parameters)
 
-Null_output <-capture.output(model_parameters(m_null, exponentiate=TRUE))
+#Null_output <-capture.output(model_parameters(m_null, exponentiate=TRUE))
 
-Output_file <- here::here("output", "os_reports", "WP3", "AE_null_model.txt")
+#Output_file <- here::here("output", "os_reports", "WP3", "AE_null_summary.txt")
 
-writeLines(Null_output, con = Output_file)
+#writeLines(Null_output, con = Output_file)
 
-cat("Output saved to", Output_file, "\n")
+#cat("Output saved to", Output_file, "\n")
 
 
 # Adjusted model
@@ -197,15 +207,26 @@ m_adj <- glmmTMB(AE_R ~ 1 + sex + age_R + Ethnicity_2 + imd_quintile_R + (1|stra
 model_parameters(m_adj,exponentiate=TRUE)
 icc(m_adj)
 
-# Saving output from the adjusted model (Model parameters)
 
-Adj_output <-capture.output(model_parameters(m_adj, exponentiate=TRUE))
+Adj_output <-capture.output(summary(m_adj, exponentiate=TRUE))
 
-Output_file <- here::here("output", "os_reports", "WP3", "AE_adj_model.txt")
+Output_file <- here::here("output", "os_reports", "WP3", "AE_adj_summary.txt")
 
 writeLines(Adj_output, con = Output_file)
 
 cat("Output saved to", Output_file, "\n")
+
+
+
+# Saving output from the adjusted model (Model parameters)
+
+#Adj_output <-capture.output(model_parameters(m_adj, exponentiate=TRUE))
+
+#Output_file <- here::here("output", "os_reports", "WP3", "AE_adj_model.txt")
+
+#writeLines(Adj_output, con = Output_file)
+
+#cat("Output saved to", Output_file, "\n")
 
 
 # Now calculate the PCV
