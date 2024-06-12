@@ -78,7 +78,7 @@ actions:
   #       acpdur_code: output/os_reports/WP2_quality_indicators/acpdur*.csv
 
   WP3_MAIHDA_outputs_AE_GP:
-    run: r:latest analysis/os_reports/06_WP3_MAIHDA_A&E_GP.R
+    run: r:latest analysis/os_reports/06_eol_WP3_Binomial_MAIHDA_A&E_GP.R
     needs: [generate_study_population_os_reports]
     outputs:
       moderately_sensitive:
