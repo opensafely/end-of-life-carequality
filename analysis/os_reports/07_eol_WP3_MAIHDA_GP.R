@@ -145,7 +145,7 @@ write.csv (GPvariance1, file = 'GPvariance1.csv', row.names = "GPvariance1")
 write.csv (GPvpc2, file = 'GPvpc2.csv', row.names = "GPvpc2")
 write.csv (GPvpc1, file = 'GPvpc1.csv', row.names = "GPvpc1")
 
-model1_output <- rbind(GPbeta0, GPsigma2u, GPexpectation, GPvariance, Gvariance2, GPvariance1, GPvpc2, GPvpc1)
+model1_output <- rbind(GPbeta0, GPsigma2u, GPexpectation, GPvariance, GPvariance2, GPvariance1, GPvpc2, GPvpc1)
 
 write.csv(model1_output, "GPmodel1_output.csv")
 model1_output <-read_csv(file = "GPmodel1_output.csv")

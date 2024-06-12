@@ -60,101 +60,101 @@ df <- read_csv(file = here::here("output", "os_reports", "input_os_reports.csv.g
 
 #produce means and SD for each group (A&E attendances over 3-months = outcome--------------
 
-cols_of_interest <- c("count", "total");
-GLM_sex <- df %>%
-  group_by(sex) %>%
-  summarise(count = n(),
-            mean = mean(aevis_3m, na.rm = TRUE)
-            , sd = sd(aevis_3m, na.rm = TRUE)) %>%
-  mutate(total = sum(count)) %>%
-  mutate(across(c("mean", "sd"), round, 3)) %>%
-  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+#cols_of_interest <- c("count", "total");
+#GLM_sex <- df %>%
+#  group_by(sex) %>%
+#  summarise(count = n(),
+#            mean = mean(aevis_3m, na.rm = TRUE)
+#            , sd = sd(aevis_3m, na.rm = TRUE)) %>%
+#  mutate(total = sum(count)) %>%
+#  mutate(across(c("mean", "sd"), round, 3)) %>%
+#  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
 
-fwrite(GLM_sex, here::here("output", "os_reports", "WP3", "AE_GLM_sex.csv"))
-
-
-GLM_Ethnicity_2 <- df %>%
-  group_by(Ethnicity_2) %>%
-  summarise(count = n(),
-            mean = mean(aevis_3m, na.rm = TRUE)
-            , sd = sd(aevis_3m, na.rm = TRUE)) %>%
-  mutate(total = sum(count)) %>%
-  mutate(across(c("mean", "sd"), round, 3)) %>%
-  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
-
-fwrite(GLM_Ethnicity_2, here::here("output", "os_reports", "WP3", "AE_GLM_ethnicity.csv"))
+#fwrite(GLM_sex, here::here("output", "os_reports", "WP3", "AE_GLM_sex.csv"))
 
 
-GLM_imd_quintile <- df %>%
-  group_by(imd_quintile) %>%
-  summarise(count = n(),
-            mean = mean(aevis_3m, na.rm = TRUE)
-            , sd = sd(aevis_3m, na.rm = TRUE)) %>%
-  mutate(total = sum(count)) %>%
-  mutate(across(c("mean", "sd"), round, 3)) %>%
-  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+#GLM_Ethnicity_2 <- df %>%
+#  group_by(Ethnicity_2) %>%
+#  summarise(count = n(),
+#            mean = mean(aevis_3m, na.rm = TRUE)
+#            , sd = sd(aevis_3m, na.rm = TRUE)) %>%
+#  mutate(total = sum(count)) %>%
+#  mutate(across(c("mean", "sd"), round, 3)) %>%
+#  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
 
-fwrite(GLM_imd_quintile, here::here("output", "os_reports", "WP3", "AE_GLM_IMD.csv"))
+#fwrite(GLM_Ethnicity_2, here::here("output", "os_reports", "WP3", "AE_GLM_ethnicity.csv"))
 
-GLM_age_band <- df %>%
-  group_by(age_band) %>%
-  summarise(count = n(),
-            mean = mean(aevis_3m, na.rm = TRUE)
-            , sd = sd(aevis_3m, na.rm = TRUE)) %>%
-  mutate(total = sum(count)) %>%
-  mutate(across(c("mean", "sd"), round, 3)) %>%
-  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
 
-fwrite(GLM_age_band, here::here("output", "os_reports", "WP3", "AE_GLM_age.csv"))
+#GLM_imd_quintile <- df %>%
+#  group_by(imd_quintile) %>%
+#  summarise(count = n(),
+#            mean = mean(aevis_3m, na.rm = TRUE)
+#            , sd = sd(aevis_3m, na.rm = TRUE)) %>%
+#  mutate(total = sum(count)) %>%
+#  mutate(across(c("mean", "sd"), round, 3)) %>%
+#  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+
+#fwrite(GLM_imd_quintile, here::here("output", "os_reports", "WP3", "AE_GLM_IMD.csv"))
+
+#GLM_age_band <- df %>%
+#  group_by(age_band) %>%
+#  summarise(count = n(),
+#            mean = mean(aevis_3m, na.rm = TRUE)
+#            , sd = sd(aevis_3m, na.rm = TRUE)) %>%
+#  mutate(total = sum(count)) %>%
+#  mutate(across(c("mean", "sd"), round, 3)) %>%
+#  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+
+#fwrite(GLM_age_band, here::here("output", "os_reports", "WP3", "AE_GLM_age.csv"))
 
 #produce means and SD for each group (GP interactions over 1-month  = outcome----------------
 
-cols_of_interest <- c("count", "total");
-GLM_sex <- df %>%
-  group_by(sex) %>%
-  summarise(count = n(),
-            mean = mean(gp_1m, na.rm = TRUE)
-            , sd = sd(gp_1m, na.rm = TRUE)) %>%
-  mutate(total = sum(count)) %>%
-  mutate(across(c("mean", "sd"), round, 3)) %>%
-  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+#cols_of_interest <- c("count", "total");
+#GLM_sex <- df %>%
+#  group_by(sex) %>%
+#  summarise(count = n(),
+#            mean = mean(gp_1m, na.rm = TRUE)
+#            , sd = sd(gp_1m, na.rm = TRUE)) %>%
+#  mutate(total = sum(count)) %>%
+#  mutate(across(c("mean", "sd"), round, 3)) %>%
+#  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
 
-fwrite(GLM_sex, here::here("output", "os_reports", "WP3", "GP_GLM_sex.csv"))
-
-
-GLM_Ethnicity_2 <- df %>%
-  group_by(Ethnicity_2) %>%
-  summarise(count = n(),
-            mean = mean(gp_1m, na.rm = TRUE)
-            , sd = sd(gp_1m, na.rm = TRUE)) %>%
-  mutate(total = sum(count)) %>%
-  mutate(across(c("mean", "sd"), round, 3)) %>%
-  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
-
-fwrite(GLM_Ethnicity_2, here::here("output", "os_reports", "WP3", "GP_GLM_ethnicity.csv"))
+#fwrite(GLM_sex, here::here("output", "os_reports", "WP3", "GP_GLM_sex.csv"))
 
 
-GLM_imd_quintile <- df %>%
-  group_by(imd_quintile) %>%
-  summarise(count = n(),
-            mean = mean(gp_1m, na.rm = TRUE)
-            , sd = sd(gp_1m, na.rm = TRUE)) %>%
-  mutate(total = sum(count)) %>%
-  mutate(across(c("mean", "sd"), round, 3)) %>%
-  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+#GLM_Ethnicity_2 <- df %>%
+#  group_by(Ethnicity_2) %>%
+#  summarise(count = n(),
+#            mean = mean(gp_1m, na.rm = TRUE)
+#            , sd = sd(gp_1m, na.rm = TRUE)) %>%
+#  mutate(total = sum(count)) %>%
+#  mutate(across(c("mean", "sd"), round, 3)) %>%
+#  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
 
-fwrite(GLM_imd_quintile, here::here("output", "os_reports", "WP3", "GP_GLM_IMD.csv"))
+#fwrite(GLM_Ethnicity_2, here::here("output", "os_reports", "WP3", "GP_GLM_ethnicity.csv"))
 
-GLM_age_band <- df %>%
-  group_by(age_band) %>%
-  summarise(count = n(),
-            mean = mean(gp_1m, na.rm = TRUE)
-            , sd = sd(gp_1m, na.rm = TRUE)) %>%
-  mutate(total = sum(count)) %>%
-  mutate(across(c("mean", "sd"), round, 3)) %>%
-  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
 
-fwrite(GLM_age_band, here::here("output", "os_reports", "WP3", "GP_GLM_age.csv"))
+#GLM_imd_quintile <- df %>%
+#  group_by(imd_quintile) %>%
+#  summarise(count = n(),
+#            mean = mean(gp_1m, na.rm = TRUE)
+#            , sd = sd(gp_1m, na.rm = TRUE)) %>%
+#  mutate(total = sum(count)) %>%
+#  mutate(across(c("mean", "sd"), round, 3)) %>%
+#  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+
+#fwrite(GLM_imd_quintile, here::here("output", "os_reports", "WP3", "GP_GLM_IMD.csv"))
+
+#GLM_age_band <- df %>%
+#  group_by(age_band) %>%
+#  summarise(count = n(),
+#            mean = mean(gp_1m, na.rm = TRUE)
+#            , sd = sd(gp_1m, na.rm = TRUE)) %>%
+#  mutate(total = sum(count)) %>%
+#  mutate(across(c("mean", "sd"), round, 3)) %>%
+#  dplyr::mutate(across(.cols = all_of(cols_of_interest), .fns = ~ .x %>% `/`(5) %>% round()*5));
+
+#fwrite(GLM_age_band, here::here("output", "os_reports", "WP3", "GP_GLM_age.csv"))
 
 # Outcome variable - A&E attendances
 
@@ -178,6 +178,8 @@ AE_MAIHDA <-df %>%
 m_null <- glmmTMB(AE_R ~ 1 + (1|strata), data = AE_MAIHDA, family = binomial)
 model_parameters(m_null, exponentiate=TRUE)
 icc(m_null)
+
+summary(m_null)
 
 # Saving output from the null model (model summary)
 
@@ -207,10 +209,11 @@ m_adj <- glmmTMB(AE_R ~ 1 + sex + age_R + Ethnicity_2 + imd_quintile_R + (1|stra
 model_parameters(m_adj,exponentiate=TRUE)
 icc(m_adj)
 
+summary(m_adj)
 
 Adj_output <-capture.output(summary(m_adj, exponentiate=TRUE))
 
-Output_file <- here::here("output", "os_reports", "WP3", "AE_adj_summary.txt")
+Output_file <- here::here("output", "os_reports", "WP3", "AE_adj_summary.csv")
 
 writeLines(Adj_output, con = Output_file)
 
