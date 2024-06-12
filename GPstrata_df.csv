@@ -1,0 +1,88 @@
+"strata","sex","age_band","Ethnicity_2","imd_quintile_R","total"
+1,"female","0-24","All other ethnic groups","0",20
+2,"female","0-24","All other ethnic groups","1",10
+3,"female","0-24","All other ethnic groups","2",15
+4,"female","0-24","All other ethnic groups","3",10
+5,"female","0-24","All other ethnic groups","4",10
+6,"female","0-24","All other ethnic groups","5",10
+7,"female","0-24","White","0",5
+8,"female","0-24","White","1",5
+9,"female","0-24","White","2",5
+10,"female","0-24","White","4",0
+11,"female","25-69","All other ethnic groups","0",30
+12,"female","25-69","All other ethnic groups","1",15
+13,"female","25-69","All other ethnic groups","2",10
+14,"female","25-69","All other ethnic groups","3",10
+15,"female","25-69","All other ethnic groups","4",15
+16,"female","25-69","All other ethnic groups","5",10
+17,"female","25-69","White","0",10
+18,"female","25-69","White","1",5
+19,"female","25-69","White","2",5
+20,"female","25-69","White","3",5
+21,"female","25-69","White","4",5
+22,"female","25-69","White","5",0
+23,"female","70-79","All other ethnic groups","0",5
+24,"female","70-79","All other ethnic groups","1",0
+25,"female","70-79","All other ethnic groups","2",0
+26,"female","70-79","All other ethnic groups","3",5
+27,"female","70-79","All other ethnic groups","4",0
+28,"female","70-79","White","2",0
+29,"female","70-79","White","4",0
+30,"female","80-89","All other ethnic groups","0",0
+31,"female","80-89","All other ethnic groups","1",0
+32,"female","80-89","All other ethnic groups","3",5
+33,"female","80-89","All other ethnic groups","4",5
+34,"female","80-89","All other ethnic groups","5",5
+35,"female","80-89","White","1",0
+36,"female","90+","All other ethnic groups","0",0
+37,"female","90+","All other ethnic groups","1",0
+38,"female","90+","All other ethnic groups","2",0
+39,"female","90+","All other ethnic groups","3",0
+40,"female","90+","All other ethnic groups","5",5
+41,"female","90+","White","1",0
+42,"female","90+","White","3",0
+43,"female","90+","White","4",0
+44,"male","0-24","All other ethnic groups","0",30
+45,"male","0-24","All other ethnic groups","1",10
+46,"male","0-24","All other ethnic groups","2",10
+47,"male","0-24","All other ethnic groups","3",10
+48,"male","0-24","All other ethnic groups","4",10
+49,"male","0-24","All other ethnic groups","5",10
+50,"male","0-24","White","0",5
+51,"male","0-24","White","1",5
+52,"male","0-24","White","2",5
+53,"male","0-24","White","3",0
+54,"male","0-24","White","4",0
+55,"male","0-24","White","5",5
+56,"male","25-69","All other ethnic groups","0",35
+57,"male","25-69","All other ethnic groups","1",10
+58,"male","25-69","All other ethnic groups","2",15
+59,"male","25-69","All other ethnic groups","3",25
+60,"male","25-69","All other ethnic groups","4",5
+61,"male","25-69","All other ethnic groups","5",10
+62,"male","25-69","White","0",5
+63,"male","25-69","White","1",0
+64,"male","25-69","White","2",5
+65,"male","25-69","White","3",0
+66,"male","25-69","White","4",0
+67,"male","25-69","White","5",5
+68,"male","70-79","All other ethnic groups","0",5
+69,"male","70-79","All other ethnic groups","3",0
+70,"male","70-79","All other ethnic groups","4",0
+71,"male","70-79","White","0",0
+72,"male","70-79","White","1",0
+73,"male","80-89","All other ethnic groups","0",5
+74,"male","80-89","All other ethnic groups","1",0
+75,"male","80-89","All other ethnic groups","2",0
+76,"male","80-89","All other ethnic groups","3",0
+77,"male","80-89","All other ethnic groups","4",0
+78,"male","80-89","All other ethnic groups","5",0
+79,"male","80-89","White","0",0
+80,"male","80-89","White","1",0
+81,"male","90+","All other ethnic groups","0",0
+82,"male","90+","All other ethnic groups","1",0
+83,"male","90+","All other ethnic groups","3",0
+84,"male","90+","All other ethnic groups","5",0
+85,"male","90+","White","0",0
+86,"male","90+","White","3",0
+87,"male","90+","White","5",0
