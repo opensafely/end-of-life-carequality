@@ -83,9 +83,10 @@ actions:
     outputs:
       moderately_sensitive:
         model_outputs_AEMAIHDA: output/os_reports/WP3/AE*.txt
-  #     model_outputs_GPMAIHDA: output/os_reports/WP3/GP*.txt
         descriptive_GLMAE: output/os_reports/WP3/AE*.csv
-  #      descriptive_GLMGP: output/os_reports/WP3/GP*.csv
+
+#     descriptive_GLMGP: output/os_reports/WP3/GP*.csv
+#     model_outputs_GPMAIHDA: output/os_reports/WP3/GP*.txt
 
 # WP3_ethnicity_outputs:
 #   run: r:latest analysis/os_reports/09_eol_Ethnicity_breakdown.R
@@ -93,7 +94,16 @@ actions:
 #   outputs:
 #     moderately_sensitive:
 #       descriptive_ethnicity: output/os_reports/WP3/ethnicity*.csv
-      
+
+  WP3_MAIHDA_outputs_GP:
+    run: r:latest analysis/os_reports/07_eol_WP3_MAIHDA_GP.R
+    needs: [generate_study_population_os_reports]
+    outputs:
+      moderately_sensitive:
+        model_outputs: output/os_reports/WP3/GP*.csv
+        model_graph_outputs: output/os_reports/WP3/GP*.png
+        model_breakdown_outputs: output/os_reports/WP3/GP*.txt 
+
   WP3_MAIHDA_outputs_OP:
     run: r:latest analysis/os_reports/08_eol_WP3_MAIHDA_opapp.R
     needs: [generate_study_population_os_reports]
