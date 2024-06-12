@@ -83,9 +83,9 @@ actions:
     outputs:
       moderately_sensitive:
         model_outputs_AEMAIHDA: output/os_reports/WP3/AE*.txt
-        model_outputs_GPMAIHDA: output/os_reports/WP3/GP*.txt
+  #     model_outputs_GPMAIHDA: output/os_reports/WP3/GP*.txt
         descriptive_GLMAE: output/os_reports/WP3/AE*.csv
-        descriptive_GLMGP: output/os_reports/WP3/GP*.csv
+  #      descriptive_GLMGP: output/os_reports/WP3/GP*.csv
 
 # WP3_ethnicity_outputs:
 #   run: r:latest analysis/os_reports/09_eol_Ethnicity_breakdown.R
