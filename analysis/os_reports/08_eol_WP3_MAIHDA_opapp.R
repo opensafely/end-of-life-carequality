@@ -400,6 +400,7 @@ fwrite(fm3vsfm1$fm3urank, here::here("output", "os_reports", "WP3", "OPrank3.csv
 OP_MAIHDA$strata <- as.factor(OP_MAIHDA$strata)
 strata_predictions <- lm(OPexpectation3 ~ 0 + strata, data = OP_MAIHDA) 
 
+
 coef(summary(strata_predictions))
 
 OP_strata_predictions <-capture.output(coef(summary(strata_predictions)))
@@ -409,6 +410,14 @@ Output_file <- here::here("output", "os_reports", "WP3", "OP_strata_predictions.
 writeLines(OP_strata_predictions, con = Output_file)
 
 cat("Output saved to", Output_file, "\n")
+
+OP_strataCI <- confint(strata_predictions, level = 0.95)
+
+write.csv(OP_strataCI, file = 'OPstrataCI.csv')
+OP_strataCI <-read_csv(file = "OPstrataCI.csv")
+fwrite(OP_strataCI, here::here("output", "os_reports", "WP3", "OPstrataCI.csv"))
+
+model_parameters(strata_predictions)
 
 # Figure 4: Scatterplot of ranks of model 3 vs. model 1 predicted effects
 # rankscatterplot <- ggplot(data = fm3vsfm1$fm1urank$fm3urank, mapping = aes(x = fm1urank, y = fm3urank)) + geom_point()
