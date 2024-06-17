@@ -73,9 +73,6 @@ df_strata <- GP_MAIHDA %>%
   summarise(total = n()) %>%
   dplyr::mutate(across(.cols = all_of(cols_of_interest2), .fns = ~ .x %>% `/`(5) %>% round()*5));
 
-
-write.csv(df_strata, file = 'GPstrata_df.csv', row.names = FALSE)
-df_strata <-read_csv(file = "GPstrata_df.csv")
 fwrite(df_strata, here::here("output", "os_reports", "WP3", "GPstrata_df.csv"))
 
 # Model 1  - includes a strata random intercept to account for clustering by strata #
@@ -130,23 +127,10 @@ GPvpc1
 
 var_null <- GPvariance2
 
-
-
-write.csv (GPbeta0, file = 'GPbeta0.csv', row.names ="GPbeta0")
-write.csv (GPsigma2u, file = 'GPsigma2u.csv', row.names = "GPsigma2u")
-write.csv (GPexpectation, file = 'GPexpectation.csv', row.names = "GPexpectation")
-write.csv (GPvariance, file = 'GPvariance.csv', row.names = "GPvariance")
-write.csv (GPvariance2, file = 'GPvariance2.csv', row.names = "GPvariance2")
-write.csv (GPvariance1, file = 'GPvariance1.csv', row.names = "GPvariance1")
-write.csv (GPvpc2, file = 'GPvpc2.csv', row.names = "GPvpc2")
-write.csv (GPvpc1, file = 'GPvpc1.csv', row.names = "GPvpc1")
-
 model1_output <- rbind(GPbeta0, GPsigma2u, GPexpectation, GPvariance, GPvariance2, GPvariance1, GPvpc2, GPvpc1)
+rownames(model1_output) <-c("GPbeta0", "GPsigma2u", "GPexpectation", "GPvariance", "GPvariance2", "GPvariance1", "GPvpc2", "GPvpc1")
 
-write.csv(model1_output, "GPmodel1_output.csv")
-model1_output <-read_csv(file = "GPmodel1_output.csv")
 fwrite(model1_output, here::here("output", "os_reports", "WP3", "GPmodel1_output.csv"))
-
 
 ##################################################################################################################################
 #Model 3::: adjusted model Poisson ---------------
